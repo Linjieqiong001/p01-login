@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="dcAE0bdE3DeycfrCoCtCcj">
+<head data-page-node-id="lxGQVIuzTVSViQ8WxdmlsA">
+<meta charset="UTF-8" data-page-node-id="PrzCK9JXBAvW6DUNgICtuW">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="NrxHPvJ2J20leAF2tiP91n">
+<title>P39 - 住房审批详情</title>
+<link rel="stylesheet" href="common.css" data-page-node-id="JQaepoSeCGdDEtGH6Msuuh">
+<style>
+/* ==================== Detail Block ==================== */
+.detail-block {
+  padding: 4px 16px 14px;
+}
+.detail-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 8px 0;
+  gap: 12px;
+}
+.detail-row .d-label {
+  font-size: 13px;
+  color: var(--text-3);
+  width: 70px;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+.detail-row .d-value {
+  font-size: 14px;
+  color: var(--text-1);
+  flex: 1;
+  line-height: 1.5;
+}
+
+/* ==================== Approval Number ==================== */
+.approval-no-block {
+  padding: 16px;
+  text-align: center;
+}
+.approval-no {
+  font-size: 14px;
+  color: var(--text-2);
+  font-weight: 500;
+}
+.approval-no span {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+}
+
+/* ==================== Approval Flow Timeline ==================== */
+.flow-timeline { padding: 4px 16px 16px; }
+.flow-node {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  padding: 0 0 20px 0;
+}
+.flow-node:last-child { padding-bottom: 0; }
+.flow-node:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 44px;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+.flow-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--primary-gradient);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.flow-status {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--success);
+  border: 2px solid #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.flow-status svg { width: 10px; height: 10px; color: #FFFFFF; }
+.flow-status.pending { background: var(--warning); }
+.flow-body {
+  flex: 1;
+  margin-left: 12px;
+  min-width: 0;
+  padding-top: 2px;
+}
+.flow-meta {
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.4;
+}
+.flow-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-1);
+  line-height: 1.5;
+  margin-top: 2px;
+}
+.flow-time {
+  font-size: 12px;
+  color: var(--text-3);
+  flex-shrink: 0;
+  margin-left: 8px;
+  line-height: 1.4;
+  padding-top: 2px;
+}
+
+/* ==================== Confirm Text ==================== */
+.confirm-text {
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.6;
+  padding: 4px 0 8px;
+}
+
+/* ==================== Photo Items in Detail ==================== */
+.photo-preview-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 2px;
+}
+.photo-thumb {
+  width: 68px;
+  height: 68px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.photo-thumb:active { opacity: 0.8; }
+.photo-thumb-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.photo-thumb-label {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  font-size: 9px;
+  color: #FFFFFF;
+  background: rgba(0,0,0,0.45);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+/* ==================== Reject Textarea ==================== */
+.reject-textarea {
+  width: 100%;
+  min-height: 120px;
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  font-size: 14px;
+  color: var(--text-1);
+  background: var(--bg);
+  resize: none;
+  outline: none;
+  font-family: inherit;
+  line-height: 1.5;
+  transition: border-color 0.2s;
+}
+.reject-textarea::placeholder { color: var(--text-4); }
+.reject-textarea:focus { border-color: var(--primary); }
+
+/* ==================== Bottom Button Area ==================== */
+.btn-fixed-bottom.flex-row {
+  display: flex;
+  gap: 12px;
+}
+.btn-fixed-bottom.flex-row .btn {
+  flex: 1;
+}
+
+.spacer { height: 80px; }
+
+/* ==================== Modal Form ==================== */
+.modal-form { padding: 0; }
+.modal-form .form-item { border-bottom: 0.5px solid var(--border); }
+.modal-form .form-item:last-child { border-bottom: none; }
+
+/* Modal header */
+.modal-header-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 0.5px solid var(--divider);
+}
+.modal-title { font-size: 16px; font-weight: 600; color: var(--text-1); }
+.modal-close-btn {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; border-radius: 50%;
+  transition: background 0.2s;
+}
+.modal-close-btn:active { background: rgba(0,0,0,0.06); }
+.modal-close-btn svg { width: 18px; height: 18px; color: var(--text-3); }
+
+/* ==================== Image Preview ==================== */
+.image-preview-mask {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s;
+}
+.image-preview-mask.show { opacity: 1; visibility: visible; }
+.image-preview-img {
+  max-width: 90%;
+  max-height: 70%;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+.image-preview-close {
+  position: absolute;
+  top: 24px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.image-preview-close svg { width: 20px; height: 20px; color: #FFFFFF; }
+.image-preview-label {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,0.7);
+  font-size: 13px;
+}
+</style>
+</head>
+<body data-page-node-id="9SG0lzYdndKJMv2Etu7IRQ">
+
+<div class="miniprogram" id="app" data-page-node-id="LJ9vg3CN24Ae7ao6N5e5a4">
+
+  <!-- Status Bar -->
+  <div class="status-bar light" data-page-node-id="ANs7HgFRUSxJGfOVFKxGzC">
+    <span class="time" data-page-node-id="HEgHR3pO4hoR5rGB059f3G">09:42</span>
+    <div class="icons" data-page-node-id="OytCjkhwLknA2QcsCcsjtj">
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="FAnrSQuudOEfi4NpqLRPgM"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" data-page-node-id="24gZV9hNOfU8JS6WglN1Tt"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="UPUHdyDBa0d7mu4Pis7AaS"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" data-page-node-id="ERH1WwxvMmM6zbl0M1EwyH"/></svg>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar white" data-page-node-id="S6A1ucmq2LhAGx0R2SpmZS">
+    <div class="nav-back" data-page-node-id="GzTBxx8vAfiE01CRNCpg4o">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="rCivLz4KcKp8BJh6s8YHHQ">
+        <polyline points="15 18 9 12 15 6" data-page-node-id="nHZ0e3lTZzhfUIGQdAfi9P"/>
+      </svg>
+    </div>
+    <span class="nav-title" data-page-node-id="nkxMo6jfEyzBBbKt9gKURX">住房审批详情</span>
+    <span class="nav-placeholder" data-page-node-id="hTi8IHW7sBBPvZ1TB0ARtL"></span>
+  </div>
+
+  <!-- Content -->
+  <div class="content fade-in" data-page-node-id="ATqN13pRrVOsUoFZHnxo4B">
+
+    <!-- 审批编号 -->
+    <div class="section" style="margin-top:16px;">
+      <div class="approval-no-block">
+        <span class="approval-no">审批编号：<span>ZF-2026-000123</span></span>
+      </div>
+    </div>
+
+    <!-- 申请信息 -->
+    <div class="section" data-page-node-id="pWjfZ07lgp0ypi9sDgmfbL">
+      <div class="section-title" data-page-node-id="8ZnPKGh0HGoLYoARUrwrqq">
+        <div class="dot" data-page-node-id="blLWgdjFNB9ID504uTUPz9"></div>
+        申请信息
+      </div>
+      <div class="detail-block" data-page-node-id="kirpdKH4zlOfhdf4Su6jNu">
+        <div class="detail-row" data-page-node-id="uCCBFOdkqrNmbbqHg1K9br">
+          <span class="d-label" data-page-node-id="0FGpZi7SiWocUZNdV99j0J">申请类型</span>
+          <span class="d-value" style="font-weight:600;color:var(--primary);" data-page-node-id="30wKGCT2AeiQoCqJr9ZmJf">入住申请</span>
+        </div>
+        <div class="detail-row" data-page-node-id="3d5a5td38JZ7rls1JXwsnr">
+          <span class="d-label" data-page-node-id="Td3GJI4cqChR8mboqLuxY3">申请事由</span>
+          <span class="d-value" data-page-node-id="EljvYb4Bez978kRzysFH3B">新入职分配住房</span>
+        </div>
+        <div class="detail-row" data-page-node-id="gPdrFCdExQN6FFKBDNap6o">
+          <span class="d-label" data-page-node-id="wi3qaGgOVWBsxE2Rs9IbEB">期望房型</span>
+          <span class="d-value" data-page-node-id="i459b7HFGwgG4MRnxQ3yA7">一室一厅</span>
+        </div>
+        <div class="detail-row" data-page-node-id="fei5fxF6gFvaHTVlHa3Vg1">
+          <span class="d-label" data-page-node-id="OjomulDbwh59PaIClCC1hg">佐证材料</span>
+          <span class="d-value" data-page-node-id="6MCxLtnmifCL1TmO9CpMWC">
+            <div class="photo-preview-row" data-page-node-id="DBU39KRo8aEMcEQgSULAPz">
+              <div class="photo-thumb" onclick="openImagePreview(0)" data-page-node-id="gllWC7zOKL2RBnmOEnYpdq">
+                <div class="photo-thumb-inner" style="background:linear-gradient(135deg,#E6F0FF,#1677FF);" data-page-node-id="VyyFKmP7QO4neTnUf4KIA2">
+                  <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#FFFFFF" stroke-width="1.5" data-page-node-id="1Na27nsqkmkqsXYy4wt57P">
+                    <rect x="3" y="3" width="18" height="18" rx="2" data-page-node-id="M8hdDvnhVjAARrAaP3hfbH"/><circle cx="8.5" cy="8.5" r="1.5" data-page-node-id="um3fDm2sSzDuLCGFjqPl04"/><path d="M21 15l-5-5L5 21" data-page-node-id="v74dcNRpsLV9XCtX5xkTdg"/>
+                  </svg>
+                </div>
+                <span class="photo-thumb-label" data-page-node-id="JXW5nQ9B1BsEnv7eNuXAvD">材料1</span>
+              </div>
+              <div class="photo-thumb" onclick="openImagePreview(1)" data-page-node-id="i7Fh4efgGYnlFRCcQZd3c1">
+                <div class="photo-thumb-inner" style="background:linear-gradient(135deg,#FFF3E8,#ED7B2F);" data-page-node-id="g28rwy5MPCrx9dNZ6dugcw">
+                  <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#FFFFFF" stroke-width="1.5" data-page-node-id="WgImE0iAx3zOsAb9nmEKQL">
+                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" data-page-node-id="5FavaKzQ13jVgK63S59QFc"/><polyline points="14 2 14 8 20 8" data-page-node-id="HtnaozUQMZuh47jGgAtn5L"/><line x1="16" y1="13" x2="8" y2="13" data-page-node-id="rH8ZWlP234B98OiZ6zGvJI"/><line x1="16" y1="17" x2="8" y2="17" data-page-node-id="kSyo8pkH13w0si7Kre2SEr"/>
+                  </svg>
+                </div>
+                <span class="photo-thumb-label" data-page-node-id="FEXKoklixqQ9masYPvwaVP">材料2</span>
+              </div>
+            </div>
+          </span>
+        </div>
+        <div class="detail-row" data-page-node-id="70kBxed7sr3sm70UNsUx93">
+          <span class="d-label" data-page-node-id="FsfqvIfF7D3KK4vXUmhBDa">申请人</span>
+          <span class="d-value" data-page-node-id="hLqDgVOQvSGeKFRaCcm90q">张三</span>
+        </div>
+        <div class="detail-row" data-page-node-id="zPwGvTHwsk3EZyJEGHmEpA">
+          <span class="d-label" data-page-node-id="CU1YoM6D5lkEW2O5x3fB9Y">申请部门</span>
+          <span class="d-value" data-page-node-id="wS5zkpHgwWCDFBPWpBtD3X">海事处</span>
+        </div>
+        <div class="detail-row" data-page-node-id="lYz0Dh0PaQ81Z4Q2H1CBDy">
+          <span class="d-label" data-page-node-id="x9c393J5K2xKafJPe1P0Ig">提交时间</span>
+          <span class="d-value" data-page-node-id="1SHAqnrcOKAIfl7Qg8nq8s">2026-07-20 09:12</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 审批流程 -->
+    <div class="section">
+      <div class="section-title">
+        <div class="dot"></div>
+        审批流程
+      </div>
+      <div class="flow-timeline">
+
+        <!-- 发起申请 -->
+        <div class="flow-node">
+          <div class="flow-avatar">
+            张三
+            <span class="flow-status done">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+          </div>
+          <div class="flow-body">
+            <div class="flow-meta">发起申请</div>
+            <div class="flow-name">我</div>
+          </div>
+          <div class="flow-time">07.20 09:12</div>
+        </div>
+
+        <!-- 主管审批（待审批） -->
+        <div class="flow-node">
+          <div class="flow-avatar">
+            赵
+            <span class="flow-status pending">
+              <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg>
+            </span>
+          </div>
+          <div class="flow-body">
+            <div class="flow-meta">主管审批</div>
+            <div class="flow-name">赵主任（审批中）</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
+  </div>
+
+  <!-- Bottom Button Area -->
+  <div class="btn-fixed-bottom flex-row" style="position:absolute;bottom:0;left:0;right:0;display:flex;gap:12px;padding:12px 16px calc(12px + var(--safe-bottom));background:var(--card-bg);border-top:0.5px solid var(--divider);" data-page-node-id="8v7P1jamU3ThSjVLik5EhF">
+    <button class="btn btn-outline-gray" style="flex:1;" id="btnReject" data-page-node-id="gghoSeZ7GDzye2vcjqDDYd">驳回</button>
+    <button class="btn btn-success" style="flex:1;" id="btnApprove" data-page-node-id="yHolEXSTPIfZtQh3H8yJAD">通过</button>
+  </div>
+
+  <!-- 确认通过弹窗 -->
+  <div class="modal-mask" id="confirmModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">确认通过</div>
+      </div>
+      <div class="modal-body">
+        <p class="confirm-text">确认通过此住房申请？通过后将进入房源分配环节。</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-success btn-block" id="confirmApproveBtn">确认通过</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 分配房源 Modal -->
+  <div class="modal-mask" id="assignModal" data-page-node-id="ycfXq7oXNJnDRM3isS2vfM">
+    <div class="modal-content" data-page-node-id="IG1ptrBCPrqFi5oynauXKC">
+      <div class="modal-header-wrap" data-page-node-id="sXSIJvzE8DBOWz691UtE4B">
+        <span class="modal-title" data-page-node-id="nHMXHL83QM0w1GjNRj0LQA">分配房源</span>
+        <div class="modal-close-btn" onclick="document.getElementById('assignModal').classList.remove('show')" data-page-node-id="h6LokbYcFDeMZ4lPIHHW8C">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="UYwEPB9J5JkBewumNMO6iw">
+            <path d="M18 6L6 18M6 6l12 12" data-page-node-id="rXMsrK6HfHFfChp4laT4uq"/>
+          </svg>
+        </div>
+      </div>
+      <div class="modal-body" data-page-node-id="pqmJORyGZtbIAJ3DgAMKwK">
+        <div class="form-group modal-form" data-page-node-id="xYjxnoMDWAl50ZVerCXEbA">
+          <div class="form-item" data-page-node-id="H9gg9X4eLD7r7164jJ1Zua">
+            <span class="form-label" data-page-node-id="G8KduaODkcGAe25g6mxV9G">小区</span>
+            <div class="form-value" data-page-node-id="r5Ty2OTwBnQrvEZYgMGb5j"><input class="form-input" id="assignCommunity" placeholder="请输入小区名称" data-page-node-id="x3kKBsTHrCSjRrMHWInpfK"></div>
+          </div>
+          <div class="form-item" data-page-node-id="F6UKYqoa1B7AUFNQzrezp2">
+            <span class="form-label" data-page-node-id="ic7OiBnm0xbjJgwkYDmEJi">楼栋</span>
+            <div class="form-value" data-page-node-id="rWDKULgaDAi54sZ3GLNpal"><input class="form-input" id="assignBuilding" placeholder="请输入楼栋号" data-page-node-id="EG0Ic2AqSBS3Sgx5Utgl9w"></div>
+          </div>
+          <div class="form-item" data-page-node-id="iAx6IZdNpl9rd57hwcB0Bu">
+            <span class="form-label" data-page-node-id="L2rpJDldeFygi3lJKQAiZv">房号</span>
+            <div class="form-value" data-page-node-id="cavlRHHJrQpFiHPMNUV2cA"><input class="form-input" id="assignRoom" placeholder="请输入房号" data-page-node-id="ffeybyBVNx0OaJ3NUsGmEc"></div>
+          </div>
+          <div class="form-item" data-page-node-id="87nVRHoE8bJlCOFIszDDKi">
+            <span class="form-label" data-page-node-id="ikzwvyZFUvcsE4FcazEWs6">房型</span>
+            <div class="form-value" data-page-node-id="CtqDNot0DevucN71rth8Yg">
+              <select class="form-select" id="assignRoomType" data-page-node-id="k8gr9d3CzeGu2BWne2dk54">
+                <option value="" data-page-node-id="oTNmgPcNu85D7NN951xIsd">请选择房型（非必填）</option>
+                <option value="一室一厅" data-page-node-id="8uLfUPWcW8z66tOlGp5RCO">一室一厅</option>
+                <option value="两室一厅" data-page-node-id="TjPFCyC048YJr515ZdgCN5">两室一厅</option>
+                <option value="三室两厅" data-page-node-id="dKaDPCQ0QEIWHIYc8rt3vV">三室两厅</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" data-page-node-id="tzyaF6zunYpAA0Epc5ManI">
+        <button class="btn btn-primary btn-block" id="assignConfirm" data-page-node-id="loY68mkhRmEjMMDDmh43PP">确认分配</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 驳回弹窗 -->
+  <div class="modal-mask" id="rejectModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">驳回申请</div>
+      </div>
+      <div class="modal-body">
+        <textarea class="reject-textarea" id="rejectReason" placeholder="请输入驳回原因"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger btn-block" id="rejectConfirm">确认驳回</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 图片预览 Modal -->
+  <div class="image-preview-mask" id="imagePreviewMask" data-page-node-id="m8ineMzMrnmGCQbpRBtnPk">
+    <div class="image-preview-close" onclick="closeImagePreview()" data-page-node-id="eLc6hvumbizHJaPXJeaZFi">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="Dc7sl7Iu6vjGMfzRPiJTRf">
+        <path d="M18 6L6 18M6 6l12 12" data-page-node-id="KnNq0yhFdrYoUVdbVX6Ctt"/>
+      </svg>
+    </div>
+    <svg id="imagePreviewSvg" viewBox="0 0 24 24" width="120" height="120" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.6" data-page-node-id="yBR0jjQOZ7QqL29gFKlBJY">
+      <rect x="3" y="3" width="18" height="18" rx="2" data-page-node-id="c3d1aIcLgeDBkwLbCEV5Wt"/><circle cx="8.5" cy="8.5" r="1.5" data-page-node-id="bh8CIGHSRrdCI793XKViZy"/><path d="M21 15l-5-5L5 21" data-page-node-id="LRXlSy0fXy41BbKOXmRopl"/>
+    </svg>
+    <span class="image-preview-label" id="imagePreviewLabel" data-page-node-id="34Fhr3XZCljRG6DDE788It">佐证材料</span>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" data-page-node-id="GpURYhOkIjyTZuaYzjbZ9Y">
+    <div class="toast-icon" data-page-node-id="RfhR55Eq6l5GwmR4XTqn9a"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="ZgBuXWI0iu6WCPWToMtACD"><circle cx="12" cy="12" r="10" data-page-node-id="7MvccShi8m8wnbyzOR6AJ5"/><path d="M12 16v-4M12 8h.01" data-page-node-id="InaP688bAY4PQzGuXl66OC"/></svg></div>
+    <span id="toastText" data-page-node-id="QByH28mZB5mLuanBajSC43"></span>
+  </div>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  /* ==================== Toast ==================== */
+  var toastTimer = null;
+  function showToast(text, iconType) {
+    var toast = document.getElementById('toast');
+    var toastText = document.getElementById('toastText');
+    var toastIcon = toast.querySelector('.toast-icon');
+
+    toastText.textContent = text;
+    var iconHtml = '';
+    if (iconType === 'success') {
+      iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+    } else if (iconType === 'error') {
+      iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>';
+    } else {
+      iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>';
+    }
+    toastIcon.innerHTML = iconHtml;
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() {
+      toast.classList.remove('show');
+    }, 2000);
+  }
+
+  /* ==================== Approve → Confirm Modal ==================== */
+  document.getElementById('btnApprove').addEventListener('click', function() {
+    document.getElementById('confirmModal').classList.add('show');
+  });
+
+  /* ==================== Confirm Approve → Assign Modal ==================== */
+  document.getElementById('confirmApproveBtn').addEventListener('click', function() {
+    document.getElementById('confirmModal').classList.remove('show');
+    document.getElementById('assignModal').classList.add('show');
+  });
+
+  document.getElementById('assignConfirm').addEventListener('click', function() {
+    var community = document.getElementById('assignCommunity');
+    var building = document.getElementById('assignBuilding');
+    var room = document.getElementById('assignRoom');
+
+    if (!community.value.trim()) {
+      showToast('请输入小区名称', 'error');
+      community.focus();
+      return;
+    }
+    if (!building.value.trim()) {
+      showToast('请输入楼栋号', 'error');
+      building.focus();
+      return;
+    }
+    if (!room.value.trim()) {
+      showToast('请输入房号', 'error');
+      room.focus();
+      return;
+    }
+
+    document.getElementById('assignModal').classList.remove('show');
+    showToast('审批通过，已分配房源', 'success');
+  });
+
+  /* ==================== Reject Modal ==================== */
+  document.getElementById('btnReject').addEventListener('click', function() {
+    document.getElementById('rejectReason').value = '';
+    document.getElementById('rejectModal').classList.add('show');
+  });
+
+  document.getElementById('rejectConfirm').addEventListener('click', function() {
+    var reason = document.getElementById('rejectReason').value.trim();
+    if (!reason) {
+      showToast('请填写驳回原因', 'error');
+      return;
+    }
+    document.getElementById('rejectModal').classList.remove('show');
+    showToast('已驳回该申请', 'info');
+  });
+
+  /* ==================== Modal Mask Click to Close ==================== */
+  document.querySelectorAll('.modal-mask').forEach(function(mask) {
+    mask.addEventListener('click', function(e) {
+      if (e.target === this) this.classList.remove('show');
+    });
+  });
+
+  /* ==================== Image Preview ==================== */
+  var imageData = [
+    { name: '佐证材料-入住申请表', color1: '#E6F0FF', color2: '#1677FF' },
+    { name: '佐证材料-身份证复印件', color1: '#FFF3E8', color2: '#ED7B2F' }
+  ];
+
+  window.openImagePreview = function(index) {
+    var mask = document.getElementById('imagePreviewMask');
+    var svg = document.getElementById('imagePreviewSvg');
+    var label = document.getElementById('imagePreviewLabel');
+    var data = imageData[index] || imageData[0];
+
+    svg.style.display = '';
+    label.textContent = data.name;
+    mask.classList.add('show');
+  };
+
+  window.closeImagePreview = function() {
+    document.getElementById('imagePreviewMask').classList.remove('show');
+  };
+
+  document.getElementById('imagePreviewMask').addEventListener('click', function(e) {
+    if (e.target === this) closeImagePreview();
+  });
+
+  /* ==================== Status Bar Time ==================== */
+  function updateStatusTime() {
+    var now = new Date();
+    var h = String(now.getHours()).padStart(2, '0');
+    var m = String(now.getMinutes()).padStart(2, '0');
+    var el = document.querySelector('.status-bar .time');
+    if (el) el.textContent = h + ':' + m;
+  }
+  updateStatusTime();
+  setInterval(updateStatusTime, 60000);
+
+})();
+</script>
+
+</body>
+</html>
