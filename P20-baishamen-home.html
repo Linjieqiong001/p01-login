@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="Q6VSAB62yHwTJVrWwa0V45">
+<head data-page-node-id="0AfseFOU8HQA73LGmhHV6D">
+<meta charset="UTF-8" data-page-node-id="VMyovx1uQkaHGygWtdHQyZ">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="xHsFBcADtYe0H0dGphb4aT">
+<title>P20 - 白沙门首页</title>
+<link rel="stylesheet" href="common.css" data-page-node-id="48aKghVLNoO51HrvP48CNl">
+<style>
+/* ==================== 顶部Banner区 ==================== */
+.bs-banner {
+  margin: 12px 16px 0;
+  height: 140px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(135deg, #1677FF 0%, #0052D9 100%);
+  box-shadow: var(--shadow-md);
+}
+.bs-banner::before {
+  content: '';
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+}
+.bs-banner::after {
+  content: '';
+  position: absolute;
+  bottom: -40px;
+  left: -20px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+}
+.bs-banner-content {
+  position: relative;
+  z-index: 2;
+  padding: 20px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.bs-banner-text { flex: 1; }
+.bs-banner-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  background: rgba(255,255,255,0.22);
+  border-radius: 12px;
+  font-size: 11px;
+  color: #FFFFFF;
+  margin-bottom: 8px;
+  backdrop-filter: blur(4px);
+}
+.bs-banner-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+}
+.bs-banner-desc {
+  font-size: 12px;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.5;
+}
+.bs-banner-icon {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.bs-banner-icon svg { width: 80px; height: 80px; }
+
+/* ==================== 功能宫格 ==================== */
+.bs-grid {
+  background: var(--card-bg);
+  margin: 12px 16px 0;
+  border-radius: var(--radius-lg);
+  padding: 18px 12px;
+  box-shadow: var(--shadow-sm);
+}
+.bs-grid-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+  padding: 0 4px 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.bs-grid-title .dot {
+  width: 4px;
+  height: 14px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+.bs-grid-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.bs-grid-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 8px;
+  background: var(--bg);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.bs-grid-item:active { transform: scale(0.96); }
+.bs-grid-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+.bs-grid-icon svg { width: 24px; height: 24px; }
+.ic-room { background: linear-gradient(135deg, #4D9FFF, #1677FF); }
+.ic-meeting { background: linear-gradient(135deg, #FF9F43, #FF7F1F); }
+.ic-meal { background: linear-gradient(135deg, #FFD93D, #FFB800); }
+.ic-record { background: linear-gradient(135deg, #5F27CD, #341F97); }
+.bs-grid-label {
+  font-size: 13px;
+  color: var(--text-1);
+  font-weight: 500;
+}
+
+/* ==================== 最新预订 ==================== */
+.bs-section {
+  background: var(--card-bg);
+  margin: 12px 16px 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.bs-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 6px;
+}
+.bs-section-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.bs-section-title .dot {
+  width: 4px;
+  height: 14px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+/* 预订卡片 */
+.bs-booking-card {
+  margin: 0 16px 10px;
+  padding: 12px 14px;
+  background: var(--bg);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.bs-booking-card:active { transform: scale(0.99); }
+.bs-booking-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.bs-booking-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bs-type-tag {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+}
+.bs-type-tag.room { background: var(--primary-light); color: var(--primary); }
+.bs-type-tag.meeting { background: var(--warning-light); color: var(--warning); }
+.bs-type-tag.meal { background: #FFF8E1; color: #F57C00; }
+.bs-booking-no {
+  font-size: 12px;
+  color: var(--text-3);
+  font-family: -apple-system, monospace;
+}
+.bs-booking-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.bs-booking-row {
+  display: flex;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.bs-booking-row .label {
+  color: var(--text-3);
+  min-width: 64px;
+}
+.bs-booking-row .value {
+  color: var(--text-1);
+  flex: 1;
+}
+
+/* 查看全部入口 */
+.bs-view-all {
+  padding: 10px 16px 14px;
+  text-align: center;
+  border-top: 0.5px solid var(--border);
+}
+
+/* ==================== 信息提示条 ==================== */
+.bs-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 16px 0;
+  padding: 10px 14px;
+  background: var(--primary-light);
+  border-radius: var(--radius-md);
+}
+.bs-notice svg {
+  width: 16px;
+  height: 16px;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+.bs-notice-text {
+  font-size: 12px;
+  color: var(--primary);
+  flex: 1;
+  line-height: 1.5;
+}
+
+/* ==================== 底部间距 ==================== */
+.bs-bottom-spacer { height: 20px; }
+</style>
+</head>
+<body data-page-node-id="chS1cyY0CJ86AsItMgKGYy">
+<div class="miniprogram" data-page-node-id="iwzqp5F2XtcV4FP75Hfx0s">
+  <!-- 状态栏 light -->
+  <div class="status-bar light" data-page-node-id="AkHZthnGp8H74nTuLopQRs">
+    <span class="time" data-page-node-id="XOyYtqw5Y3IDgYgVlDg9Cr">09:38</span>
+    <div class="icons" data-page-node-id="8csONUMNKGBDKqaBUzItyD">
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="uBdKi6K98AbWBzFfHV0J8h"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" data-page-node-id="qfNEXYguvSmTEKIThfGV2n"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="DVFILsXxO5qxa0t33ZjUyH"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" data-page-node-id="ZwaQYmVCNTtDErcs9MuGUt"/></svg>
+    </div>
+  </div>
+
+  <!-- 导航栏 white -->
+  <div class="nav-bar white" data-page-node-id="ImVWNF7qKQ8z160D6ESvFm">
+    <div class="nav-back" data-page-node-id="Q3qhaDGncyXMG7AIArKvSu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="xfhV7xwstnRkZyzz6mydjE"><polyline points="15 18 9 12 15 6" data-page-node-id="fFR9lJX104BjwAMw9vkS9z"/></svg>
+    </div>
+    <span class="nav-title" data-page-node-id="qPYK5sXDf1C2oucb7SpTMA">白沙门基地</span>
+    <span class="nav-placeholder" data-page-node-id="l3852VuOo9QfmeEce4rpRq"></span>
+  </div>
+
+  <!-- 内容区 -->
+  <div class="content" data-page-node-id="kvLceB9ZUL5Ncn3ZBsnHT7">
+
+    <!-- 顶部Banner -->
+    <div class="bs-banner" data-page-node-id="COHMfFjqLbhiOtnlgOuPjb">
+      <div class="bs-banner-content" data-page-node-id="cWcBICEtdIcrU0k38jIrXf">
+        <div class="bs-banner-text" data-page-node-id="hAClI70G47moXPpbaJJdEX">
+          <div class="bs-banner-tag" data-page-node-id="wiN5ni5CYObB4rm41dtThT">海口海事局</div>
+          <div class="bs-banner-title" data-page-node-id="oUoiEtDvQ5YwA9npOcGbaH">白沙门培训基地</div>
+          <div class="bs-banner-desc" data-page-node-id="F3MA9i6HZYdOL3AArFWCCe">培训学习 · 会议研讨 · 后勤保障</div>
+        </div>
+        <div class="bs-banner-icon" data-page-node-id="EjsKF6F9gx21tRg2bUMZ3I">
+          <svg viewBox="0 0 100 100" fill="none" data-page-node-id="1DvxuWx4CiscoCzHFdrfrl">
+            <!-- 建筑主体 -->
+            <rect x="20" y="35" width="60" height="50" fill="rgba(255,255,255,0.25)" rx="2" data-page-node-id="Fs4DENhYX2HjAzPp1yTplF"/>
+            <rect x="25" y="40" width="50" height="40" fill="rgba(255,255,255,0.15)" rx="1" data-page-node-id="Lvn5Va4OQn18xj6l8DN5iv"/>
+            <!-- 屋顶 -->
+            <path d="M15 35 L50 15 L85 35 Z" fill="rgba(255,255,255,0.35)" data-page-node-id="W1XsWGz80a3EpSwTTdBR64"/>
+            <!-- 窗户 -->
+            <rect x="30" y="48" width="8" height="8" fill="rgba(255,255,255,0.5)" rx="1" data-page-node-id="EFwzX5UCE5IyIwv0yy04Th"/>
+            <rect x="46" y="48" width="8" height="8" fill="rgba(255,255,255,0.5)" rx="1" data-page-node-id="XNOFyEVRrICuRqXSyyjd0n"/>
+            <rect x="62" y="48" width="8" height="8" fill="rgba(255,255,255,0.5)" rx="1" data-page-node-id="JwGXZlyzxtBsPRovROjwvE"/>
+            <rect x="30" y="62" width="8" height="8" fill="rgba(255,255,255,0.5)" rx="1" data-page-node-id="R4LisZMu9UJTdZTKIXfk0t"/>
+            <rect x="46" y="62" width="8" height="8" fill="rgba(255,255,255,0.5)" rx="1" data-page-node-id="QfgqGQmFZ2fLOIJyMh8IDV"/>
+            <rect x="62" y="62" width="8" height="8" fill="rgba(255,255,255,0.5)" rx="1" data-page-node-id="1ZgH4XU5FRjj2tFKwLGcpJ"/>
+            <!-- 大门 -->
+            <rect x="44" y="72" width="12" height="13" fill="rgba(255,255,255,0.6)" rx="1" data-page-node-id="jtDgVj4TvyCCUDnZqas4wo"/>
+            <!-- 旗杆 -->
+            <line x1="50" y1="15" x2="50" y2="5" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" data-page-node-id="8YZfRCIHAo07OmAlqv3JD2"/>
+            <path d="M50 5 L60 8 L50 11 Z" fill="rgba(255,255,255,0.5)" data-page-node-id="2D9T252pkwzYf0BPz6hMkp"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 提示条 -->
+    <div class="bs-notice" data-page-node-id="wKGdHasZ7VirDrbZNxwyoX">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="I0X6DvSewYIluU1bJ0qDX9"><circle cx="12" cy="12" r="10" data-page-node-id="3XiT53l4PTiMiwXAxwWfF6"/><path d="M12 16v-4M12 8h.01" data-page-node-id="5AEDYkVxauQ9Xz5MuCaBSZ"/></svg>
+      <span class="bs-notice-text" data-page-node-id="NQq7AaqHBKRNmAWdDmIKCK">白沙门基地提供客房、会议室、团餐预订服务，请提前1-3个工作日提交申请</span>
+    </div>
+
+    <!-- 功能宫格 2x2 -->
+    <div class="bs-grid" data-page-node-id="kpqyREYe0fr8dxf80SVowK">
+      <div class="bs-grid-title" data-page-node-id="qdAbo2XMk5NzSspPGI43UM">
+        <span class="dot" data-page-node-id="y2EbDk1BbAo9gIJC35l5K8"></span>
+        功能服务
+      </div>
+      <div class="bs-grid-row" data-page-node-id="n6X3mdxV9Pfy4VkWL7MQAI">
+        <div class="bs-grid-item" id="gridRoom" data-page-node-id="3SLozYKlGRpwgHZ3eKSXjP">
+          <div class="bs-grid-icon ic-room" data-page-node-id="kheE8HlxjBkRd3r2IzIAsS">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="GgmC2RN7i5bkDzOlhno7ih">
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" data-page-node-id="VTH7mStorH93957TgZDEFA"/>
+              <path d="M9 22V12h6v10" data-page-node-id="Y9q2Xw4sXxQKPr1i8RVWw3"/>
+            </svg>
+          </div>
+          <span class="bs-grid-label" data-page-node-id="jiWHYG7iGRUCztOy8nGEwa">客房预订</span>
+        </div>
+        <div class="bs-grid-item" id="gridMeeting" data-page-node-id="Q8vGKP7dWbnOIPdKbNE4tE">
+          <div class="bs-grid-icon ic-meeting" data-page-node-id="6JbBsJTjcPtvwLcQiaHBuu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="PKnzh3oCqgaU79zWJRxHbC">
+              <rect x="3" y="4" width="18" height="14" rx="2" data-page-node-id="LOZTmcsX98GGRejgJuyCHg"/>
+              <path d="M7 20h10M9 8h6M9 12h4" data-page-node-id="xLbTWsyNwf8RqQCaszKMEV"/>
+            </svg>
+          </div>
+          <span class="bs-grid-label" data-page-node-id="RP144btCnXvuBSu3GX0rMr">会议室预订</span>
+        </div>
+        <div class="bs-grid-item" id="gridMeal" data-page-node-id="p3aVX3lVn3zKehhZAkTHFv">
+          <div class="bs-grid-icon ic-meal" data-page-node-id="PdPfkKlTLCeWalKxU6eaYG">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="Wva7h98nBjitgkBcdu1Tp6">
+              <path d="M3 2v7c0 1.1.9 2 2 2h0a2 2 0 002-2V2M7 2v20M21 15V2a5 5 0 00-3 9v4c0 1.1.9 2 2 2h1a2 2 0 002-2z" data-page-node-id="vlfHnQENsNltWEorRuio9X"/>
+            </svg>
+          </div>
+          <span class="bs-grid-label" data-page-node-id="yK3zxePYDNFN6mvVy2noZD">团餐预订</span>
+        </div>
+        <div class="bs-grid-item" id="gridRecord" data-page-node-id="zkg5kIXxAtFDkl4EbnAFMc">
+          <div class="bs-grid-icon ic-record" data-page-node-id="jAOA4jD5CK4UWOuOcMLfk9">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="0yfHTmRiGfAVktyTwep6Z0">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" data-page-node-id="ttuNZndkhF9eR0ixUFU1UU"/>
+              <polyline points="14 2 14 8 20 8" data-page-node-id="TREmG3UP0BYc2HpyK97Hfj"/>
+              <line x1="8" y1="13" x2="16" y2="13" data-page-node-id="dN9hNlROLZkVdMLzHoPxDr"/>
+              <line x1="8" y1="17" x2="14" y2="17" data-page-node-id="Cn3IqfbcAX5acbjIfnS3Mg"/>
+            </svg>
+          </div>
+          <span class="bs-grid-label" data-page-node-id="zRRbQIwruq9rpk1eSSGJKp">预订记录</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 最新预订 -->
+    <div class="bs-section" data-page-node-id="VUaEfTJipDitXwLOC4W1HK">
+      <div class="bs-section-header" data-page-node-id="sjfifa3ztL8F40ZjTp6e2r">
+        <div class="bs-section-title" data-page-node-id="bHQLFOGN9k5MVHnKopCFjv">
+          <span class="dot" data-page-node-id="ftQSq7tMakBdWZPzmNYHfT"></span>
+          最新预订
+        </div>
+      </div>
+
+      <!-- 预订卡片1 - 客房 -->
+      <div class="bs-booking-card" data-page-node-id="gp2YCdTQTfzhlTkhr8DYRL">
+        <div class="bs-booking-header" data-page-node-id="9AEePRdrmZBcDdyttBRlDr">
+          <div class="bs-booking-left" data-page-node-id="VhhIQP1xsm5aJHRO6V3QsQ">
+            <span class="bs-type-tag room" data-page-node-id="POgPJPBevFZVwLKqf2b3Zc">客房</span>
+            <span class="bs-booking-no" data-page-node-id="Jn8ChgbhFrKm9hSZ81cp6M">BS20260720001</span>
+          </div>
+          <span class="status-tag pending" data-page-node-id="tRAVelwJLz0iuBpJXISxmY">待审批</span>
+        </div>
+        <div class="bs-booking-body" data-page-node-id="9HvFUXGNrFBPScJIhyfXRk">
+          <div class="bs-booking-row" data-page-node-id="9rDjv8P8PXlQZ74cSWNO8I">
+            <span class="label" data-page-node-id="vn6jdaDgFn7s6LHAHnejgZ">入住日期</span>
+            <span class="value" data-page-node-id="E0pjocIkIZV4BshUQcpXTl">2026-07-22 至 2026-07-24（2晚）</span>
+          </div>
+          <div class="bs-booking-row" data-page-node-id="uJwP4xsh0EF7fYssB26lqP">
+            <span class="label" data-page-node-id="4kX3TTpGghHKGc1WCyUsEn">房型人数</span>
+            <span class="value" data-page-node-id="5iY4lf5R8ArGDNIpPkLrpZ">标准双人间 · 2人</span>
+          </div>
+          <div class="bs-booking-row" data-page-node-id="WpHcfneCrCuCYTgYYxEpQJ">
+            <span class="label" data-page-node-id="43fIH2HTXowUe2y3Vfc6t7">申请事由</span>
+            <span class="value" data-page-node-id="MjMGE5R28Tv4VBFt0oVetY">海事安全监管培训</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 预订卡片2 - 会议室 -->
+      <div class="bs-booking-card" data-page-node-id="W9HpdnfdwJaQtGgC3yQNjh">
+        <div class="bs-booking-header" data-page-node-id="rQjZS1rQaT2g9dSg1IgiJM">
+          <div class="bs-booking-left" data-page-node-id="2cDqii2RvoBUALylLdYUZh">
+            <span class="bs-type-tag meeting" data-page-node-id="GBifYmbbHiiqiElvs6lfzW">会议室</span>
+            <span class="bs-booking-no" data-page-node-id="Kkbmo0uElReDcKE2b66xtM">BS20260718008</span>
+          </div>
+          <span class="status-tag approved" data-page-node-id="UlnIWVra3fGdKr5faO2K9V">已通过</span>
+        </div>
+        <div class="bs-booking-body" data-page-node-id="upKxbTDawOgAjJTJCC4Qqa">
+          <div class="bs-booking-row" data-page-node-id="Jab2aqrOeAdlgBa1u4A5PX">
+            <span class="label" data-page-node-id="rZT4s8G82BYsSJO0gpMZoN">会议室</span>
+            <span class="value" data-page-node-id="JBPJ5thvNoqogBM4hLOWsS">会议室A（多功能厅）</span>
+          </div>
+          <div class="bs-booking-row" data-page-node-id="LmxvhbsY4p3J9sU8keN4SM">
+            <span class="label" data-page-node-id="xDVEHmiXprkwH7YSccnpTG">使用时间</span>
+            <span class="value" data-page-node-id="xXUupjUiHBEltyh1xRRTXb">2026-07-25 09:00-12:00</span>
+          </div>
+          <div class="bs-booking-row" data-page-node-id="jZOGTLoYbUW5Qfeep5POyo">
+            <span class="label" data-page-node-id="q7GnqIlQ6TCgPwLNEctbPV">参会人数</span>
+            <span class="value" data-page-node-id="IjVxAH9pUcevyDhFiaPCrs">20人</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 查看全部 -->
+      <div class="bs-view-all" data-page-node-id="kIXYNDpqm1YuyhdAA6D6db">
+        <button class="btn btn-text" id="viewAllBtn" data-page-node-id="c17pvnuMFKxsyPFhDTkOhy">
+          查看全部预订
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:2px;vertical-align:-2px;" data-page-node-id="Ngfl6En7CoOlPQspJ5DGNJ"><polyline points="9 18 15 12 9 6" data-page-node-id="EC2aIQBWAd5C5BsPpvxRzl"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="bs-bottom-spacer" data-page-node-id="2Pfu6gGjlWkAsojJZDFZvv"></div>
+  </div>
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // 宫格点击
+  document.getElementById('gridRoom').addEventListener('click', function() {
+    window.location.href = 'P21-baishamen-booking.html';
+  });
+  document.getElementById('gridMeeting').addEventListener('click', function() {
+    window.location.href = 'P21-baishamen-booking.html';
+  });
+  document.getElementById('gridMeal').addEventListener('click', function() {
+    window.location.href = 'P21-baishamen-booking.html';
+  });
+  document.getElementById('gridRecord').addEventListener('click', function() {
+    window.location.href = 'P22-my-bookings.html';
+  });
+
+  // 查看全部
+  document.getElementById('viewAllBtn').addEventListener('click', function() {
+    window.location.href = 'P22-my-bookings.html';
+  });
+
+  // 预订卡片点击
+  document.querySelectorAll('.bs-booking-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      var no = this.querySelector('.bs-booking-no').textContent;
+      MS.showToast('查看预订详情 ' + no, 'info');
+    });
+  });
+})();
+</script>
+</body>
+</html>
