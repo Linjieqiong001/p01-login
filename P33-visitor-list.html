@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>P33 - 今日访客列表</title>
+<link rel="stylesheet" href="common.css">
+<style>
+.stat-hero {
+  background: var(--primary-gradient);
+  margin: 12px 16px 0;
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(22,119,255,0.25);
+}
+.stat-hero::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 80px;
+  height: 80px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+}
+.stat-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -30px;
+  left: -10px;
+  width: 60px;
+  height: 60px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 50%;
+}
+.stat-hero .hero-icon {
+  width: 52px;
+  height: 52px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  backdrop-filter: blur(4px);
+}
+.stat-hero .hero-icon svg { width: 28px; height: 28px; color: #FFFFFF; }
+.stat-hero .hero-info { flex: 1; z-index: 1; }
+.stat-hero .hero-label { font-size: 13px; color: rgba(255,255,255,0.8); }
+.stat-hero .hero-num { font-size: 36px; font-weight: 700; color: #FFFFFF; }
+.stat-hero .hero-unit { font-size: 16px; color: rgba(255,255,255,0.7); font-weight: 400; }
+
+.visitor-section-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 16px 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+.visitor-section-title .dot {
+  width: 4px;
+  height: 14px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+.visitor-card {
+  background: var(--card-bg);
+  margin: 8px 16px 0;
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s;
+}
+.visitor-card:active { transform: scale(0.99); }
+.visitor-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.visitor-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-size: 16px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.visitor-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+.visitor-phone {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.visitor-detail-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+}
+.visitor-detail-item {
+  width: 50%;
+  display: flex;
+  align-items: baseline;
+  padding: 6px 0;
+  font-size: 13px;
+}
+.visitor-detail-item .v-label {
+  color: var(--text-3);
+  min-width: 70px;
+  flex-shrink: 0;
+}
+.visitor-detail-item .v-value {
+  color: var(--text-1);
+  flex: 1;
+}
+.visitor-detail-item .v-value.highlight {
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.visitor-divider {
+  height: 0.5px;
+  background: var(--border);
+  margin: 2px 0 6px;
+}
+</style>
+</head>
+<body>
+<div class="miniprogram">
+  <div class="status-bar light"><span class="time">09:38</span><div class="icons"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg></div></div>
+  <div class="nav-bar white">
+    <div class="nav-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <span class="nav-title">今日访客列表</span>
+    <span class="nav-placeholder"></span>
+  </div>
+  <div class="content">
+
+    <!-- 统计信息区 -->
+    <div class="stat-hero">
+      <div class="hero-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+        </svg>
+      </div>
+      <div class="hero-info">
+        <div class="hero-label">今日访客总数</div>
+        <div class="hero-num">3 <span class="hero-unit">人</span></div>
+      </div>
+    </div>
+
+    <!-- 访客列表区 -->
+    <div class="visitor-section-title">
+      <div class="dot"></div>
+      访客详情
+    </div>
+
+    <!-- 访客1 -->
+    <div class="visitor-card">
+      <div class="visitor-card-header">
+        <div class="visitor-avatar">李</div>
+        <div>
+          <div class="visitor-name">李明</div>
+          <div class="visitor-phone">138****8888</div>
+        </div>
+      </div>
+      <div class="visitor-divider"></div>
+      <div class="visitor-detail-grid">
+        <div class="visitor-detail-item">
+          <span class="v-label">随行人员</span>
+          <span class="v-value">2人</span>
+        </div>
+        <div class="visitor-detail-item">
+          <span class="v-label">预留车位</span>
+          <span class="v-value highlight">A区-012</span>
+        </div>
+        <div class="visitor-detail-item">
+          <span class="v-label">申请人员</span>
+          <span class="v-value">张三</span>
+        </div>
+        <div class="visitor-detail-item">
+          <span class="v-label">申请时间</span>
+          <span class="v-value">2026-07-22 09:00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 访客2 -->
+    <div class="visitor-card">
+      <div class="visitor-card-header">
+        <div class="visitor-avatar">王</div>
+        <div>
+          <div class="visitor-name">王芳</div>
+          <div class="visitor-phone">139****6666</div>
+        </div>
+      </div>
+      <div class="visitor-divider"></div>
+      <div class="visitor-detail-grid">
+        <div class="visitor-detail-item">
+          <span class="v-label">随行人员</span>
+          <span class="v-value">0人</span>
+        </div>
+        <div class="visitor-detail-item">
+          <span class="v-label">预留车位</span>
+          <span class="v-value">未预留</span>
+        </div>
+        <div class="visitor-detail-item">
+          <span class="v-label">申请人员</span>
+          <span class="v-value">李四</span>
+        </div>
+        <div class="visitor-detail-item">
+          <span class="v-label">申请时间</span>
+          <span class="v-value">2026-07-22 08:30</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 访客3 -->
+    <div class="visitor-card">
+      <div class="visitor-card-header">
+        <div class="visitor-avatar">陈</div>
+        <div>
+          <div class="visitor-name">陈建国</div>
+          <div class="visitor-phone">136****7777</div>
+        </div>
+      </div>
+      <div class="visitor-divider"></div>
+      <div class="visitor-detail-grid">
+        <div class="visitor-detail-item">
+          <span class="v-label">随行人员</span>
+          <span class="v-value">3人</span>
+        </div>
+        <div class="visitor-detail-item">
+          <span class="v-label">预留车位</span>
+          <span class="v-value highlight">A区-008</span>
+        </div>
+        <div class="visitor-detail-item">
+          <span class="v-label">申请人员</span>
+          <span class="v-value">赵六</span>
+        </div>
+        <div class="visitor-detail-item">
+          <span class="v-label">申请时间</span>
+          <span class="v-value">2026-07-22 07:45</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="height: 20px;"></div>
+  </div>
+</div>
+<script src="common.js"></script>
+<script>
+</script>
+</body>
+</html>
