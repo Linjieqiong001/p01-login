@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>P21 - 白沙门预订</title>
+<link rel="stylesheet" href="common.css">
+<style>
+/* ==================== Segmented ==================== */
+.booking-segmented {
+  display: flex;
+  margin: 12px 16px 0;
+  background: var(--bg);
+  border-radius: var(--radius-md);
+  padding: 3px;
+}
+.booking-segmented-item {
+  flex: 1;
+  text-align: center;
+  padding: 9px 0;
+  font-size: 14px;
+  color: var(--text-2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.25s;
+  position: relative;
+}
+.booking-segmented-item.active {
+  background: var(--card-bg);
+  color: var(--primary);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ==================== 预订区域 ==================== */
+.booking-area {
+  display: none;
+}
+.booking-area.active {
+  display: block;
+}
+
+/* ==================== 客房预订表单 ==================== */
+.form-section {
+  background: var(--card-bg);
+  margin: 12px 16px 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.form-section-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+  padding: 14px 16px 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.form-section-title .dot {
+  width: 4px;
+  height: 14px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+.form-group-inner {
+  padding: 0 16px 16px;
+}
+.form-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 0;
+  border-bottom: 0.5px solid var(--border);
+  gap: 12px;
+}
+.form-row:last-child { border-bottom: none; }
+.form-row .form-label {
+  font-size: 14px;
+  color: var(--text-1);
+  font-weight: 500;
+  min-width: 80px;
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+.form-row .form-label .required { color: var(--danger); margin-right: 2px; }
+.form-row .form-field { flex: 1; }
+.form-row .form-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: var(--text-1);
+  background: transparent;
+  font-family: inherit;
+}
+.form-row .form-input::placeholder { color: var(--text-4); }
+.form-row .form-textarea {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: var(--text-1);
+  background: transparent;
+  resize: none;
+  min-height: 60px;
+  font-family: inherit;
+  line-height: 1.5;
+}
+.form-row .form-textarea::placeholder { color: var(--text-4); }
+.form-row .form-select {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: var(--text-1);
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+.form-row .form-placeholder { color: var(--text-4); }
+.form-row .form-suffix {
+  font-size: 13px;
+  color: var(--text-3);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.form-row .form-arrow {
+  width: 16px;
+  height: 16px;
+  color: var(--text-4);
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+/* 提交按钮 */
+.form-submit-area {
+  padding: 16px;
+}
+.btn-submit {
+  width: 100%;
+  height: 44px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--primary-gradient);
+  color: #FFFFFF;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  font-family: inherit;
+}
+.btn-submit:active { transform: scale(0.98); opacity: 0.85; }
+
+/* ==================== 会议室列表 ==================== */
+.meeting-card {
+  margin: 12px 16px 0;
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.meeting-card:first-child { margin-top: 12px; }
+.meeting-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.meeting-icon svg { width: 24px; height: 24px; }
+.meeting-icon.mi-a { background: linear-gradient(135deg, #4D9FFF, #1677FF); }
+.meeting-icon.mi-b { background: linear-gradient(135deg, #FF9F43, #FF7F1F); }
+.meeting-icon.mi-c { background: linear-gradient(135deg, #48C9B0, #1ABC9C); }
+.meeting-icon.mi-d { background: linear-gradient(135deg, #A569BD, #8E44AD); }
+.meeting-info { flex: 1; }
+.meeting-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+  margin-bottom: 4px;
+}
+.meeting-spec {
+  font-size: 13px;
+  color: var(--text-3);
+  line-height: 1.4;
+}
+.meeting-book-btn {
+  height: 32px;
+  padding: 0 14px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--primary-gradient);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.2s;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+.meeting-book-btn:active { transform: scale(0.96); opacity: 0.85; }
+
+/* ==================== 会议室预订Modal ==================== */
+.modal-meeting-form .modal-body { padding-bottom: 4px; }
+.modal-form-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 10px 0;
+  border-bottom: 0.5px solid var(--border);
+  gap: 10px;
+}
+.modal-form-row:last-of-type { border-bottom: none; }
+.modal-form-label {
+  font-size: 13px;
+  color: var(--text-2);
+  font-weight: 500;
+  min-width: 72px;
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+.modal-form-field { flex: 1; }
+.modal-form-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  color: var(--text-1);
+  background: transparent;
+  font-family: inherit;
+}
+.modal-form-input::placeholder { color: var(--text-4); }
+.modal-form-select {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  color: var(--text-1);
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+.modal-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 10px 0;
+}
+.modal-info-item {
+  padding: 8px 10px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+}
+.modal-info-item .mii-label {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-bottom: 2px;
+}
+.modal-info-item .mii-value {
+  font-size: 13px;
+  color: var(--text-1);
+  font-weight: 500;
+}
+.modal-submit-btn {
+  width: 100%;
+  height: 40px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--primary-gradient);
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  font-family: inherit;
+  margin-top: 12px;
+}
+.modal-submit-btn:active { transform: scale(0.98); opacity: 0.85; }
+
+/* ==================== 团餐预订 ==================== */
+.meal-tip {
+  margin: 12px 16px 0;
+  padding: 10px 14px;
+  background: var(--warning-light);
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  color: var(--warning);
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.meal-tip svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* ==================== 底部间距 ==================== */
+.booking-bottom-spacer { height: 20px; }
+</style>
+</head>
+<body>
+<div class="miniprogram">
+  <!-- 状态栏 light -->
+  <div class="status-bar light">
+    <span class="time">09:38</span>
+    <div class="icons">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+    </div>
+  </div>
+
+  <!-- 导航栏 white -->
+  <div class="nav-bar white">
+    <div class="nav-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </div>
+    <span class="nav-title">白沙门预订</span>
+    <span class="nav-placeholder"></span>
+  </div>
+
+  <!-- 内容区 -->
+  <div class="content">
+
+    <!-- 类型选择段控件 -->
+    <div class="booking-segmented" id="bookingSegmented">
+      <div class="booking-segmented-item active" data-type="room">客房</div>
+      <div class="booking-segmented-item" data-type="meeting">会议室</div>
+      <div class="booking-segmented-item" data-type="meal">团餐</div>
+    </div>
+
+    <!-- ======== 客房预订 ======== -->
+    <div class="booking-area active" id="areaRoom">
+      <div class="form-section">
+        <div class="form-section-title">
+          <span class="dot"></span>
+          客房预订申请
+        </div>
+        <div class="form-group-inner">
+          <div class="form-row">
+            <span class="form-label"><span class="required">*</span>入住日期</span>
+            <div class="form-field">
+              <input type="date" class="form-input" value="2026-07-22">
+            </div>
+            <svg class="form-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="form-row">
+            <span class="form-label"><span class="required">*</span>离店日期</span>
+            <div class="form-field">
+              <input type="date" class="form-input" value="2026-07-24">
+            </div>
+            <svg class="form-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="form-row">
+            <span class="form-label"><span class="required">*</span>人数</span>
+            <div class="form-field">
+              <input type="number" class="form-input" placeholder="请输入入住人数" value="2" min="1" max="10">
+            </div>
+            <span class="form-suffix">人</span>
+          </div>
+          <div class="form-row">
+            <span class="form-label"><span class="required">*</span>房型</span>
+            <div class="form-field">
+              <select class="form-select">
+                <option value="">请选择房型</option>
+                <option value="single">标准单人间</option>
+                <option value="double" selected>标准双人间</option>
+                <option value="suite">行政套房</option>
+              </select>
+            </div>
+            <svg class="form-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="form-row" style="border-bottom:none;">
+            <span class="form-label">事由</span>
+            <div class="form-field">
+              <textarea class="form-textarea" placeholder="请填写入住事由" rows="3">海事安全监管培训</textarea>
+            </div>
+          </div>
+        </div>
+        <div class="form-submit-area">
+          <button class="btn-submit" id="btnSubmitRoom">提交申请</button>
+        </div>
+      </div>
+
+      <!-- 客房说明 -->
+      <div class="section" style="margin-bottom:12px;">
+        <div class="section-title"><span class="dot"></span>客房说明</div>
+        <div class="info-block">
+          <div class="info-row">
+            <span class="label">标准单人间</span>
+            <span class="value">48间 · 1人</span>
+          </div>
+          <div class="info-row">
+            <span class="label">标准双人间</span>
+            <span class="value">32间 · 2人</span>
+          </div>
+          <div class="info-row">
+            <span class="label">行政套房</span>
+            <span class="value">8间 · 高级配置</span>
+          </div>
+          <div class="info-row">
+            <span class="label">入住须知</span>
+            <span class="value highlight">需提前审批</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======== 会议室预订 ======== -->
+    <div class="booking-area" id="areaMeeting">
+
+      <!-- 会议室A -->
+      <div class="meeting-card">
+        <div class="meeting-icon mi-a">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="14" rx="2"/>
+            <path d="M7 20h10M9 8h6M9 12h4"/>
+          </svg>
+        </div>
+        <div class="meeting-info">
+          <div class="meeting-name">会议室A（多功能厅）</div>
+          <div class="meeting-spec">可容纳20人 · 投影仪 · 音响系统 · 白板</div>
+        </div>
+        <button class="meeting-book-btn" data-room="A">预订</button>
+      </div>
+
+      <!-- 会议室B -->
+      <div class="meeting-card">
+        <div class="meeting-icon mi-b">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="14" rx="2"/>
+            <path d="M7 20h10"/>
+          </svg>
+        </div>
+        <div class="meeting-info">
+          <div class="meeting-name">会议室B（小型研讨）</div>
+          <div class="meeting-spec">可容纳10人 · 投影仪 · 白板</div>
+        </div>
+        <button class="meeting-book-btn" data-room="B">预订</button>
+      </div>
+
+      <!-- 会议室C -->
+      <div class="meeting-card">
+        <div class="meeting-icon mi-c">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="14" rx="2"/>
+            <path d="M12 20v2M7 20h10"/>
+          </svg>
+        </div>
+        <div class="meeting-info">
+          <div class="meeting-name">会议室C（培训教室）</div>
+          <div class="meeting-spec">可容纳40人 · 投影仪 · 音响 · 录播设备</div>
+        </div>
+        <button class="meeting-book-btn" data-room="C">预订</button>
+      </div>
+
+      <!-- 会议室D -->
+      <div class="meeting-card">
+        <div class="meeting-icon mi-d">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="8"/>
+            <path d="M9 9h6v6H9z"/>
+          </svg>
+        </div>
+        <div class="meeting-info">
+          <div class="meeting-name">会议室D（VIP接待）</div>
+          <div class="meeting-spec">可容纳8人 · 高端配置 · 茶水服务</div>
+        </div>
+        <button class="meeting-book-btn" data-room="D">预订</button>
+      </div>
+
+      <div class="booking-bottom-spacer"></div>
+    </div>
+
+    <!-- ======== 团餐预订 ======== -->
+    <div class="booking-area" id="areaMeal">
+      <!-- 提示 -->
+      <div class="meal-tip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <span>团餐需提前1个工作日预订，每日16:30前提交</span>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">
+          <span class="dot"></span>
+          团餐预订申请
+        </div>
+        <div class="form-group-inner">
+          <div class="form-row">
+            <span class="form-label"><span class="required">*</span>日期</span>
+            <div class="form-field">
+              <input type="date" class="form-input" value="2026-07-23">
+            </div>
+            <svg class="form-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="form-row">
+            <span class="form-label"><span class="required">*</span>餐次</span>
+            <div class="form-field">
+              <select class="form-select">
+                <option value="">请选择餐次</option>
+                <option value="lunch" selected>午餐</option>
+                <option value="dinner">晚餐</option>
+              </select>
+            </div>
+            <svg class="form-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="form-row">
+            <span class="form-label"><span class="required">*</span>人数</span>
+            <div class="form-field">
+              <input type="number" class="form-input" placeholder="请输入用餐人数" value="15" min="1" max="120">
+            </div>
+            <span class="form-suffix">人</span>
+          </div>
+          <div class="form-row">
+            <span class="form-label"><span class="required">*</span>用餐标准</span>
+            <div class="form-field">
+              <input type="text" class="form-input" placeholder="请输入金额，如50元/人" value="50元/人">
+            </div>
+          </div>
+          <div class="form-row" style="border-bottom:none;">
+            <span class="form-label">事由</span>
+            <div class="form-field">
+              <textarea class="form-textarea" placeholder="请填写用餐事由" rows="3">安全监管培训学员用餐</textarea>
+            </div>
+          </div>
+        </div>
+        <div class="form-submit-area">
+          <button class="btn-submit" id="btnSubmitMeal">提交申请</button>
+        </div>
+      </div>
+
+      <!-- 用餐说明 -->
+      <div class="section" style="margin-bottom:12px;">
+        <div class="section-title"><span class="dot"></span>用餐说明</div>
+        <div class="info-block">
+          <div class="info-row">
+            <span class="label">餐厅容量</span>
+            <span class="value">可容纳120人同时用餐</span>
+          </div>
+          <div class="info-row">
+            <span class="label">午餐时间</span>
+            <span class="value">11:30 - 13:00</span>
+          </div>
+          <div class="info-row">
+            <span class="label">晚餐时间</span>
+            <span class="value">17:30 - 19:00</span>
+          </div>
+          <div class="info-row">
+            <span class="label">预订须知</span>
+            <span class="value highlight">需提前审批</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ======== 会议室预订Modal ======== -->
+  <div class="modal-mask" id="meetingModal">
+    <div class="modal-content modal-meeting-form" style="width:340px;">
+      <div class="modal-header">
+        <div class="modal-title" id="meetingModalTitle">会议室A预订</div>
+      </div>
+      <div class="modal-body">
+        <!-- 会议室信息 -->
+        <div class="modal-info-grid" id="meetingInfoGrid">
+          <div class="modal-info-item">
+            <div class="mii-label">容纳人数</div>
+            <div class="mii-value" id="miiCapacity">20人</div>
+          </div>
+          <div class="modal-info-item">
+            <div class="mii-label">规格类型</div>
+            <div class="mii-value" id="miiSpec">多功能厅</div>
+          </div>
+          <div class="modal-info-item">
+            <div class="mii-label">投影仪</div>
+            <div class="mii-value" id="miiProjector">有</div>
+          </div>
+          <div class="modal-info-item">
+            <div class="mii-label">音响系统</div>
+            <div class="mii-value" id="miiSound">有</div>
+          </div>
+        </div>
+
+        <!-- 预订表单 -->
+        <div class="modal-form-row">
+          <span class="modal-form-label"><span style="color:var(--danger)">*</span>使用日期</span>
+          <div class="modal-form-field">
+            <input type="date" class="modal-form-input" value="2026-07-25">
+          </div>
+        </div>
+        <div class="modal-form-row">
+          <span class="modal-form-label"><span style="color:var(--danger)">*</span>使用时间</span>
+          <div class="modal-form-field">
+            <select class="modal-form-select">
+              <option value="">请选择时间段</option>
+              <option value="09-12">09:00 - 12:00</option>
+              <option value="13-17">13:00 - 17:00</option>
+              <option value="09-17" selected>09:00 - 17:00（全天）</option>
+              <option value="19-21">19:00 - 21:00（晚间）</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-form-row">
+          <span class="modal-form-label"><span style="color:var(--danger)">*</span>参会人数</span>
+          <div class="modal-form-field">
+            <input type="number" class="modal-form-input" placeholder="请输入参会人数" value="20" min="1">
+          </div>
+        </div>
+        <div class="modal-form-row" style="border-bottom:none;">
+          <span class="modal-form-label">会议主题</span>
+          <div class="modal-form-field">
+            <input type="text" class="modal-form-input" placeholder="请填写会议主题">
+          </div>
+        </div>
+
+        <button class="modal-submit-btn" id="btnSubmitMeeting">提交预订</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // 会议室数据
+  var meetingData = {
+    A: { name: '会议室A（多功能厅）', capacity: '20人', spec: '多功能厅', projector: '有', sound: '有', extra: '白板·录播' },
+    B: { name: '会议室B（小型研讨）', capacity: '10人', spec: '小型研讨', projector: '有', sound: '无', extra: '白板' },
+    C: { name: '会议室C（培训教室）', capacity: '40人', spec: '培训教室', projector: '有', sound: '有', extra: '录播设备' },
+    D: { name: '会议室D（VIP接待）', capacity: '8人', spec: 'VIP接待', projector: '有', sound: '有', extra: '茶水服务' }
+  };
+
+  // ======== Segmented 切换 ========
+  var segItems = document.querySelectorAll('.booking-segmented-item');
+  var areaRoom = document.getElementById('areaRoom');
+  var areaMeeting = document.getElementById('areaMeeting');
+  var areaMeal = document.getElementById('areaMeal');
+
+  segItems.forEach(function(item) {
+    item.addEventListener('click', function() {
+      segItems.forEach(function(s) { s.classList.remove('active'); });
+      this.classList.add('active');
+      var type = this.getAttribute('data-type');
+      areaRoom.classList.toggle('active', type === 'room');
+      areaMeeting.classList.toggle('active', type === 'meeting');
+      areaMeal.classList.toggle('active', type === 'meal');
+    });
+  });
+
+  // ======== 客房提交 ========
+  document.getElementById('btnSubmitRoom').addEventListener('click', function() {
+    MS.showToast('预订申请已提交', 'success');
+  });
+
+  // ======== 团餐提交 ========
+  document.getElementById('btnSubmitMeal').addEventListener('click', function() {
+    MS.showToast('预订申请已提交', 'success');
+  });
+
+  // ======== 会议室预订按钮 ========
+  document.querySelectorAll('.meeting-book-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var roomId = this.getAttribute('data-room');
+      var data = meetingData[roomId];
+      document.getElementById('meetingModalTitle').textContent = data.name + '预订';
+      document.getElementById('miiCapacity').textContent = data.capacity;
+      document.getElementById('miiSpec').textContent = data.spec;
+      document.getElementById('miiProjector').textContent = data.projector;
+      document.getElementById('miiSound').textContent = data.sound;
+
+      // 更新信息网格（动态补充配套设备行）
+      var grid = document.getElementById('meetingInfoGrid');
+      grid.innerHTML = '';
+      var fields = [
+        { label: '容纳人数', value: data.capacity },
+        { label: '规格类型', value: data.spec },
+        { label: '投影仪', value: data.projector },
+        { label: '音响系统', value: data.sound }
+      ];
+      if (data.extra) {
+        fields.push({ label: '配套设备', value: data.extra });
+        fields.push({ label: '预订须知', value: '需提前审批' });
+      }
+      fields.forEach(function(f) {
+        var item = document.createElement('div');
+        item.className = 'modal-info-item';
+        item.innerHTML = '<div class="mii-label">' + f.label + '</div><div class="mii-value">' + f.value + '</div>';
+        grid.appendChild(item);
+      });
+
+      MS.showModal('meetingModal');
+    });
+  });
+
+  // ======== 会议室Modal提交 ========
+  document.getElementById('btnSubmitMeeting').addEventListener('click', function() {
+    MS.hideModal('meetingModal');
+    MS.showToast('预订申请已提交', 'success');
+  });
+
+})();
+</script>
+</body>
+</html>
