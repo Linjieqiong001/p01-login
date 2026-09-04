@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="QneTeE02V1qLFfBRwN7Z1b">
+<head data-page-node-id="S0m9n1rBVMVDZDecNa9IKX">
+<meta charset="UTF-8" data-page-node-id="fsDfWmZD3Vez2P68uxEEO4">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="AlwISv0h0iIBzGVj0KUH9T">
+<title>P46 - 电子支付</title>
+<link rel="stylesheet" href="common.css" data-page-node-id="vbBcYZC4Yl6DN3YFePzSpS">
+<style>
+/* ==================== 电子支付页专属样式 ==================== */
+.payment-page {
+  background: var(--primary-gradient);
+}
+
+/* 导航栏右侧图标组 */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.nav-action-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+.nav-action-btn:active { background: rgba(255,255,255,0.15); }
+.nav-action-btn svg { width: 20px; height: 20px; color: #FFFFFF; }
+
+/* 内容区 */
+.payment-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px;
+}
+.payment-content::-webkit-scrollbar { display: none; }
+
+/* 付款二维码卡片 */
+.pay-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+.pay-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 0.5px solid var(--border);
+}
+.pay-card-header .header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pay-card-header .header-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--text-1);
+}
+.pay-card-header .header-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+.pay-card-header .refresh-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.2s;
+  color: var(--text-3);
+}
+.pay-card-header .refresh-btn:active { background: var(--bg); }
+.pay-card-header .refresh-btn svg { width: 18px; height: 18px; }
+
+/* 二维码区域 */
+.qr-area {
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.qr-wrap {
+  width: 200px;
+  height: 200px;
+  padding: 12px;
+  background: #FFFFFF;
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+.qr-wrap svg { display: block; width: 100%; height: 100%; }
+
+/* 卡片底部说明 */
+.pay-card-footer {
+  padding: 12px 16px 16px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+/* 下方功能入口 */
+.payment-menu {
+  margin-top: 16px;
+}
+.payment-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: rgba(255,255,255,0.1);
+  border-radius: var(--radius-lg);
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.payment-menu-item:active { background: rgba(255,255,255,0.16); }
+.payment-menu-item .item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.payment-menu-item .item-icon {
+  width: 22px;
+  height: 22px;
+  color: #FFFFFF;
+}
+.payment-menu-item .item-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: #FFFFFF;
+}
+.payment-menu-item .item-action {
+  font-size: 14px;
+  font-weight: 500;
+  color: #FFAB40;
+}
+
+/* 底部提示 */
+.payment-tips {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.6;
+}
+
+/* 钱包操作按钮组（充值 / 退款） */
+.item-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.item-action-btn {
+  padding: 4px 14px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.7;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.item-action-btn:active { opacity: 0.72; }
+.item-action-btn.recharge {
+  background: #FFAB40;
+  color: #4A2C00;
+}
+.item-action-btn.refund {
+  border: 1px solid rgba(255,255,255,0.5);
+  color: #FFFFFF;
+}
+
+/* ==================== 充值 / 退款 bottom-sheet ==================== */
+.amount-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.amount-opt {
+  flex: 1;
+  min-width: calc(50% - 5px);
+  padding: 16px 0;
+  text-align: center;
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1.5px solid transparent;
+  position: relative;
+}
+.amount-opt:active { transform: scale(0.97); }
+.amount-opt.active {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+.amount-opt .ao-val {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+.amount-opt.active .ao-val { color: var(--primary); }
+.amount-opt .ao-label {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+.amount-opt .ao-tag {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--danger);
+  color: #FFFFFF;
+}
+
+.custom-amount {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--bg);
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+}
+.custom-amount .ca-yen {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-1);
+  margin-right: 6px;
+}
+.custom-amount input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-1);
+  font-family: inherit;
+}
+.custom-amount input::placeholder { color: var(--text-4); font-weight: 400; }
+
+/* 退款金额展示（不可输入，默认全部余额） */
+.refund-amount-display {
+  text-align: center;
+  padding: 16px 0 12px;
+  border-bottom: 0.5px solid var(--border);
+  margin-bottom: 16px;
+}
+.refund-amount-display .rad-label {
+  font-size: 13px;
+  color: var(--text-3);
+  margin-bottom: 6px;
+}
+.refund-amount-display .rad-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+.refund-amount-display .rad-value .yen { font-size: 18px; }
+.refund-amount-display .rad-hint {
+  font-size: 11px;
+  color: var(--text-4);
+  margin-top: 6px;
+}
+
+.refund-reason-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.refund-reason-opt {
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--text-2);
+  background: var(--bg);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+.refund-reason-opt.active {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+</style>
+</head>
+<body data-page-node-id="DUJZnRd7caDTOGJ57BeBW4">
+<div class="miniprogram payment-page" data-page-node-id="lr2GK8j0c9yQFYdbsYcP9h">
+
+  <!-- ==================== Status Bar ==================== -->
+  <div class="status-bar" data-page-node-id="KADN1JfziGL3mEQb1jNMEw">
+    <span class="time" data-page-node-id="OqhHZkW63TYHuVBXFPBRUK">09:38</span>
+    <div class="icons" data-page-node-id="DeVCghxcsdQ2F4a73NcX0m">
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="xDNdQrTGSE8nSjKcEUrQ8h"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" data-page-node-id="xGoXnkCgqC0K504Dk3pW25"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="q2WyVdoGKvrsNDtg3FoO5F"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" data-page-node-id="Oxquw7Cx8Y68lYqZvNwp7H"/></svg>
+    </div>
+  </div>
+
+  <!-- ==================== Navigation Bar ==================== -->
+  <div class="nav-bar primary" data-page-node-id="PQyxKxVNzq66Wy8YQTt1JY">
+    <div class="nav-back" id="backBtn" data-page-node-id="lrfvFCBDWSyFA30RtPFHmD">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="WcHZypbrs1pHCeYnST4ilI">
+        <polyline points="15 18 9 12 15 6" data-page-node-id="27BzgbuTGcSy3ZyxcHot0H"/>
+      </svg>
+    </div>
+    <span class="nav-title" data-page-node-id="GEaGq8HtD0vcmsy0KevHPM">电子支付</span>
+    <div class="nav-actions" data-page-node-id="xmnl4DpfjpFmUXFAHJvd2e">
+      <div class="nav-action-btn" id="moreBtn" data-page-node-id="AWFam99Se30xEApGSbtCXi">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="mcT99SotsSw6LjtlFu5sDd">
+          <circle cx="12" cy="5" r="2" data-page-node-id="PxFl8FUMK7Yst9dpNp0Lse"/><circle cx="12" cy="12" r="2" data-page-node-id="0lz0S4io0dYpfiH95nVThY"/><circle cx="12" cy="19" r="2" data-page-node-id="d0Ob6uF02T5iXlr9RBWszl"/>
+        </svg>
+      </div>
+      <div class="nav-action-btn" id="scanBtn" data-page-node-id="BY1yduvOUKfnFSbJl8q43A">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="xvDZrzU4Bz6oTd4jSSUlIk">
+          <circle cx="12" cy="12" r="9" data-page-node-id="vQKkTDDkWL6FqFQtj34vIl"/><circle cx="12" cy="12" r="3" data-page-node-id="4kBbFtWl8wncoZ264ygAsI"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== Content ==================== -->
+  <div class="payment-content" data-page-node-id="4sjs5Vh8kM4k9qHz6ErUar">
+
+    <!-- 付款二维码卡片 -->
+    <div class="pay-card" data-page-node-id="xpoVfKWNzGtnzk6SYTiyPB">
+      <div class="pay-card-header" data-page-node-id="3iLYqJFiyfU4VUEmGg8iAb">
+        <div class="header-left" data-page-node-id="NtZqRQfVKpfjwHtuEepkny">
+          <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="vahORgLAenkC6I3CASXGcE">
+            <rect x="2" y="5" width="20" height="14" rx="2" data-page-node-id="AreQnE7egttrvqEPbGUEoE"/>
+            <path d="M2 10h20M6 15h2M11 15h6" data-page-node-id="5kzsQToEg1XnEaBwIDAzuZ"/>
+          </svg>
+          <span class="header-title" data-page-node-id="umUKUV0a7fFRhmZBDmWWHN">向商家付款</span>
+        </div>
+        <div class="refresh-btn" id="refreshQrBtn" title="刷新二维码" data-page-node-id="Hsrt7UfdhflBLvWCcnapGg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="DeJ7nylIwXQd04eSnHhJ4h">
+            <path d="M21.5 2v6h-6M2.5 22v-6h6" data-page-node-id="Jgek0QbV8U2DV1jG5U40kM"/>
+            <path d="M2 11.5a10 10 0 0118.8-4.3M22 12.5a10 10 0 01-18.8 4.3" data-page-node-id="fHPF9RRIzbkqMpfbciEiU3"/>
+          </svg>
+        </div>
+      </div>
+      <div class="qr-area" data-page-node-id="oBGjiXkxZYAPom3raFCH91">
+        <div class="qr-wrap" id="qrWrap" data-page-node-id="l5biYuAj9kQQyf2QLcWFVS">
+          <!-- QR code will be injected here -->
+        </div>
+      </div>
+      <div class="pay-card-footer" data-page-node-id="mCby3yuRpF1G5qAckiRBPJ">
+        *后勤钱包用于食堂消费
+      </div>
+    </div>
+
+    <!-- 下方功能入口 -->
+    <div class="payment-menu" data-page-node-id="shWsJHHbBDm4w659BXfvsl">
+      <div class="payment-menu-item" data-page-node-id="iJlbbYh0K74AH0s99Y9hFi">
+        <div class="item-left" data-page-node-id="u81QiB7GEHXyXWZxxjAkSe">
+          <svg class="item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="wBQPGYGxAuaPiDuccVeE2Z">
+            <rect x="2" y="5" width="20" height="14" rx="2" data-page-node-id="8w4F3fKOSuO4t5w6CI5nXY"/>
+            <path d="M2 10h20M6 15h2M11 15h6" data-page-node-id="XxAtT1HUJDpNZcvE1svCjv"/>
+          </svg>
+          <span class="item-text" data-page-node-id="vD4H6ZagzcWAUMKDNxd4qz">后勤钱包余额：<span id="walletBalance">0</span>元</span>
+        </div>
+        <div class="item-actions" data-page-node-id="9DDJ3Qhbd49RRYMmMvEaba">
+          <span class="item-action-btn recharge" id="rechargeAction">充值</span>
+          <span class="item-action-btn refund" id="refundAction">退款</span>
+        </div>
+      </div>
+
+      <div class="payment-menu-item" id="recordBtn" data-page-node-id="IofdAjpgV11K6Hno7cD0cF">
+        <div class="item-left" data-page-node-id="jCrBGfzqrfh0P9xknmFp9C">
+          <svg class="item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="WXL2PptWi0F3NEd9rbuyYp">
+            <circle cx="12" cy="12" r="10" data-page-node-id="PFSoMiQ0I06cTZtFdecQZX"/>
+            <polyline points="12 6 12 12 16 14" data-page-node-id="K8Pmt1mzgiIwsYkoK8PDId"/>
+          </svg>
+          <span class="item-text" data-page-node-id="0dwYdsFqQJkPm6otZcFosS">消费记录</span>
+        </div>
+        <span class="item-action" data-page-node-id="swdFZBvyHMzfN6U3cjSB2b">查看</span>
+      </div>
+    </div>
+
+    <div class="payment-tips" data-page-node-id="H0iBiypttB5GzT1Gfm1Cgw">
+      请妥善保管付款二维码<br data-page-node-id="ofPIsHsTQcTqzHjxsqbPWu">      请勿截图给他人使用
+    </div>
+
+  </div>
+
+  <!-- ==================== 充值 bottom-sheet ==================== -->
+  <div class="bottom-sheet-mask" id="rechargeSheet">
+    <div class="bottom-sheet">
+      <div class="bottom-sheet-handle"></div>
+      <div class="bottom-sheet-title">钱包充值</div>
+      <div class="amount-options" id="amountOptions">
+        <div class="amount-opt active" data-amount="50">
+          <div class="ao-val">¥50</div>
+          <div class="ao-label">小额充值</div>
+        </div>
+        <div class="amount-opt" data-amount="100">
+          <div class="ao-val">¥100</div>
+          <div class="ao-label">常用</div>
+        </div>
+        <div class="amount-opt" data-amount="200">
+          <div class="ao-val">¥200</div>
+          <div class="ao-label">推荐</div>
+          <span class="ao-tag">热选</span>
+        </div>
+        <div class="amount-opt" data-amount="500">
+          <div class="ao-val">¥500</div>
+          <div class="ao-label">大额充值</div>
+        </div>
+      </div>
+      <div class="custom-amount">
+        <span class="ca-yen">¥</span>
+        <input type="number" placeholder="自定义金额（10-2000元）" id="customAmount">
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:8px;">
+        <button class="btn btn-outline-gray" style="flex:1;" id="rechargeCancelBtn">取消</button>
+        <button class="btn btn-primary" style="flex:2;" id="rechargeConfirmBtn">立即充值 ¥50</button>
+      </div>
+      <div style="font-size:11px;color:var(--text-4);text-align:center;line-height:1.6;">
+        充值金额用于食堂消费，余额可随时申请退款
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 退款 bottom-sheet ==================== -->
+  <div class="bottom-sheet-mask" id="refundSheet">
+    <div class="bottom-sheet">
+      <div class="bottom-sheet-handle"></div>
+      <div class="bottom-sheet-title">申请退款</div>
+      <div class="refund-amount-display">
+        <div class="rad-label">可退款金额（当前全部余额）</div>
+        <div class="rad-value"><span class="yen">¥</span><span id="refundAmountText">0</span></div>
+        <div class="rad-hint">将全额退还至原支付账户，预计1-3个工作日到账</div>
+      </div>
+      <div class="refund-form">
+        <div class="form-item" style="padding-left:0;padding-right:0;flex-direction:column;align-items:flex-start;gap:8px;">
+          <span class="form-label">退款原因</span>
+          <div class="refund-reason-list" id="reasonList">
+            <span class="refund-reason-opt active">不再使用</span>
+            <span class="refund-reason-opt">误充值</span>
+            <span class="refund-reason-opt">离职退余额</span>
+            <span class="refund-reason-opt">其他原因</span>
+          </div>
+          <textarea class="form-textarea" placeholder="补充说明（选填）" id="refundRemark" style="width:100%;background:var(--bg);border-radius:var(--radius-sm);padding:10px 12px;margin-top:4px;"></textarea>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-outline-gray" style="flex:1;" id="refundCancelBtn">取消</button>
+        <button class="btn btn-primary" style="flex:2;" id="refundConfirmBtn">提交退款申请</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // 生成伪随机二维码图案（视觉逼真，非真实编码）
+  function generateQRCode(seed) {
+    var size = 25;
+    var cell = 8;
+    var rng = function(s) {
+      return function() {
+        s = (s * 9301 + 49297) % 233280;
+        return s / 233280;
+      };
+    }(seed);
+
+    var rects = [];
+
+    // 定位角（左上、右上、左下）
+    function drawFinder(x, y) {
+      for (var i = 0; i < 7; i++) {
+        for (var j = 0; j < 7; j++) {
+          var fill = (i === 0 || i === 6 || j === 0 || j === 6) || (i >= 2 && i <= 4 && j >= 2 && j <= 4);
+          if (fill) rects.push('<rect x="' + ((x + i) * cell) + '" y="' + ((y + j) * cell) + '" width="' + cell + '" height="' + cell + '" fill="#000000"/>');
+        }
+      }
+    }
+    drawFinder(0, 0);
+    drawFinder(size - 7, 0);
+    drawFinder(0, size - 7);
+
+    // 随机数据区（避开定位角和分隔区）
+    for (var r = 0; r < size; r++) {
+      for (var c = 0; c < size; c++) {
+        // 避开定位角区域
+        if ((r < 8 && c < 8) || (r < 8 && c >= size - 8) || (r >= size - 8 && c < 8)) continue;
+        // 模拟二维码的块状特征
+        var threshold = 0.48;
+        if (rng() < threshold) {
+          rects.push('<rect x="' + (c * cell) + '" y="' + (r * cell) + '" width="' + cell + '" height="' + cell + '" fill="#000000"/>');
+        }
+      }
+    }
+
+    var svgSize = size * cell;
+    return '<svg viewBox="0 0 ' + svgSize + ' ' + svgSize + '" xmlns="http://www.w3.org/2000/svg">' +
+           '<rect width="' + svgSize + '" height="' + svgSize + '" fill="#FFFFFF"/>' +
+           rects.join('') +
+           '</svg>';
+  }
+
+  function renderQR(seed) {
+    document.getElementById('qrWrap').innerHTML = generateQRCode(seed || Date.now());
+  }
+
+  // 初始渲染
+  renderQR(20260902);
+
+  // 返回
+  document.getElementById('backBtn').addEventListener('click', function() {
+    MS.goBack();
+  });
+
+  // 更多
+  document.getElementById('moreBtn').addEventListener('click', function() {
+    MS.showToast('更多功能', 'info');
+  });
+
+  // 扫码/识别
+  document.getElementById('scanBtn').addEventListener('click', function() {
+    MS.showToast('扫码识别', 'info');
+  });
+
+  // 刷新二维码
+  document.getElementById('refreshQrBtn').addEventListener('click', function() {
+    renderQR(Date.now());
+    MS.showToast('二维码已刷新', 'success');
+  });
+
+  // ==================== 钱包余额 / 充值 / 退款 ====================
+  var walletBalance = 0;
+  var walletBalanceEl = document.getElementById('walletBalance');
+  var refundAmountEl = document.getElementById('refundAmountText');
+
+  function renderBalance() {
+    var v = Math.round(walletBalance * 100) / 100;
+    var txt = String(v);
+    if (txt.indexOf('.') > -1) {
+      txt = v.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
+    }
+    walletBalanceEl.textContent = txt;
+    refundAmountEl.textContent = txt;
+  }
+
+  // ---- 充值弹窗 ----
+  var rechargeAction = document.getElementById('rechargeAction');
+  var rechargeSheet = document.getElementById('rechargeSheet');
+  var amountOpts = document.querySelectorAll('.amount-opt');
+  var rechargeConfirmBtn = document.getElementById('rechargeConfirmBtn');
+  var customAmountInput = document.getElementById('customAmount');
+  var rechargeSelected = 50;
+
+  function resetRechargeState() {
+    amountOpts.forEach(function(o) { o.classList.remove('active'); });
+    if (amountOpts.length) amountOpts[0].classList.add('active');
+    rechargeSelected = 50;
+    customAmountInput.value = '';
+    rechargeConfirmBtn.textContent = '立即充值 ¥50';
+  }
+
+  rechargeAction.addEventListener('click', function(e) {
+    e.stopPropagation();
+    MS.showModal('rechargeSheet');
+  });
+  rechargeSheet.addEventListener('click', function(e) {
+    if (e.target === rechargeSheet) MS.hideModal('rechargeSheet');
+  });
+  document.getElementById('rechargeCancelBtn').addEventListener('click', function() {
+    MS.hideModal('rechargeSheet');
+  });
+
+  amountOpts.forEach(function(opt) {
+    opt.addEventListener('click', function() {
+      amountOpts.forEach(function(o) { o.classList.remove('active'); });
+      this.classList.add('active');
+      rechargeSelected = parseInt(this.getAttribute('data-amount'), 10);
+      customAmountInput.value = '';
+      rechargeConfirmBtn.textContent = '立即充值 ¥' + rechargeSelected;
+    });
+  });
+
+  customAmountInput.addEventListener('input', function() {
+    var val = this.value.trim();
+    if (!val) {
+      rechargeConfirmBtn.textContent = '立即充值 ¥' + rechargeSelected;
+      return;
+    }
+    amountOpts.forEach(function(o) { o.classList.remove('active'); });
+    var num = parseFloat(val);
+    if (num > 0) {
+      rechargeSelected = num;
+      rechargeConfirmBtn.textContent = '立即充值 ¥' + (Math.round(num * 100) / 100);
+    }
+  });
+
+  rechargeConfirmBtn.addEventListener('click', function() {
+    if (!rechargeSelected || rechargeSelected <= 0) {
+      MS.showToast('请输入充值金额', 'info');
+      return;
+    }
+    if (rechargeSelected < 10 || rechargeSelected > 2000) {
+      MS.showToast('充值金额需在10-2000元之间', 'info');
+      return;
+    }
+    MS.hideModal('rechargeSheet');
+    walletBalance = Math.round((walletBalance + rechargeSelected) * 100) / 100;
+    renderBalance();
+    resetRechargeState();
+    MS.showToast('充值成功', 'success');
+  });
+
+  // ---- 退款弹窗（不可输入金额，默认退还当前全部余额） ----
+  var refundAction = document.getElementById('refundAction');
+  var refundSheet = document.getElementById('refundSheet');
+  var reasonOpts = document.querySelectorAll('.refund-reason-opt');
+
+  refundAction.addEventListener('click', function(e) {
+    e.stopPropagation();
+    renderBalance();
+    MS.showModal('refundSheet');
+  });
+  refundSheet.addEventListener('click', function(e) {
+    if (e.target === refundSheet) MS.hideModal('refundSheet');
+  });
+  document.getElementById('refundCancelBtn').addEventListener('click', function() {
+    MS.hideModal('refundSheet');
+  });
+
+  reasonOpts.forEach(function(opt) {
+    opt.addEventListener('click', function() {
+      reasonOpts.forEach(function(o) { o.classList.remove('active'); });
+      this.classList.add('active');
+    });
+  });
+
+  document.getElementById('refundConfirmBtn').addEventListener('click', function() {
+    if (walletBalance <= 0) {
+      MS.showToast('当前无可退余额', 'error');
+      return;
+    }
+    MS.hideModal('refundSheet');
+    walletBalance = 0;
+    renderBalance();
+    // 重置表单
+    reasonOpts.forEach(function(o, i) {
+      o.classList.toggle('active', i === 0);
+    });
+    document.getElementById('refundRemark').value = '';
+    MS.showToast('退款申请已提交，将全额退还', 'success');
+  });
+
+  // 消费记录 → 跳转账单明细页
+  document.getElementById('recordBtn').addEventListener('click', function() {
+    window.location.href = 'P06-wallet.html';
+  });
+
+})();
+</script>
+</body>
+</html>
