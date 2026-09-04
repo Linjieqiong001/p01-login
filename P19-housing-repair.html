@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="5HZOiGv2zh2LeE57p97n14">
+<head data-page-node-id="d8asrhovSSHOGiy7UAp6Xi">
+<meta charset="UTF-8" data-page-node-id="L1ceQtyZH8oW3i97iIY3uM">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="SQIyBV2JiPBbBubD3DVuKk">
+<title>P19 - 住房报修</title>
+<link rel="stylesheet" href="common.css" data-page-node-id="1MZeAZDiqWKJbv8oTNSSM3">
+<style>
+/* ==================== Room Info Card (Readonly) ==================== */
+.room-info-card {
+  background: #F7F8FC;
+  margin: 12px 16px 0;
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  position: relative;
+  box-shadow: var(--shadow-sm);
+}
+
+.room-info-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.room-info-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #E6F0FF, #B3D4FF);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.room-info-icon svg {
+  width: 22px;
+  height: 22px;
+  color: var(--primary);
+}
+
+.room-info-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.room-info-subtitle {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.room-info-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.room-info-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+.room-info-row .ri-label {
+  font-size: 13px;
+  color: var(--text-3);
+  min-width: 44px;
+}
+
+.room-info-row .ri-value {
+  font-size: 14px;
+  color: var(--text-1);
+  font-weight: 500;
+}
+
+.room-info-hint {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 0.5px dashed var(--divider);
+}
+
+.room-info-hint svg {
+  width: 14px;
+  height: 14px;
+  color: var(--text-4);
+  flex-shrink: 0;
+}
+
+.room-info-hint span {
+  font-size: 11px;
+  color: var(--text-4);
+}
+
+/* ==================== Form Section ==================== */
+.form-section {
+  background: var(--card-bg);
+  margin: 12px 16px 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.form-group {
+  padding: 0 16px;
+}
+
+.form-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 14px 0;
+  border-bottom: 0.5px solid var(--border);
+  gap: 10px;
+}
+
+.form-item:last-child {
+  border-bottom: none;
+}
+
+.form-label {
+  font-size: 14px;
+  color: var(--text-1);
+  font-weight: 500;
+  min-width: 74px;
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+
+.form-label .required {
+  color: var(--danger);
+  margin-right: 2px;
+}
+
+.form-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.form-select {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: var(--text-1);
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 2px 0;
+  line-height: 1.5;
+}
+
+.form-select option {
+  color: var(--text-1);
+}
+
+.form-textarea {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: var(--text-1);
+  background: transparent;
+  resize: none;
+  min-height: 80px;
+  font-family: inherit;
+  line-height: 1.5;
+  padding: 0;
+}
+
+.form-textarea::placeholder {
+  color: var(--text-4);
+}
+
+/* ==================== Photo Upload ==================== */
+.photo-upload {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.photo-item {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-item svg {
+  width: 28px;
+  height: 28px;
+  color: rgba(255,255,255,0.7);
+}
+
+.photo-add {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-sm);
+  border: 1.5px dashed var(--divider);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  background: var(--bg);
+  transition: border-color 0.2s;
+}
+
+.photo-add:active {
+  border-color: var(--primary);
+}
+
+.photo-add svg {
+  width: 22px;
+  height: 22px;
+  color: var(--text-4);
+}
+
+.photo-add span {
+  font-size: 10px;
+  color: var(--text-4);
+}
+
+.photo-delete {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 18px;
+  height: 18px;
+  background: rgba(0,0,0,0.5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.photo-delete svg {
+  width: 10px;
+  height: 10px;
+  color: #FFFFFF;
+}
+
+.upload-hint {
+  font-size: 11px;
+  color: var(--text-4);
+  padding-top: 4px;
+}
+
+/* ==================== Submit Button Area ==================== */
+.submit-area {
+  padding: 24px 16px 28px;
+}
+
+.submit-area .btn {
+  width: 100%;
+  height: 46px;
+  background: var(--primary-gradient);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  font-family: inherit;
+}
+
+.submit-area .btn:active {
+  transform: scale(0.98);
+  opacity: 0.85;
+}
+
+/* ==================== Toast ==================== */
+.toast {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  background: rgba(0,0,0,0.75);
+  color: #FFFFFF;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  z-index: 200;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s;
+  white-space: nowrap;
+  max-width: 320px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.toast.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.toast .toast-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+
+.toast .toast-icon svg {
+  width: 32px;
+  height: 32px;
+}
+</style>
+</head>
+<body data-page-node-id="DlFIeCe0vQTFCc7xpvNSus">
+
+<div class="miniprogram" id="app" data-page-node-id="rwueCbNC0ksy5FLIqRed6u">
+
+  <!-- Status Bar -->
+  <div class="status-bar light" data-page-node-id="tC9QUxgVCBfcFRc0SqQ8eW">
+    <span class="time" data-page-node-id="WXDi2aSidmMRJaGAXbkjd8">09:38</span>
+    <div class="icons" data-page-node-id="NKCQTUtSSit2CO5uPYuePH">
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="uD0URj9T2oUFSCwWPWwkWC"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" data-page-node-id="YAm5op9PRyKsIBlWzqGoKM"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="FdtsP8R3YKqduvKzzmC0E2"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" data-page-node-id="UxoyaegOA0foKLerAgVX1B"/></svg>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar white" data-page-node-id="ZDy6lF7Hn0zDY6GDxQzETZ">
+    <div class="nav-back" data-page-node-id="pNwgTwtU2QRdFfB4jtF9rr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="w2t9FVeDBM4RsBXlCa1Nwa"><polyline points="15 18 9 12 15 6" data-page-node-id="awQn7PIeEzfzKV2qyUfXSH"/></svg></div>
+    <span class="nav-title" data-page-node-id="tGL1VE6r8xwJmbjdP08WE7">住房报修</span>
+    <span class="nav-right-btn" id="historyBtn" data-page-node-id="MORcMgKxaBHvMD5uMXDRkg">历史记录</span>
+  </div>
+
+  <!-- Content -->
+  <div class="content" data-page-node-id="UjwjcsCnIHEy5VFxKUOByt">
+    <!-- Room Info Card (Readonly) -->
+    <div class="room-info-card" data-page-node-id="ke7AwvSDRsAuAlGdWPpvn8">
+      <div class="room-info-header" data-page-node-id="vIgg8lO7kv2rvo72RwfaCh">
+        <div class="room-info-icon" data-page-node-id="H4bPGp10nDC1DN5vzPd0Bw">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="BkQyIHhC3ixQ3llrMsb475">
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" data-page-node-id="nWB1bT7bik3t0v7kTzMKCR"/>
+            <path d="M9 22V12h6v10" data-page-node-id="7oGqovAAXSZR3XGpwe8EgR"/>
+          </svg>
+        </div>
+        <div data-page-node-id="Iq2tLL9ddulKrAEIdYRQ8n">
+          <div class="room-info-title" data-page-node-id="hyynPtdioJ2SqP91o7xCId">当前住房信息</div>
+          <div class="room-info-subtitle" data-page-node-id="EIQpgvwK4arMB0qTp0LNmP">系统自动获取</div>
+        </div>
+      </div>
+      <div class="room-info-rows" data-page-node-id="BZCS69ObSS7JEpvfmEAoS0">
+        <div class="room-info-row" data-page-node-id="URFAXY3bek8OolzLzeyxI9">
+          <span class="ri-label" data-page-node-id="ink7Jhl5tTTux7K2TKNDLc">楼栋</span>
+          <span class="ri-value" data-page-node-id="3CG5F4ULtAUma3xZWy4MLs">海事局家属院3栋</span>
+        </div>
+        <div class="room-info-row" data-page-node-id="C2lkvQg5dbJKyZCBOHOYhC">
+          <span class="ri-label" data-page-node-id="zan6QCjK8GtzvxYmh49x9R">房号</span>
+          <span class="ri-value" data-page-node-id="GpprSbj6grmB9dgT4gqAMM">302室</span>
+        </div>
+      </div>
+      <div class="room-info-hint" data-page-node-id="wX2x4RXGYV6s99f2aiEy06">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="s8ufCyHqsBu9R8IWz92q9H">
+          <circle cx="12" cy="12" r="10" data-page-node-id="pHF6g9diqqOGRoqkgeotiA"/>
+          <line x1="12" y1="16" x2="12" y2="12" data-page-node-id="HnGG8g52Syq34B19GA7lxz"/>
+          <line x1="12" y1="8" x2="12.01" y2="8" data-page-node-id="RaMrs6C3aAVjsdvdYGez08"/>
+        </svg>
+        <span data-page-node-id="2GJMfkJUfmNyS62g4n4PVv">以下信息自动带入，不可修改</span>
+      </div>
+    </div>
+
+    <!-- Repair Form -->
+    <div class="form-section" data-page-node-id="UTA6ccbEyrkyoz709FU67D">
+      <div class="form-group" data-page-node-id="tYeaPTE3dPxx4k983XIkyj">
+        <!-- 报修类型 -->
+        <div class="form-item" data-page-node-id="ksCwGoqYXNUhJsBEq4qftB">
+          <div class="form-label" data-page-node-id="kVeD2YPQ7qMPqi9fEKyLtM"><span class="required" data-page-node-id="9coQEIA1eqYcJGmmROpDpa">*</span>报修类型</div>
+          <div class="form-body" data-page-node-id="7L6FhOmNMoXLGJ2m6tIPXD">
+            <select class="form-select" id="repairType" data-page-node-id="277rKjP3nQ1zMBtpt1Sg8z">
+              <option value="" disabled selected data-page-node-id="L7EQSIEy8ZgZtplhcCqg8l">请选择报修类型</option>
+              <option value="water-electricity" data-page-node-id="e8Qo2pUP3hHZDNBqWfpPU0">水电维修</option>
+              <option value="door-window" data-page-node-id="7YIyF3B5sC9kweLgfjGFhp">门窗维修</option>
+              <option value="furniture" data-page-node-id="iFmtyEbWrZEGB4CBFpu3qw">家具维修</option>
+              <option value="wall" data-page-node-id="8I5SjAdsDBzQE0BsNLQixm">墙面维修</option>
+              <option value="other" data-page-node-id="O4Bk2jfAhMFfHsXag2AyU0">其他</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 故障描述 -->
+        <div class="form-item" data-page-node-id="sJ2rlMASxFzQyVdRaPyhUZ">
+          <div class="form-label" data-page-node-id="2soEbjUqGTKbDyLGF9fRId"><span class="required" data-page-node-id="jyMwFglrPpocHwEjplGQws">*</span>故障描述</div>
+          <div class="form-body" data-page-node-id="BlC1bOHkDALRAzhvlIi9aU">
+            <textarea class="form-textarea" placeholder="请描述报修问题，例如：卫生间水龙头漏水，需要更换密封圈"></textarea>
+          </div>
+        </div>
+
+        <!-- 照片上传 -->
+        <div class="form-item" data-page-node-id="ExNCEMjOPg3Cndlakk0SOh">
+          <div class="form-label" data-page-node-id="jCqSqlANAbAQCvFEiADVCz">现场照片</div>
+          <div class="form-body" data-page-node-id="fwC4Bd6Wz6DWYEICJwKpgq">
+            <div class="photo-upload" id="uploadRepair" data-page-node-id="CiId9QAA87RZzi4CDFD2jq">
+              <div class="photo-add" data-page-node-id="Mcm5vafslnHpxzj8g6BKVG">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="HWXBfRqnAOSqJzohGdXIyG">
+                  <rect x="3" y="3" width="18" height="18" rx="2" data-page-node-id="UeDOWk4AwY4icRjILZXAC1"/>
+                  <circle cx="8.5" cy="8.5" r="1.5" data-page-node-id="o6z5K682yQPP0sux07k3gO"/>
+                  <polyline points="21 15 16 10 5 21" data-page-node-id="oTB1B6Kh9PKB90NSwcCVD3"/>
+                </svg>
+                <span data-page-node-id="DOLkPATodijxDpjfZoGJst">上传照片</span>
+              </div>
+            </div>
+            <div class="upload-hint" data-page-node-id="g0GhCorsLlZCW2cThpSOjv">上传故障现场照片便于维修人员快速判断，最多9张</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="submit-area" data-page-node-id="d3UyHCQlpNKDuPCurtDdMQ">
+      <button class="btn" id="submitBtn" data-page-node-id="sXSMt2o7CWeBal8gCDoNaL">提交报修</button>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" data-page-node-id="KDg4RQYk0CSDEBbjyzVpwb">
+    <div class="toast-icon" data-page-node-id="e9VQ7999bR9uuKxcKvENUz"></div>
+    <span id="toastText" data-page-node-id="DDKBIhmhEaut9ujp8m2Sw7"></span>
+  </div>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // ==================== History Record ====================
+  document.getElementById('historyBtn').addEventListener('click', function() {
+    window.location.href = 'P34-housing-records.html';
+  });
+
+  // ==================== Photo Upload ====================
+  var uploadGroup = document.getElementById('uploadRepair');
+  var addBtn = uploadGroup.querySelector('.photo-add');
+
+  addBtn.addEventListener('click', function() {
+    var count = uploadGroup.querySelectorAll('.photo-item').length;
+    if (count >= 9) {
+      MS.showToast('最多上传9张照片', 'info');
+      return;
+    }
+
+    var hues = ['30', '50', '70', '90', '110', '130', '150', '170', '190'];
+    var hue = hues[count % hues.length];
+
+    var item = document.createElement('div');
+    item.className = 'photo-item';
+    item.innerHTML = '<div style="width:100%;height:100%;background:linear-gradient(135deg, hsl(' + hue + ',40%,90%), hsl(' + hue + ',50%,75%));display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="photo-delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></div>';
+
+    item.querySelector('.photo-delete').addEventListener('click', function(e) {
+      e.stopPropagation();
+      item.remove();
+    });
+
+    uploadGroup.insertBefore(item, addBtn);
+  });
+
+  // ==================== Submit Button ====================
+  var submitBtn = document.getElementById('submitBtn');
+  submitBtn.addEventListener('click', function() {
+    var repairType = document.getElementById('repairType');
+    var selectedType = repairType.options[repairType.selectedIndex];
+
+    // Generate work order number
+    var now = new Date();
+    var dateStr = '' + now.getFullYear() +
+      String(now.getMonth() + 1).padStart(2, '0') +
+      String(now.getDate()).padStart(2, '0');
+    var seq = String(Math.floor(Math.random() * 900) + 100);
+    var workOrderNo = 'FW' + dateStr + seq;
+
+    MS.showToast('报修工单已提交，工单号：' + workOrderNo, 'success');
+  });
+
+})();
+</script>
+
+</body>
+</html>
