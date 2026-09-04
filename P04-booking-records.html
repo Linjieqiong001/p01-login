@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>P04 - 预订记录</title>
+<link rel="stylesheet" href="common.css">
+<style>
+/* ==================== Page Specific ==================== */
+.order-list {
+  padding: 10px 16px 20px;
+}
+.order-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.order-card:active { transform: scale(0.99); }
+.order-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 0.5px solid var(--border);
+}
+.order-type {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+.order-type-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.order-type-icon svg { width: 16px; height: 16px; color: #FFFFFF; }
+.ot-chengpin { background: linear-gradient(135deg, #FF7676, #FF5252); }
+.ot-dinner { background: linear-gradient(135deg, #FFB443, #FF9800); }
+.ot-holiday { background: linear-gradient(135deg, #A569BD, #8E44AD); }
+.ot-special { background: linear-gradient(135deg, #5DADE2, #2E86C1); }
+.order-no {
+  font-size: 11px;
+  color: var(--text-4);
+  font-family: -apple-system, monospace;
+}
+.order-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.order-row {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+}
+.order-row .or-label {
+  color: var(--text-3);
+  min-width: 64px;
+  flex-shrink: 0;
+}
+.order-row .or-value {
+  color: var(--text-1);
+  flex: 1;
+}
+.order-row .or-value.dishes {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.order-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 0.5px solid var(--border);
+}
+.order-amount {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+.order-amount .yen { font-size: 13px; color: var(--text-2); }
+.order-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Order detail modal */
+.modal-detail-row {
+  display: flex;
+  padding: 8px 0;
+  font-size: 14px;
+  border-bottom: 0.5px solid var(--border);
+}
+.modal-detail-row:last-child { border-bottom: none; }
+.modal-detail-row .mdr-label {
+  color: var(--text-3);
+  min-width: 80px;
+  flex-shrink: 0;
+}
+.modal-detail-row .mdr-value {
+  color: var(--text-1);
+  flex: 1;
+  text-align: right;
+}
+.modal-detail-row .mdr-value.danger { color: var(--danger); font-weight: 600; }
+.modal-detail-row .mdr-value.success { color: var(--success); font-weight: 600; }
+.modal-detail-row .mdr-value.primary { color: var(--primary); font-weight: 600; }
+
+.modal-status-banner {
+  padding: 16px 20px;
+  text-align: center;
+  border-bottom: 0.5px solid var(--divider);
+}
+.modal-status-banner .msb-tag {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.msb-tag.pending { background: var(--warning-light); color: var(--warning); }
+.msb-tag.done { background: #F0F0F0; color: var(--text-3); }
+.msb-tag.canceled { background: #F0F0F0; color: var(--text-3); }
+.msb-tag.processing { background: var(--primary-light); color: var(--primary); }
+.modal-status-banner .msb-amount {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+.modal-status-banner .msb-amount .yen { font-size: 16px; color: var(--text-2); }
+
+.modal-dishes-list {
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  margin-top: 8px;
+}
+.modal-dish-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 4px 0;
+}
+.modal-dish-item .mdi-name { color: var(--text-2); }
+.modal-dish-item .mdi-price { color: var(--text-1); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="miniprogram">
+  <div class="status-bar light">
+    <span class="time">09:38</span>
+    <div class="icons">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+    </div>
+  </div>
+  <div class="nav-bar white">
+    <div class="nav-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <span class="nav-title">预订记录</span>
+    <span class="nav-placeholder"></span>
+  </div>
+
+  <!-- 状态筛选Tab -->
+  <div class="tabs" id="statusTabs">
+    <div class="tab active" data-tab="全部">全部</div>
+    <div class="tab" data-tab="待使用">待使用</div>
+    <div class="tab" data-tab="已完成">已完成</div>
+    <div class="tab" data-tab="已取消">已取消</div>
+  </div>
+
+  <div class="content">
+    <div class="order-list" id="orderList">
+
+      <!-- 订单1：成品菜 待使用 -->
+      <div class="order-card" data-status="待使用" data-idx="0">
+        <div class="order-card-header">
+          <div class="order-type">
+            <div class="order-type-icon ot-chengpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h0a2 2 0 002-2V2M7 2v20M21 15V2a5 5 0 00-3 9v4c0 1.1.9 2 2 2h1a2 2 0 002-2z"/></svg></div>
+            成品菜
+          </div>
+          <span class="status-tag pending">待使用</span>
+        </div>
+        <div class="order-card-body">
+          <div class="order-row"><span class="or-label">订单号</span><span class="or-value">CS20260722001</span></div>
+          <div class="order-row"><span class="or-label">用餐时间</span><span class="or-value">2026-07-22 午餐</span></div>
+          <div class="order-row"><span class="or-label">菜品摘要</span><span class="or-value dishes">红烧排骨、清炒时蔬、紫菜蛋花汤</span></div>
+        </div>
+        <div class="order-card-footer">
+          <div class="order-amount"><span class="yen">¥</span>18.00</div>
+          <div class="order-actions">
+            <button class="btn btn-sm btn-outline-gray cancel-btn">取消</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 订单2：工作日晚餐 已完成 -->
+      <div class="order-card" data-status="已完成" data-idx="1">
+        <div class="order-card-header">
+          <div class="order-type">
+            <div class="order-type-icon ot-dinner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8h2a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2v-8a2 2 0 012-2h2M9 8V5a2 2 0 012-2h2a2 2 0 012 2v3"/></svg></div>
+            工作日晚餐
+          </div>
+          <span class="status-tag done">已完成</span>
+        </div>
+        <div class="order-card-body">
+          <div class="order-row"><span class="or-label">订单号</span><span class="or-value">WC20260721001</span></div>
+          <div class="order-row"><span class="or-label">用餐日期</span><span class="or-value">2026-07-21</span></div>
+          <div class="order-row"><span class="or-label">餐次</span><span class="or-value">晚餐</span></div>
+        </div>
+        <div class="order-card-footer" style="justify-content:flex-end;">
+          <div class="order-actions">
+            <span style="font-size:12px;color:var(--text-4);">已核销</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 订单3：节假日预订 待使用 -->
+      <div class="order-card" data-status="待使用" data-idx="2">
+        <div class="order-card-header">
+          <div class="order-type">
+            <div class="order-type-icon ot-holiday"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+            节假日预订
+          </div>
+          <span class="status-tag pending">待使用</span>
+        </div>
+        <div class="order-card-body">
+          <div class="order-row"><span class="or-label">订单号</span><span class="or-value">HD20260720001</span></div>
+          <div class="order-row"><span class="or-label">用餐日期</span><span class="or-value">2026-07-20</span></div>
+          <div class="order-row"><span class="or-label">时段</span><span class="or-value">中</span></div>
+        </div>
+        <div class="order-card-footer" style="justify-content:flex-end;">
+          <div class="order-actions">
+            <button class="btn btn-sm btn-outline-gray cancel-btn">取消</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 订单4：成品菜 已取消 -->
+      <div class="order-card" data-status="已取消" data-idx="3">
+        <div class="order-card-header">
+          <div class="order-type">
+            <div class="order-type-icon ot-chengpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h0a2 2 0 002-2V2M7 2v20M21 15V2a5 5 0 00-3 9v4c0 1.1.9 2 2 2h1a2 2 0 002-2z"/></svg></div>
+            成品菜
+          </div>
+          <span class="status-tag canceled">已取消</span>
+        </div>
+        <div class="order-card-body">
+          <div class="order-row"><span class="or-label">订单号</span><span class="or-value">CS20260719002</span></div>
+          <div class="order-row"><span class="or-label">用餐时间</span><span class="or-value">2026-07-19 午餐</span></div>
+          <div class="order-row"><span class="or-label">菜品摘要</span><span class="or-value dishes">糖醋里脊、蒜蓉西兰花</span></div>
+        </div>
+        <div class="order-card-footer">
+          <div class="order-amount" style="color:var(--text-3);text-decoration:line-through;"><span class="yen">¥</span>15.00</div>
+          <div class="order-actions">
+            <span style="font-size:12px;color:var(--text-4);">已退款</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 订单5：成品菜 待使用 -->
+      <div class="order-card" data-status="待使用" data-idx="4">
+        <div class="order-card-header">
+          <div class="order-type">
+            <div class="order-type-icon ot-chengpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h0a2 2 0 002-2V2M7 2v20M21 15V2a5 5 0 00-3 9v4c0 1.1.9 2 2 2h1a2 2 0 002-2z"/></svg></div>
+            成品菜
+          </div>
+          <span class="status-tag pending">待使用</span>
+        </div>
+        <div class="order-card-body">
+          <div class="order-row"><span class="or-label">订单号</span><span class="or-value">CS20260722002</span></div>
+          <div class="order-row"><span class="or-label">用餐时间</span><span class="or-value">2026-07-23 早餐</span></div>
+          <div class="order-row"><span class="or-label">菜品摘要</span><span class="or-value dishes">葱油饼、卤蛋、豆浆</span></div>
+        </div>
+        <div class="order-card-footer">
+          <div class="order-amount"><span class="yen">¥</span>11.00</div>
+          <div class="order-actions">
+            <button class="btn btn-sm btn-outline-gray cancel-btn">取消</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 订单6：特殊用餐申请 -->
+      <div class="order-card" data-status="待使用" data-idx="5">
+        <div class="order-card-header">
+          <div class="order-type">
+            <div class="order-type-icon ot-special"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+            特殊用餐申请
+          </div>
+          <span class="status-tag pending">待使用</span>
+        </div>
+        <div class="order-card-body">
+          <div class="order-row"><span class="or-label">订单号</span><span class="or-value">SP20260722001</span></div>
+          <div class="order-row"><span class="or-label">用餐时间</span><span class="or-value">2026-07-25 午餐</span></div>
+          <div class="order-row"><span class="or-label">用餐人数</span><span class="or-value">15人</span></div>
+          <div class="order-row"><span class="or-label">审批人</span><span class="or-value">赵主任</span></div>
+          <div class="order-row"><span class="or-label">审批结果</span><span class="or-value" style="color:var(--success);font-weight:600;">通过</span></div>
+        </div>
+        <div class="order-card-footer" style="justify-content:flex-end;">
+          <div class="order-actions">
+            <span style="font-size:12px;color:var(--text-4);">已审批通过</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 订单详情弹窗 -->
+  <div class="modal-mask" id="orderDetailModal">
+    <div class="modal-content" id="orderDetailContent">
+      <!-- 动态内容 -->
+    </div>
+  </div>
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // 订单数据
+  var orderData = [
+    {
+      type: '成品菜', typeIcon: 'chengpin', orderNo: 'CS20260722001',
+      status: '待使用', statusClass: 'pending',
+      rows: [
+        { label: '用餐时间', value: '2026-07-22 11:30-13:00' },
+        { label: '餐次', value: '午餐' },
+        { label: '下单时间', value: '2026-07-22 09:15' },
+        { label: '支付方式', value: '钱包余额' }
+      ],
+      dishes: [
+        { name: '红烧排骨', price: '¥8.00' },
+        { name: '清炒时蔬', price: '¥4.00' },
+        { name: '紫菜蛋花汤', price: '¥3.00' },
+        { name: '米饭', price: '¥3.00' }
+      ],
+      amount: '18.00',
+      canCancel: true
+    },
+    {
+      type: '工作日晚餐', typeIcon: 'dinner', orderNo: 'WC20260721001',
+      status: '已完成', statusClass: 'done',
+      showAmount: false,
+      rows: [
+        { label: '用餐日期', value: '2026-07-21' },
+        { label: '餐次', value: '晚餐' },
+        { label: '下单时间', value: '2026-07-21 15:20' }
+      ],
+      dishes: [],
+      amount: '10.00',
+      canCancel: false
+    },
+    {
+      type: '节假日预订', typeIcon: 'holiday', orderNo: 'HD20260720001',
+      status: '待使用', statusClass: 'pending',
+      showAmount: false,
+      rows: [
+        { label: '用餐日期', value: '2026-07-20' },
+        { label: '时段', value: '中（午餐）' },
+        { label: '下单时间', value: '2026-07-17 10:30' }
+      ],
+      dishes: [],
+      amount: '10.00',
+      canCancel: true
+    },
+    {
+      type: '成品菜', typeIcon: 'chengpin', orderNo: 'CS20260719002',
+      status: '已取消', statusClass: 'canceled',
+      rows: [
+        { label: '用餐时间', value: '2026-07-19 午餐' },
+        { label: '下单时间', value: '2026-07-19 09:10' },
+        { label: '取消时间', value: '2026-07-19 10:30' },
+        { label: '退款状态', value: '已原路退回' }
+      ],
+      dishes: [
+        { name: '糖醋里脊', price: '¥9.00' },
+        { name: '蒜蓉西兰花', price: '¥4.00' },
+        { name: '米饭', price: '¥2.00' }
+      ],
+      amount: '15.00',
+      canCancel: false
+    },
+    {
+      type: '成品菜', typeIcon: 'chengpin', orderNo: 'CS20260722002',
+      status: '待使用', statusClass: 'pending',
+      rows: [
+        { label: '用餐时间', value: '2026-07-23 07:00-09:00' },
+        { label: '餐次', value: '早餐' },
+        { label: '下单时间', value: '2026-07-22 16:20' },
+        { label: '支付方式', value: '钱包余额' }
+      ],
+      dishes: [
+        { name: '葱油饼', price: '¥3.00' },
+        { name: '卤蛋', price: '¥2.00' },
+        { name: '豆浆', price: '¥3.00' },
+        { name: '卤鸡腿', price: '¥3.00' }
+      ],
+      amount: '11.00',
+      canCancel: true
+    },
+    {
+      type: '特殊用餐申请', typeIcon: 'special', orderNo: 'SP20260722001',
+      status: '待使用', statusClass: 'pending',
+      showAmount: false,
+      rows: [
+        { label: '用餐时间', value: '2026-07-25 11:00-13:00' },
+        { label: '餐次', value: '午餐' },
+        { label: '用餐人数', value: '15人' },
+        { label: '餐标', value: '50元/人' },
+        { label: '申请原因', value: '商务接待用餐' },
+        { label: '审批人', value: '赵主任' },
+        { label: '审批结果', value: '通过' }
+      ],
+      dishes: [],
+      amount: '0.00',
+      canCancel: false
+    }
+  ];
+
+  var typeIconSvg = {
+    chengpin: '<path d="M3 2v7c0 1.1.9 2 2 2h0a2 2 0 002-2V2M7 2v20M21 15V2a5 5 0 00-3 9v4c0 1.1.9 2 2 2h1a2 2 0 002-2z"/>',
+    dinner: '<path d="M17 8h2a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2v-8a2 2 0 012-2h2M9 8V5a2 2 0 012-2h2a2 2 0 012 2v3"/>',
+    holiday: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+    special: '<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>'
+  };
+
+  // ==================== Tab 筛选 ====================
+  var tabs = document.querySelectorAll('#statusTabs .tab');
+  var orderCards = document.querySelectorAll('.order-card');
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      this.classList.add('active');
+      var filter = this.getAttribute('data-tab');
+      orderCards.forEach(function(card) {
+        var status = card.getAttribute('data-status');
+        if (filter === '全部' || filter === status) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // ==================== 卡片点击 → 详情弹窗 ====================
+  var detailContent = document.getElementById('orderDetailContent');
+
+  function renderDetail(data) {
+    var typeIconClass = 'ot-' + data.typeIcon;
+    var rowsHtml = data.rows.map(function(r) {
+      return '<div class="modal-detail-row"><span class="mdr-label">' + r.label + '</span><span class="mdr-value">' + r.value + '</span></div>';
+    }).join('');
+    var dishesHtml = data.dishes.map(function(d) {
+      return '<div class="modal-dish-item"><span class="mdi-name">' + d.name + '</span><span class="mdi-price">' + d.price + '</span></div>';
+    }).join('');
+
+    var amountClass = '';
+    if (data.statusClass === 'canceled') amountClass = ' style="color:var(--text-3);text-decoration:line-through;"';
+
+    var html = '<div class="modal-status-banner">' +
+      '<div class="msb-tag ' + data.statusClass + '">' + data.status + '</div>' +
+      (data.showAmount !== false ? '<div class="msb-amount"' + amountClass + '><span class="yen">¥</span>' + data.amount + '</div>' : '') +
+      '<div style="font-size:12px;color:var(--text-3);margin-top:4px;">订单号：' + data.orderNo + '</div>' +
+      '</div>' +
+      '<div class="modal-body">' +
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">' +
+          '<div class="order-type-icon ' + typeIconClass + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' + typeIconSvg[data.typeIcon] + '</svg></div>' +
+          '<span style="font-size:15px;font-weight:600;">' + data.type + '</span>' +
+        '</div>' +
+        rowsHtml +
+        (data.dishes && data.dishes.length > 0 ?
+          '<div style="margin-top:12px;font-size:13px;font-weight:600;color:var(--text-2);">菜品明细</div>' +
+          '<div class="modal-dishes-list">' + dishesHtml + '</div>' : '') +
+      '</div>' +
+      '<div class="modal-footer">' +
+        (data.canCancel ?
+          '<button class="btn btn-outline-gray" id="modalCancelBtn">取消订单</button>' :
+          '<button class="btn btn-primary" id="modalCloseBtn">关闭</button>'
+        ) +
+      '</div>';
+    detailContent.innerHTML = html;
+
+    if (data.canCancel) {
+      var cancelBtn = document.getElementById('modalCancelBtn');
+      cancelBtn.addEventListener('click', function() {
+        MS.hideModal('orderDetailModal');
+        MS.showToast('取消成功，退款将原路退回', 'success');
+      });
+    } else {
+      var closeBtn = document.getElementById('modalCloseBtn');
+      closeBtn.addEventListener('click', function() {
+        MS.hideModal('orderDetailModal');
+      });
+    }
+  }
+
+  orderCards.forEach(function(card) {
+    card.addEventListener('click', function(e) {
+      // 如果点击的是取消按钮，不弹详情
+      if (e.target.closest('.cancel-btn')) return;
+      var idx = parseInt(this.getAttribute('data-idx'));
+      renderDetail(orderData[idx]);
+      MS.showModal('orderDetailModal');
+    });
+  });
+
+  // ==================== 取消按钮 ====================
+  document.querySelectorAll('.cancel-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      MS.showToast('取消成功，退款将原路退回', 'success');
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
