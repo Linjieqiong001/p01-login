@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>P22 - 我的预订</title>
+<link rel="stylesheet" href="common.css">
+<style>
+/* ==================== 类型筛选Tab ==================== */
+.filter-tabs {
+  display: flex;
+  background: var(--card-bg);
+  padding: 12px 16px;
+  gap: 8px;
+  border-bottom: 0.5px solid var(--divider);
+  flex-shrink: 0;
+}
+.filter-tab {
+  padding: 7px 16px;
+  border-radius: 16px;
+  font-size: 13px;
+  color: var(--text-2);
+  background: var(--bg);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.filter-tab.active {
+  background: var(--primary-light);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* ==================== 统计栏 ==================== */
+.stat-bar {
+  display: flex;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--card-bg);
+}
+.stat-item {
+  flex: 1;
+  text-align: center;
+  padding: 10px 4px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.stat-item:active { transform: scale(0.97); }
+.stat-item .stat-num { font-size: 22px; font-weight: 700; }
+.stat-item .stat-label { font-size: 11px; margin-top: 2px; }
+.stat-item.si-pending { background: var(--warning-light); }
+.stat-item.si-pending .stat-num, .stat-item.si-pending .stat-label { color: var(--warning); }
+.stat-item.si-approved { background: var(--success-light); }
+.stat-item.si-approved .stat-num, .stat-item.si-approved .stat-label { color: var(--success); }
+.stat-item.si-canceled { background: #F0F0F0; }
+.stat-item.si-canceled .stat-num, .stat-item.si-canceled .stat-label { color: var(--text-3); }
+
+/* ==================== 预订卡片 ==================== */
+.booking-card {
+  margin: 10px 16px 0;
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.booking-card:active { transform: scale(0.99); }
+.booking-card.hidden { display: none; }
+
+.booking-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 0.5px solid var(--border);
+}
+.booking-card-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.booking-type-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.booking-type-icon svg { width: 18px; height: 18px; }
+.bti-room { background: linear-gradient(135deg, #4D9FFF, #1677FF); }
+.bti-meeting { background: linear-gradient(135deg, #FF9F43, #FF7F1F); }
+.bti-meal { background: linear-gradient(135deg, #FFD93D, #FFB800); }
+.booking-type-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+.booking-no {
+  font-size: 12px;
+  color: var(--text-3);
+  font-family: -apple-system, monospace;
+}
+
+.booking-card-body {
+  padding: 12px 16px;
+}
+.booking-info-row {
+  display: flex;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 2px;
+}
+.booking-info-row:last-child { margin-bottom: 0; }
+.booking-info-row .label {
+  color: var(--text-3);
+  min-width: 70px;
+}
+.booking-info-row .value {
+  color: var(--text-1);
+  flex: 1;
+}
+
+/* ======== 展开详情区域 ======== */
+.booking-card-detail {
+  display: none;
+  padding: 0 16px 14px;
+  border-top: 0.5px solid var(--border);
+  margin-top: 0;
+}
+.booking-card-detail.show { display: block; }
+.detail-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  padding: 10px 0 6px;
+}
+.detail-row {
+  display: flex;
+  font-size: 12px;
+  line-height: 1.5;
+  margin-bottom: 2px;
+}
+.detail-row .label { color: var(--text-3); min-width: 70px; }
+.detail-row .value { color: var(--text-2); flex: 1; }
+.detail-actions {
+  display: flex;
+  gap: 10px;
+  padding-top: 10px;
+}
+.detail-actions .btn { height: 32px; font-size: 13px; }
+
+/* 展开指示器 */
+.booking-expand-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0 0;
+  font-size: 11px;
+  color: var(--text-4);
+  gap: 3px;
+}
+.booking-expand-hint svg { width: 12px; height: 12px; transition: transform 0.2s; }
+.booking-card.expanded .booking-expand-hint svg { transform: rotate(180deg); }
+
+/* ==================== 底部间距 ==================== */
+.booking-list-spacer { height: 20px; }
+</style>
+</head>
+<body>
+<div class="miniprogram">
+  <!-- 状态栏 light -->
+  <div class="status-bar light">
+    <span class="time">09:38</span>
+    <div class="icons">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+    </div>
+  </div>
+
+  <!-- 导航栏 white -->
+  <div class="nav-bar white">
+    <div class="nav-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </div>
+    <span class="nav-title">我的预订</span>
+    <span class="nav-placeholder"></span>
+  </div>
+
+  <!-- 内容区 -->
+  <div class="content">
+
+    <!-- 统计栏 -->
+    <div class="stat-bar">
+      <div class="stat-item si-pending" id="statPending">
+        <div class="stat-num">2</div>
+        <div class="stat-label">待审批</div>
+      </div>
+      <div class="stat-item si-approved" id="statApproved">
+        <div class="stat-num">5</div>
+        <div class="stat-label">已通过</div>
+      </div>
+      <div class="stat-item si-canceled" id="statCanceled">
+        <div class="stat-num">1</div>
+        <div class="stat-label">已取消</div>
+      </div>
+    </div>
+
+    <!-- 类型筛选Tab -->
+    <div class="filter-tabs" id="filterTabs">
+      <div class="filter-tab active" data-filter="all">全部</div>
+      <div class="filter-tab" data-filter="room">客房</div>
+      <div class="filter-tab" data-filter="meeting">会议室</div>
+      <div class="filter-tab" data-filter="meal">团餐</div>
+    </div>
+
+    <!-- ======== 卡片1: 客房 - 待审批 ======== -->
+    <div class="booking-card" data-type="room" id="card1">
+      <div class="booking-card-header">
+        <div class="booking-card-left">
+          <div class="booking-type-icon bti-room">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+              <path d="M9 22V12h6v10"/>
+            </svg>
+          </div>
+          <div>
+            <div class="booking-type-label">客房预订</div>
+            <div class="booking-no">BS20260720001</div>
+          </div>
+        </div>
+        <span class="status-tag pending">待审批</span>
+      </div>
+      <div class="booking-card-body">
+        <div class="booking-info-row">
+          <span class="label">入住日期</span>
+          <span class="value">2026-07-22 至 2026-07-24（2晚）</span>
+        </div>
+        <div class="booking-info-row">
+          <span class="label">房型人数</span>
+          <span class="value">标准双人间 · 2人</span>
+        </div>
+        <div class="booking-info-row">
+          <span class="label">申请事由</span>
+          <span class="value">海事安全监管培训</span>
+        </div>
+      </div>
+      <div class="booking-expand-hint">
+        <span>点击查看详情</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="booking-card-detail" id="detail1">
+        <div class="detail-title">预订详情</div>
+        <div class="detail-row"><span class="label">申请人</span><span class="value">张明</span></div>
+        <div class="detail-row"><span class="label">联系电话</span><span class="value">138****6789</span></div>
+        <div class="detail-row"><span class="label">申请时间</span><span class="value">2026-07-20 09:15</span></div>
+        <div class="detail-row"><span class="label">审批人</span><span class="value">后勤科 李科长</span></div>
+        <div class="detail-row"><span class="label">备注</span><span class="value">需要靠近培训教室的房间</span></div>
+        <div class="detail-actions">
+          <button class="btn btn-sm btn-outline-gray" onclick="MS.showToast('已取消预订','info')">取消预订</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======== 卡片2: 会议室 - 已通过 ======== -->
+    <div class="booking-card" data-type="meeting" id="card2">
+      <div class="booking-card-header">
+        <div class="booking-card-left">
+          <div class="booking-type-icon bti-meeting">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="14" rx="2"/>
+              <path d="M7 20h10M9 8h6M9 12h4"/>
+            </svg>
+          </div>
+          <div>
+            <div class="booking-type-label">会议室预订</div>
+            <div class="booking-no">BS20260718008</div>
+          </div>
+        </div>
+        <span class="status-tag approved">已通过</span>
+      </div>
+      <div class="booking-card-body">
+        <div class="booking-info-row">
+          <span class="label">会议室</span>
+          <span class="value">会议室A（多功能厅）</span>
+        </div>
+        <div class="booking-info-row">
+          <span class="label">使用时间</span>
+          <span class="value">2026-07-25 09:00-17:00</span>
+        </div>
+        <div class="booking-info-row">
+          <span class="label">参会人数</span>
+          <span class="value">20人</span>
+        </div>
+      </div>
+      <div class="booking-expand-hint">
+        <span>点击查看详情</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="booking-card-detail" id="detail2">
+        <div class="detail-title">预订详情</div>
+        <div class="detail-row"><span class="label">申请人</span><span class="value">张明</span></div>
+        <div class="detail-row"><span class="label">会议主题</span><span class="value">2026年度海事安全监管研讨会</span></div>
+        <div class="detail-row"><span class="label">审批人</span><span class="value">后勤科 李科长</span></div>
+        <div class="detail-row"><span class="label">审批时间</span><span class="value">2026-07-19 10:30</span></div>
+        <div class="detail-row"><span class="label">配套设备</span><span class="value">投影仪·音响系统·白板·茶水</span></div>
+        <div class="detail-actions">
+          <button class="btn btn-sm btn-outline-gray" onclick="MS.showToast('已取消预订','info')">取消预订</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======== 卡片3: 团餐 - 待审批 ======== -->
+    <div class="booking-card" data-type="meal" id="card3">
+      <div class="booking-card-header">
+        <div class="booking-card-left">
+          <div class="booking-type-icon bti-meal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 2v7c0 1.1.9 2 2 2h0a2 2 0 002-2V2M7 2v20M21 15V2a5 5 0 00-3 9v4c0 1.1.9 2 2 2h1a2 2 0 002-2z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="booking-type-label">团餐预订</div>
+            <div class="booking-no">BS20260721003</div>
+          </div>
+        </div>
+        <span class="status-tag pending">待审批</span>
+      </div>
+      <div class="booking-card-body">
+        <div class="booking-info-row">
+          <span class="label">用餐日期</span>
+          <span class="value">2026-07-23</span>
+        </div>
+        <div class="booking-info-row">
+          <span class="label">餐次</span>
+          <span class="value">午餐</span>
+        </div>
+        <div class="booking-info-row">
+          <span class="label">人数/标准</span>
+          <span class="value">15人 · 50元/人</span>
+        </div>
+      </div>
+      <div class="booking-expand-hint">
+        <span>点击查看详情</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="booking-card-detail" id="detail3">
+        <div class="detail-title">预订详情</div>
+        <div class="detail-row"><span class="label">申请人</span><span class="value">王建国</span></div>
+        <div class="detail-row"><span class="label">用餐事由</span><span class="value">安全监管培训学员用餐</span></div>
+        <div class="detail-row"><span class="label">联系电话</span><span class="value">139****1234</span></div>
+        <div class="detail-row"><span class="label">申请时间</span><span class="value">2026-07-21 08:45</span></div>
+        <div class="detail-row"><span class="label">审批人</span><span class="value">后勤科 李科长</span></div>
+        <div class="detail-actions">
+          <button class="btn btn-sm btn-outline-gray" onclick="MS.showToast('已取消预订','info')">取消预订</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======== 卡片4: 客房 - 已取消 ======== -->
+    <div class="booking-card" data-type="room" id="card4">
+      <div class="booking-card-header">
+        <div class="booking-card-left">
+          <div class="booking-type-icon bti-room">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+              <path d="M9 22V12h6v10"/>
+            </svg>
+          </div>
+          <div>
+            <div class="booking-type-label">客房预订</div>
+            <div class="booking-no">BS20260715005</div>
+          </div>
+        </div>
+        <span class="status-tag canceled">已取消</span>
+      </div>
+      <div class="booking-card-body">
+        <div class="booking-info-row">
+          <span class="label">入住日期</span>
+          <span class="value">2026-07-15 至 2026-07-16（1晚）</span>
+        </div>
+        <div class="booking-info-row">
+          <span class="label">房型人数</span>
+          <span class="value">标准单人间 · 1人</span>
+        </div>
+        <div class="booking-info-row">
+          <span class="label">申请事由</span>
+          <span class="value">公务出差住宿</span>
+        </div>
+      </div>
+      <div class="booking-expand-hint">
+        <span>点击查看详情</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="booking-card-detail" id="detail4">
+        <div class="detail-title">预订详情</div>
+        <div class="detail-row"><span class="label">申请人</span><span class="value">刘洋</span></div>
+        <div class="detail-row"><span class="label">取消原因</span><span class="value">行程变更，不再需要住宿</span></div>
+        <div class="detail-row"><span class="label">取消时间</span><span class="value">2026-07-14 16:20</span></div>
+        <div class="detail-row"><span class="label">审批人</span><span class="value">后勤科 李科长</span></div>
+      </div>
+    </div>
+
+    <!-- ======== 卡片5: 会议室 - 已通过 ======== -->
+    <div class="booking-card" data-type="meeting" id="card5">
+      <div class="booking-card-header">
+        <div class="booking-card-left">
+          <div class="booking-type-icon bti-meeting">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="14" rx="2"/>
+              <path d="M7 20h10"/>
+            </svg>
+          </div>
+          <div>
+            <div class="booking-type-label">会议室预订</div>
+            <div class="booking-no">BS20260712010</div>
+          </div>
+        </div>
+        <span class="status-tag approved">已通过</span>
+      </div>
+      <div class="booking-card-body">
+        <div class="booking-info-row">
+          <span class="label">会议室</span>
+          <span class="value">会议室B（小型研讨）</span>
+        </div>
+        <div class="booking-info-row">
+          <span class="label">使用时间</span>
+          <span class="value">2026-07-14 13:00-17:00</span>
+        </div>
+        <div class="booking-info-row">
+          <span class="label">参会人数</span>
+          <span class="value">8人</span>
+        </div>
+      </div>
+      <div class="booking-expand-hint">
+        <span>点击查看详情</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="booking-card-detail" id="detail5">
+        <div class="detail-title">预订详情</div>
+        <div class="detail-row"><span class="label">申请人</span><span class="value">陈晓</span></div>
+        <div class="detail-row"><span class="label">会议主题</span><span class="value">港口安全监管小组研讨会</span></div>
+        <div class="detail-row"><span class="label">审批时间</span><span class="value">2026-07-13 09:00</span></div>
+        <div class="detail-row"><span class="label">配套设备</span><span class="value">投影仪·白板</span></div>
+      </div>
+    </div>
+
+    <div class="booking-list-spacer"></div>
+  </div>
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // ======== Tab筛选 ========
+  var filterTabs = document.querySelectorAll('.filter-tab');
+  var bookingCards = document.querySelectorAll('.booking-card');
+
+  filterTabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      filterTabs.forEach(function(t) { t.classList.remove('active'); });
+      this.classList.add('active');
+      var filter = this.getAttribute('data-filter');
+
+      bookingCards.forEach(function(card) {
+        if (filter === 'all') {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.toggle('hidden', card.getAttribute('data-type') !== filter);
+        }
+      });
+    });
+  });
+
+  // ======== 统计栏点击 ========
+  document.getElementById('statPending').addEventListener('click', function() {
+    filterTabs.forEach(function(t) { t.classList.remove('active'); });
+    bookingCards.forEach(function(card) {
+      var statusTag = card.querySelector('.status-tag');
+      card.classList.toggle('hidden', !statusTag.classList.contains('pending'));
+    });
+    MS.showToast('筛选：待审批预订', 'info');
+  });
+  document.getElementById('statApproved').addEventListener('click', function() {
+    filterTabs.forEach(function(t) { t.classList.remove('active'); });
+    bookingCards.forEach(function(card) {
+      var statusTag = card.querySelector('.status-tag');
+      card.classList.toggle('hidden', !statusTag.classList.contains('approved'));
+    });
+    MS.showToast('筛选：已通过预订', 'info');
+  });
+  document.getElementById('statCanceled').addEventListener('click', function() {
+    filterTabs.forEach(function(t) { t.classList.remove('active'); });
+    bookingCards.forEach(function(card) {
+      var statusTag = card.querySelector('.status-tag');
+      card.classList.toggle('hidden', !statusTag.classList.contains('canceled'));
+    });
+    MS.showToast('筛选：已取消预订', 'info');
+  });
+
+  // ======== 卡片展开/收起 ========
+  bookingCards.forEach(function(card) {
+    card.addEventListener('click', function(e) {
+      // 避免按钮点击触发展开
+      if (e.target.closest('.detail-actions') || e.target.closest('.btn')) return;
+
+      var detail = this.querySelector('.booking-card-detail');
+      if (detail) {
+        var isExpanded = detail.classList.contains('show');
+        detail.classList.toggle('show');
+        this.classList.toggle('expanded');
+        if (!isExpanded) {
+          MS.showToast('查看预订详情 ' + this.querySelector('.booking-no').textContent, 'info');
+        }
+      }
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
