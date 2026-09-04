@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>P25 - 我的预约记录</title>
+<link rel="stylesheet" href="common.css">
+<style>
+.record-card {
+  background: var(--card-bg);
+  margin: 10px 16px 0;
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+  overflow: hidden;
+}
+.record-card:active { transform: scale(0.99); }
+.record-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.record-card-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.record-card-name .avatar-sm {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--primary-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.record-card-time {
+  font-size: 13px;
+  color: var(--text-3);
+  margin-top: 6px;
+}
+.record-card-reason {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-top: 4px;
+}
+.record-card-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.record-card-info .info-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-3);
+  padding: 3px 8px;
+  background: var(--bg);
+  border-radius: 4px;
+}
+.record-card-info .info-chip svg { width: 14px; height: 14px; }
+
+.record-card-detail {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.record-card.expanded .record-card-detail {
+  max-height: 200px;
+}
+.record-card-detail-inner {
+  padding-top: 12px;
+  border-top: 0.5px solid var(--border);
+  margin-top: 10px;
+}
+.detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 13px;
+}
+.detail-row .label { color: var(--text-3); }
+.detail-row .value { color: var(--text-1); }
+.detail-row .value.text-primary { color: var(--primary); font-weight: 500; }
+
+.record-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+.record-card-footer .expand-hint {
+  font-size: 12px;
+  color: var(--text-4);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.record-card-footer .expand-hint svg { width: 14px; height: 14px; transition: transform 0.3s; }
+.record-card.expanded .record-card-footer .expand-hint svg { transform: rotate(180deg); }
+
+.empty-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: 8px;
+}
+.empty-list svg { width: 48px; height: 48px; color: var(--divider); }
+.empty-list span { font-size: 14px; color: var(--text-3); }
+</style>
+</head>
+<body>
+<div class="miniprogram">
+  <div class="status-bar light"><span class="time">09:38</span><div class="icons"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg></div></div>
+  <div class="nav-bar white">
+    <div class="nav-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <span class="nav-title">我的预约</span>
+    <span class="nav-placeholder"></span>
+  </div>
+
+  <!-- 状态筛选Tab -->
+  <div class="tabs" id="statusTabs">
+    <div class="tab active" data-tab="全部">全部</div>
+    <div class="tab" data-tab="待确认">待确认<span class="tab-badge">1</span></div>
+    <div class="tab" data-tab="已通过">已通过</div>
+    <div class="tab" data-tab="已取消">已取消</div>
+    <div class="tab" data-tab="已到访">已到访</div>
+  </div>
+
+  <div class="content" id="recordList">
+
+    <!-- 卡片1：待确认 -->
+    <div class="record-card fade-in" data-status="待确认" id="card1">
+      <div class="record-card-header">
+        <div class="record-card-name">
+          <div class="avatar-sm">李</div>
+          李明
+        </div>
+        <span class="status-tag pending">待确认</span>
+      </div>
+      <div class="record-card-time">来访时间：2026-07-22 14:00</div>
+      <div class="record-card-reason">事由：业务洽谈</div>
+      <div class="record-card-info">
+        <div class="info-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          随行 2人
+        </div>
+        <div class="info-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17h14M3 17V11l3-5h12l3 5v6"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg>
+          预留车位
+        </div>
+      </div>
+      <div class="record-card-detail">
+        <div class="record-card-detail-inner">
+          <div class="detail-row"><span class="label">访客姓名</span><span class="value">李明</span></div>
+          <div class="detail-row"><span class="label">手机号</span><span class="value">138****8888</span></div>
+          <div class="detail-row"><span class="label">来访时间</span><span class="value text-primary">2026-07-22 14:00</span></div>
+          <div class="detail-row"><span class="label">来访事由</span><span class="value">业务洽谈</span></div>
+          <div class="detail-row"><span class="label">随行人员</span><span class="value">王芳、陈建国</span></div>
+          <div class="detail-row"><span class="label">预留车位</span><span class="value">A区-012</span></div>
+          <div class="detail-row"><span class="label">被访人</span><span class="value">张三</span></div>
+        </div>
+      </div>
+      <div class="record-card-footer">
+        <div class="expand-hint">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          点击展开详情
+        </div>
+      </div>
+    </div>
+
+    <!-- 卡片2：已通过 -->
+    <div class="record-card fade-in" data-status="已通过" id="card2">
+      <div class="record-card-header">
+        <div class="record-card-name">
+          <div class="avatar-sm">王</div>
+          王芳
+        </div>
+        <span class="status-tag approved">已通过</span>
+      </div>
+      <div class="record-card-time">来访时间：2026-07-22 10:00</div>
+      <div class="record-card-reason">事由：合同签署</div>
+      <div class="record-card-info">
+        <div class="info-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          随行 0人
+        </div>
+      </div>
+      <div class="record-card-detail">
+        <div class="record-card-detail-inner">
+          <div class="detail-row"><span class="label">访客姓名</span><span class="value">王芳</span></div>
+          <div class="detail-row"><span class="label">手机号</span><span class="value">139****6666</span></div>
+          <div class="detail-row"><span class="label">来访时间</span><span class="value text-primary">2026-07-22 10:00</span></div>
+          <div class="detail-row"><span class="label">来访事由</span><span class="value">合同签署</span></div>
+          <div class="detail-row"><span class="label">随行人员</span><span class="value">无</span></div>
+          <div class="detail-row"><span class="label">预留车位</span><span class="value">否</span></div>
+          <div class="detail-row"><span class="label">被访人</span><span class="value">李四</span></div>
+        </div>
+      </div>
+      <div class="record-card-footer">
+        <div class="expand-hint">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          点击展开详情
+        </div>
+      </div>
+    </div>
+
+    <!-- 卡片3：已取消 -->
+    <div class="record-card fade-in" data-status="已取消" id="card3">
+      <div class="record-card-header">
+        <div class="record-card-name">
+          <div class="avatar-sm">赵</div>
+          赵伟
+        </div>
+        <span class="status-tag canceled">已取消</span>
+      </div>
+      <div class="record-card-time">来访时间：2026-07-21 15:00</div>
+      <div class="record-card-reason">事由：技术对接</div>
+      <div class="record-card-info">
+        <div class="info-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          随行 1人
+        </div>
+        <div class="info-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17h14M3 17V11l3-5h12l3 5v6"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg>
+          预留车位
+        </div>
+      </div>
+      <div class="record-card-detail">
+        <div class="record-card-detail-inner">
+          <div class="detail-row"><span class="label">访客姓名</span><span class="value">赵伟</span></div>
+          <div class="detail-row"><span class="label">手机号</span><span class="value">137****5555</span></div>
+          <div class="detail-row"><span class="label">来访时间</span><span class="value">2026-07-21 15:00</span></div>
+          <div class="detail-row"><span class="label">来访事由</span><span class="value">技术对接</span></div>
+          <div class="detail-row"><span class="label">随行人员</span><span class="value">刘洋</span></div>
+          <div class="detail-row"><span class="label">预留车位</span><span class="value">B区-005</span></div>
+          <div class="detail-row"><span class="label">被访人</span><span class="value">王五</span></div>
+          <div class="detail-row"><span class="label">取消原因</span><span class="value text-primary">访客行程变更</span></div>
+        </div>
+      </div>
+      <div class="record-card-footer">
+        <div class="expand-hint">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          点击展开详情
+        </div>
+      </div>
+    </div>
+
+    <!-- 卡片4：已到访 -->
+    <div class="record-card fade-in" data-status="已到访" id="card4">
+      <div class="record-card-header">
+        <div class="record-card-name">
+          <div class="avatar-sm">陈</div>
+          陈建国
+        </div>
+        <span class="status-tag approved">已到访</span>
+      </div>
+      <div class="record-card-time">来访时间：2026-07-20 09:00</div>
+      <div class="record-card-reason">事由：项目验收</div>
+      <div class="record-card-info">
+        <div class="info-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          随行 3人
+        </div>
+        <div class="info-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17h14M3 17V11l3-5h12l3 5v6"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg>
+          预留车位
+        </div>
+      </div>
+      <div class="record-card-detail">
+        <div class="record-card-detail-inner">
+          <div class="detail-row"><span class="label">访客姓名</span><span class="value">陈建国</span></div>
+          <div class="detail-row"><span class="label">手机号</span><span class="value">136****7777</span></div>
+          <div class="detail-row"><span class="label">来访时间</span><span class="value text-primary">2026-07-20 09:00</span></div>
+          <div class="detail-row"><span class="label">来访事由</span><span class="value">项目验收</span></div>
+          <div class="detail-row"><span class="label">随行人员</span><span class="value">周明、孙丽、吴磊</span></div>
+          <div class="detail-row"><span class="label">预留车位</span><span class="value">A区-008</span></div>
+          <div class="detail-row"><span class="label">被访人</span><span class="value">赵六</span></div>
+          <div class="detail-row"><span class="label">签到时间</span><span class="value text-primary">2026-07-20 08:55</span></div>
+        </div>
+      </div>
+      <div class="record-card-footer">
+        <div class="expand-hint">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          点击展开详情
+        </div>
+      </div>
+    </div>
+
+    <div style="height: 16px;"></div>
+  </div>
+</div>
+<script src="common.js"></script>
+<script>
+// 卡片展开/折叠
+document.querySelectorAll('.record-card').forEach(function(card) {
+  card.addEventListener('click', function() {
+    this.classList.toggle('expanded');
+    var hint = this.querySelector('.expand-hint');
+    if (this.classList.contains('expanded')) {
+      hint.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>点击收起';
+    } else {
+      hint.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>点击展开详情';
+    }
+  });
+});
+
+// Tab筛选
+var allCards = document.querySelectorAll('.record-card');
+MS.initTabs(function(tabName) {
+  allCards.forEach(function(card) {
+    var status = card.getAttribute('data-status');
+    if (tabName === '全部') {
+      card.style.display = '';
+    } else if (tabName === '已到访' && status === '已到访') {
+      card.style.display = '';
+    } else if (status === tabName) {
+      card.style.display = '';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+});
+</script>
+</body>
+</html>
