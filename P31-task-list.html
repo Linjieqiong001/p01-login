@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="750SpIJkjUprgsSrtJ19FB">
+<head data-page-node-id="zaF9ryLcWZDeJhFwENNEJc">
+<meta charset="UTF-8" data-page-node-id="2oRQWEfhwT0hycMrHrqJSI">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="HsWi8naSSkiwuU3Ldw5yDr">
+<title>P31 - 任务列表</title>
+<link rel="stylesheet" href="common.css" data-page-node-id="BrtTCikBTw1nszFzjUbZBb">
+<style>
+/* ==================== Page Specific Styles ==================== */
+
+/* ==================== Status Tags (P36/P50 口径) ==================== */
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+.tag-pending { background: var(--warning-light); color: var(--warning); }
+.tag-pass { background: var(--success-light); color: var(--success); }
+
+/* ==================== Approval-style Card Shell (P50 口径) ==================== */
+.approval-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  margin: 10px 16px 0;
+  padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.approval-card:active { transform: scale(0.99); }
+.approval-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  gap: 8px;
+}
+.approval-card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+  flex: 1;
+  min-width: 0;
+  line-height: 1.3;
+}
+.approval-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.approval-card-meta .time-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--text-3);
+  flex-shrink: 0;
+}
+.approval-card-summary {
+  font-size: 13px;
+  color: var(--text-2);
+  padding: 8px 10px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  line-height: 1.5;
+}
+
+/* ==================== Driver Trip Route Card (P36 口径) ==================== */
+.trip-route {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  background: var(--bg);
+  border-radius: var(--radius-md);
+  margin: 4px 0;
+}
+.route-endpoint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+.route-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2.5px solid var(--primary);
+  flex-shrink: 0;
+}
+.route-dot.end {
+  border-color: var(--success);
+  background: var(--success);
+}
+.route-text { min-width: 0; }
+.route-label-sm { font-size: 10px; color: var(--text-3); line-height: 1.2; }
+.route-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.route-arrow {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+.route-arrow svg { width: 24px; height: 16px; color: var(--text-3); }
+.trip-time {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+.trip-time svg { width: 14px; height: 14px; color: var(--text-3); flex-shrink: 0; }
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 0.5px solid var(--border);
+}
+.card-footer .footer-info {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-3);
+  align-items: center;
+  flex-wrap: wrap;
+}
+.card-footer .footer-info span {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.card-footer .footer-info svg { width: 13px; height: 13px; }
+
+/* ==================== Empty state ==================== */
+.empty-state-mini {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: 10px;
+}
+.empty-state-mini svg {
+  width: 56px;
+  height: 56px;
+  color: var(--divider);
+}
+.empty-state-mini .empty-text {
+  font-size: 14px;
+  color: var(--text-3);
+}
+
+/* ==================== Card list container ==================== */
+.card-list-container {
+  padding-bottom: 12px;
+}
+.spacer { height: 20px; }
+</style>
+</head>
+<body data-page-node-id="FYSa0ImNJQpxNSk12Ikh3H">
+
+<div class="miniprogram" id="app" data-page-node-id="DNqQcOWePGnHmgknmSj44D">
+
+  <!-- Status Bar (light) -->
+  <div class="status-bar light" data-page-node-id="GgLVFYqPvIPDvK7Vy5ftHB">
+    <span class="time" id="statusTime" data-page-node-id="BogmoORdWhmufCKpvPjIbP">09:38</span>
+    <div class="icons" data-page-node-id="RpcjMyWbRjxq1qASBDXGo9">
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="KPD5AYCdaEyi1viUDXQBal"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" data-page-node-id="3crQWKIFDdmfcp1ZMe1gZR"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="Ownal3b5SIqAGjw1gK1whM"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" data-page-node-id="C5JCseTcwN7zwmdz1BjWUy"/></svg>
+    </div>
+  </div>
+
+  <!-- Navigation Bar (white, with back) -->
+  <div class="nav-bar white" data-page-node-id="P7giwyBnI3xdB18E4JNjMU">
+    <div class="nav-back" data-page-node-id="GvZRwQIJqUlmhuJhkuUjbD">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="tQmp6svYjcETVqtGX08wsS">
+        <polyline points="15 18 9 12 15 6" data-page-node-id="MShXRoC1DhFoKG1TYANZrc"/>
+      </svg>
+    </div>
+    <span class="nav-title" data-page-node-id="6u6VbCJIqW0LmJznOqVoZ5">任务列表</span>
+    <div class="nav-placeholder" data-page-node-id="ezVjbWwxCBtwFShD2xEWXF"></div>
+  </div>
+
+  <!-- Type Tabs -->
+  <div class="tabs" id="typeTabs" data-page-node-id="8Vqi8PnXeWJlnYNlaLE4Vn">
+    <div class="tab active" data-type="driver" data-page-node-id="ty3sdtCYnQQo9ktXT0tHSs">司机作业</div>
+    <div class="tab" data-type="repair" data-page-node-id="ounpiSsDoghU4n54I0408K">维护报修任务</div>
+    <div class="tab" data-type="housing" data-page-node-id="PSfnRHiYLIuCj7GMcKeGRR">住房维修任务</div>
+  </div>
+
+  <!-- Status Sub-tabs (文案随类型切换) -->
+  <div class="sub-tabs" id="statusTabs" data-page-node-id="YEN58yuAp4MmnRd1ufNEft">
+    <div class="sub-tab active" data-status="pending" data-page-node-id="bnrWojvZ3oJ0Sq6GhmsyHt">待出行</div>
+    <div class="sub-tab" data-status="done" data-page-node-id="PZ24g5iJfjh0l7p8REMGlY">已完成</div>
+  </div>
+
+  <!-- Scrollable Content -->
+  <div class="content" id="content" data-page-node-id="6quqlgX5ZSQuOpVKx4UoyJ">
+
+    <!-- Dynamic card list -->
+    <div class="card-list-container" id="cardList" data-page-node-id="8gaTDbxvZBJnPctAUDM9i5"></div>
+
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" data-page-node-id="L8aeWXCYgy0jl4mUxv3xJp">
+    <div class="toast-icon" data-page-node-id="pIF2XnSzr57HVRHW40ZpXv"></div>
+    <span id="toastText" data-page-node-id="CQEntvyXH9GZip4ggwx9oR"></span>
+  </div>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // ==================== Task Data ====================
+  // 司机作业：P36 车票式路线卡，状态保留 待出行/已完成
+  // 维修任务/住房维修任务：P50 报修审批式卡，状态 待维修/已完成
+  var typeConfig = {
+    driver:  { pendingLabel: '待出行', doneLabel: '已完成' },
+    repair:  { pendingLabel: '待维修', doneLabel: '已完成' },
+    housing: { pendingLabel: '待维修', doneLabel: '已完成' }
+  };
+
+  var taskData = {
+    driver: {
+      pending: [
+        {
+          title: '前往洋浦调研',
+          time: '2026-07-22 09:00',
+          from: '海口海事局',
+          to: '洋浦海事局',
+          passengers: '3人',
+          status: '待出行'
+        }
+      ],
+      done: [
+        {
+          title: '会议用车',
+          time: '2026-07-21 14:00',
+          from: '海口海事局',
+          to: '省政府',
+          passengers: '2人',
+          status: '已完成'
+        },
+        {
+          title: '公务接待用车',
+          time: '2026-07-20 10:30',
+          from: '海口海事局',
+          to: '美兰机场',
+          passengers: '1人',
+          status: '已完成'
+        },
+        {
+          title: '前往文昌调研',
+          time: '2026-07-19 08:00',
+          from: '海口海事局',
+          to: '清澜海事局',
+          passengers: '4人',
+          status: '已完成'
+        },
+        {
+          title: '送文件至交通厅',
+          time: '2026-07-18 15:00',
+          from: '海口海事局',
+          to: '省交通运输厅',
+          passengers: '1人',
+          status: '已完成'
+        },
+        {
+          title: '三沙调研用车',
+          time: '2026-07-17 07:30',
+          from: '海口海事局',
+          to: '三沙海事局',
+          passengers: '2人',
+          status: '已完成'
+        }
+      ]
+    },
+    repair: {
+      pending: [
+        {
+          title: '3楼卫生间水管漏水',
+          location: '行政楼3楼',
+          time: '2026-07-22 09:15',
+          status: '待维修'
+        },
+        {
+          title: '会议室投影仪无法开机',
+          location: '办公楼5楼会议室',
+          time: '2026-07-22 08:30',
+          status: '待维修'
+        }
+      ],
+      done: [
+        {
+          title: '空调不制冷',
+          location: '办公楼2楼',
+          time: '2026-07-21',
+          status: '已完成'
+        },
+        {
+          title: '走廊灯不亮',
+          location: '行政楼1楼',
+          time: '2026-07-20',
+          status: '已完成'
+        },
+        {
+          title: '食堂水槽堵塞',
+          location: '食堂后厨',
+          time: '2026-07-19',
+          status: '已完成'
+        },
+        {
+          title: '办公室门锁损坏',
+          location: '办公楼3楼301室',
+          time: '2026-07-18',
+          status: '已完成'
+        },
+        {
+          title: '打印机卡纸',
+          location: '办公楼2楼文印室',
+          time: '2026-07-17',
+          status: '已完成'
+        },
+        {
+          title: '网络交换机故障',
+          location: '办公楼机房',
+          time: '2026-07-16',
+          status: '已完成'
+        },
+        {
+          title: '消防指示灯损坏',
+          location: '行政楼走廊',
+          time: '2026-07-15',
+          status: '已完成'
+        },
+        {
+          title: '电梯按键失灵',
+          location: '办公楼电梯',
+          time: '2026-07-14',
+          status: '已完成'
+        }
+      ]
+    },
+    housing: {
+      pending: [],
+      done: [
+        {
+          title: '热水器不出热水',
+          room: '1栋201室',
+          time: '2026-07-18 10:30',
+          status: '已完成'
+        },
+        {
+          title: '厨房水龙头漏水',
+          room: '2栋102室',
+          time: '2026-07-15 14:00',
+          status: '已完成'
+        },
+        {
+          title: '卧室墙面渗水',
+          room: '1栋301室',
+          time: '2026-07-10 09:00',
+          status: '已完成'
+        }
+      ]
+    }
+  };
+
+  var currentType = 'driver';
+  var currentStatus = 'pending';
+
+  // ==================== Status Sub-tab 文案 ====================
+  function syncStatusTabs() {
+    var cfg = typeConfig[currentType];
+    document.querySelectorAll('#statusTabs .sub-tab').forEach(function(t) {
+      var st = t.getAttribute('data-status');
+      t.textContent = (st === 'pending') ? cfg.pendingLabel : cfg.doneLabel;
+    });
+  }
+
+  // ==================== Render ====================
+  function tagClass(status) {
+    return status === '已完成' ? 'tag tag-pass' : 'tag tag-pending';
+  }
+
+  function renderCards() {
+    var container = document.getElementById('cardList');
+    var cfg = typeConfig[currentType];
+    var data = taskData[currentType][currentStatus];
+    var label = (currentStatus === 'pending') ? cfg.pendingLabel : cfg.doneLabel;
+
+    if (!data || data.length === 0) {
+      container.innerHTML = '<div class="empty-state-mini">'
+        + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>'
+        + '<div class="empty-text">暂无' + label + '任务</div>'
+        + '</div>'
+        + '<div class="spacer"></div>';
+      return;
+    }
+
+    var html = '';
+    data.forEach(function(item) {
+      if (currentType === 'driver') {
+        html += buildDriverCard(item);
+      } else if (currentType === 'repair') {
+        html += buildRepairCard(item);
+      } else {
+        html += buildHousingCard(item);
+      }
+    });
+    container.innerHTML = html + '<div class="spacer"></div>';
+
+    // Bind click events → 任务详情（司机作业→司机作业详情 P53；维修/住房维修→P32 维修任务详情）
+    container.querySelectorAll('.approval-card').forEach(function(card) {
+      card.addEventListener('click', function() {
+        var url = (currentType === 'driver') ? 'P53-driver-task-detail.html' : 'P32-task-detail.html';
+        window.location.href = url;
+      });
+    });
+  }
+
+  // P36 车票式路线卡（司机作业）
+  function buildDriverCard(item) {
+    return '<div class="approval-card fade-in">'
+      + '<div class="approval-card-header">'
+      + '<span class="approval-card-title">张三提交的用车申请</span>'
+      + '<span class="' + tagClass(item.status) + '">' + item.status + '</span>'
+      + '</div>'
+      + '<div class="trip-route">'
+      + '<div class="route-endpoint">'
+      + '<div class="route-dot"></div>'
+      + '<div class="route-text"><div class="route-label-sm">出发</div><div class="route-name">' + item.from + '</div></div>'
+      + '</div>'
+      + '<div class="route-arrow">'
+      + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="12" x2="19" y2="12" stroke-dasharray="3 3"/><polyline points="15 8 19 12 15 16"/></svg>'
+      + '</div>'
+      + '<div class="route-endpoint">'
+      + '<div class="route-dot end"></div>'
+      + '<div class="route-text"><div class="route-label-sm">到达</div><div class="route-name">' + item.to + '</div></div>'
+      + '</div>'
+      + '</div>'
+      + '<div class="trip-time">'
+      + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'
+      + '<span>' + item.time + '</span>'
+      + '</div>'
+      + '<div class="card-footer"><div class="footer-info">'
+      + '<span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>' + item.passengers + '</span>'
+      + '<span>' + item.title + '</span>'
+      + '</div></div>'
+      + '</div>';
+  }
+
+  // P50 报修审批式卡（维修任务）
+  function buildRepairCard(item) {
+    return '<div class="approval-card fade-in">'
+      + '<div class="approval-card-header">'
+      + '<span class="approval-card-title">张三提交的维修报修申请</span>'
+      + '<span class="' + tagClass(item.status) + '">' + item.status + '</span>'
+      + '</div>'
+      + '<div class="approval-card-meta">'
+      + '<svg class="time-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>'
+      + '<span>发起时间：' + item.time + '</span>'
+      + '</div>'
+      + '<div class="approval-card-summary">报修项目：' + item.title + '；位置：' + item.location + '</div>'
+      + '</div>';
+  }
+
+  // P50 报修审批式卡（住房维修任务）
+  function buildHousingCard(item) {
+    return '<div class="approval-card fade-in">'
+      + '<div class="approval-card-header">'
+      + '<span class="approval-card-title">张三提交的住房维修申请</span>'
+      + '<span class="' + tagClass(item.status) + '">' + item.status + '</span>'
+      + '</div>'
+      + '<div class="approval-card-meta">'
+      + '<svg class="time-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>'
+      + '<span>发起时间：' + item.time + '</span>'
+      + '</div>'
+      + '<div class="approval-card-summary">报修项目：' + item.title + '；房号：' + item.room + '</div>'
+      + '</div>';
+  }
+
+  // ==================== Tab Events ====================
+  // Type tabs
+  document.querySelectorAll('#typeTabs .tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('#typeTabs .tab').forEach(function(t) { t.classList.remove('active'); });
+      this.classList.add('active');
+      currentType = this.getAttribute('data-type');
+      syncStatusTabs();
+      renderCards();
+    });
+  });
+
+  // Status sub-tabs
+  document.querySelectorAll('#statusTabs .sub-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('#statusTabs .sub-tab').forEach(function(t) { t.classList.remove('active'); });
+      this.classList.add('active');
+      currentStatus = this.getAttribute('data-status');
+      renderCards();
+    });
+  });
+
+  // Initial render
+  syncStatusTabs();
+  renderCards();
+
+})();
+</script>
+
+</body>
+</html>
