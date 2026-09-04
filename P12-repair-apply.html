@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>P12 - 报修申请</title>
+<link rel="stylesheet" href="common.css">
+<style>
+/* ==================== Repair Type Select ==================== */
+.repair-type-tip {
+  font-size: 12px;
+  color: var(--text-3);
+  padding: 12px 16px 4px;
+}
+
+/* ==================== Photo Upload Section ==================== */
+.photo-section {
+  padding: 0 16px;
+}
+.photo-section-label {
+  font-size: 13px;
+  color: var(--text-3);
+  margin-bottom: 4px;
+}
+.photo-hint {
+  font-size: 11px;
+  color: var(--text-4);
+  margin-top: 4px;
+}
+
+/* ==================== Bottom Spacer ==================== */
+.bottom-spacer {
+  height: 80px;
+}
+</style>
+</head>
+<body>
+<div class="miniprogram">
+
+  <!-- Status Bar -->
+  <div class="status-bar light">
+    <span class="time">09:38</span>
+    <div class="icons">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar white">
+    <div class="nav-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </div>
+    <span class="nav-title">报修申请</span>
+    <span class="nav-right-btn" id="historyBtn">历史记录</span>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <!-- 故障基本信息 -->
+    <div class="section">
+      <div class="section-title">
+        <span class="dot"></span>故障信息
+      </div>
+      <div class="form-group">
+        <div class="form-item">
+          <span class="form-label"><span class="required">*</span>故障标题</span>
+          <div class="form-value">
+            <input class="form-input" type="text" placeholder="请简要描述故障" id="repairTitle" maxlength="50">
+          </div>
+        </div>
+        <div class="form-item">
+          <span class="form-label"><span class="required">*</span>故障描述</span>
+          <div class="form-value">
+            <textarea class="form-textarea" placeholder="请详细描述故障情况，以便维修人员提前了解" id="repairDesc" rows="4" style="min-height:80px;"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 位置与类型 -->
+    <div class="section">
+      <div class="section-title">
+        <span class="dot"></span>位置与类型
+      </div>
+      <div class="form-group">
+        <div class="form-item">
+          <span class="form-label"><span class="required">*</span>故障地点</span>
+          <div class="form-value">
+            <input class="form-input" type="text" placeholder="请输入故障位置，如3楼东侧卫生间" id="repairLocation">
+          </div>
+        </div>
+        <div class="form-item">
+          <span class="form-label"><span class="required">*</span>报修类型</span>
+          <div class="form-value" style="position:relative;">
+            <select class="form-select" id="repairType">
+              <option value="" disabled selected>请选择报修类型</option>
+              <option value="water-electric">水电维修</option>
+              <option value="aircon">空调维修</option>
+              <option value="door-window">门窗维修</option>
+              <option value="furniture">家具维修</option>
+              <option value="other">其他</option>
+            </select>
+            <svg style="position:absolute;right:0;top:50%;transform:translateY(-50%);pointer-events:none;width:16px;height:16px;color:var(--text-4);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 照片上传 -->
+    <div class="section">
+      <div class="section-title">
+        <span class="dot"></span>现场照片
+      </div>
+      <div class="photo-section">
+        <div class="photo-section-label">拍摄故障现场照片，最多9张</div>
+        <div class="photo-upload" id="photoUpload">
+          <div class="photo-add">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+            <span>添加照片</span>
+          </div>
+        </div>
+        <div class="photo-hint">支持jpg、png格式，单张不超过10MB</div>
+      </div>
+    </div>
+
+    <div class="bottom-spacer"></div>
+  </div>
+
+  <!-- 底部提交按钮 -->
+  <div class="btn-fixed-bottom">
+    <button class="btn btn-primary btn-block" id="submitBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+        <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+        <polyline points="22 4 12 14.01 9 11.01"/>
+      </svg>
+      提交报修
+    </button>
+  </div>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // 历史记录
+  document.getElementById('historyBtn').addEventListener('click', function() {
+    window.location.href = 'P13-my-repairs.html';
+  });
+
+  // 提交按钮
+  document.getElementById('submitBtn').addEventListener('click', function() {
+    var title = document.getElementById('repairTitle').value.trim();
+    var desc = document.getElementById('repairDesc').value.trim();
+    var location = document.getElementById('repairLocation').value.trim();
+    var type = document.getElementById('repairType').value;
+
+    if (!title) {
+      MS.showToast('请输入故障标题', 'info');
+      return;
+    }
+    if (!desc) {
+      MS.showToast('请输入故障描述', 'info');
+      return;
+    }
+    if (!location) {
+      MS.showToast('请输入故障地点', 'info');
+      return;
+    }
+    if (!type) {
+      MS.showToast('请选择报修类型', 'info');
+      return;
+    }
+
+    MS.showToast('报修工单已提交，工单号：BX20260722001', 'success');
+  });
+
+})();
+</script>
+</body>
+</html>
