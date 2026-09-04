@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="OZBEmOmd0RkZPkeYvWu2sR">
+<head data-page-node-id="XRQP1Be8VSN10BYop6EYhi">
+<meta charset="UTF-8" data-page-node-id="FcviytmsGwTfxLIi8AF5yh">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="2Opkn37XwouTKgMAaEufvT">
+<title>P52 - 维护报修审批详情（已通过）</title>
+<link rel="stylesheet" href="common.css" data-page-node-id="he2aYpPgeXgchp8kMVqVgD">
+<style>
+/* ==================== Detail Info Row ==================== */
+.detail-block {
+  padding: 4px 16px 14px;
+}
+.detail-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 8px 0;
+  gap: 12px;
+}
+.detail-row .d-label {
+  font-size: 13px;
+  color: var(--text-3);
+  width: 80px;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+.detail-row .d-value {
+  font-size: 14px;
+  color: var(--text-1);
+  flex: 1;
+  line-height: 1.5;
+}
+
+/* ==================== Approval Number ==================== */
+.approval-no-block {
+  padding: 16px;
+  text-align: center;
+}
+.approval-no {
+  font-size: 14px;
+  color: var(--text-2);
+  font-weight: 500;
+}
+.approval-no span {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+}
+
+/* ==================== Approval Flow Timeline ==================== */
+.flow-timeline { padding: 4px 16px 16px; }
+.flow-node {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  padding: 0 0 20px 0;
+}
+.flow-node:last-child { padding-bottom: 0; }
+.flow-node:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 44px;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+.flow-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--primary-gradient);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.flow-status {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--success);
+  border: 2px solid #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.flow-status svg { width: 10px; height: 10px; color: #FFFFFF; }
+.flow-status.pending { background: var(--warning); }
+.flow-body {
+  flex: 1;
+  margin-left: 12px;
+  min-width: 0;
+  padding-top: 2px;
+}
+.flow-meta {
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.4;
+}
+.flow-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-1);
+  line-height: 1.5;
+  margin-top: 2px;
+}
+.flow-detail {
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.5;
+  margin-top: 4px;
+}
+.flow-time {
+  font-size: 12px;
+  color: var(--text-3);
+  flex-shrink: 0;
+  margin-left: 8px;
+  line-height: 1.4;
+  padding-top: 2px;
+}
+
+/* ==================== Photo Items in Detail ==================== */
+.photo-preview-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 2px;
+}
+.photo-thumb {
+  width: 68px;
+  height: 68px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.photo-thumb:active { opacity: 0.8; }
+.photo-thumb-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.photo-thumb-label {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  font-size: 9px;
+  color: #FFFFFF;
+  background: rgba(0,0,0,0.45);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+/* ==================== Image Preview ==================== */
+.image-preview-mask {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s;
+}
+.image-preview-mask.show { opacity: 1; visibility: visible; }
+.image-preview-close {
+  position: absolute;
+  top: 24px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.image-preview-close svg { width: 20px; height: 20px; color: #FFFFFF; }
+.image-preview-label {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,0.7);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* ==================== Spacer ==================== */
+.spacer { height: 20px; }
+</style>
+</head>
+<body data-page-node-id="v6j2p4SSr2rEgLhVJxbYf6">
+
+<div class="miniprogram" id="app" data-page-node-id="s2cwI5hsWzVr44H3NL2XSL">
+
+  <!-- Status Bar -->
+  <div class="status-bar light" data-page-node-id="UkgbldaEYHeFm0NCDvPcw3">
+    <span class="time" data-page-node-id="4IFxTzKKJPqV8KGD6bV77Z">09:42</span>
+    <div class="icons" data-page-node-id="xgXIJ4EGqfosk41xeWAsKg">
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="AWhTzzmmARhUSZDf6HwcgL"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" data-page-node-id="77I4G7Bs7o7mRy4NpbbNQu"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="IC2qjNGeaPBnfSfMc0j2uA"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" data-page-node-id="A0yRHGnXjKtFWWwrTGnHHr"/></svg>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar white" data-page-node-id="E6vlnZE48g89fIEpfEIGeL">
+    <div class="nav-back" data-page-node-id="eMN3EnA54zBTo5Da59ZWcn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="oK1xpgfVryWx5Hl7sr9NHC">
+        <polyline points="15 18 9 12 15 6" data-page-node-id="uQ4iOL1JoAHbrC5XKALhbY"/>
+      </svg>
+    </div>
+    <span class="nav-title" data-page-node-id="LkS0JiIYzO3TgSVMdbhDUF">维护报修审批详情</span>
+    <span class="nav-placeholder" data-page-node-id="oDrzUwXMoHLsAtgM9bSCK8"></span>
+  </div>
+
+  <!-- Content -->
+  <div class="content fade-in" data-page-node-id="SL9imSGsh0XCSdAE0Hh6sj">
+
+    <!-- 审批编号 -->
+    <div class="section" style="margin-top:16px;" data-page-node-id="cQbAyFIcfhkIEgXZh5EaYU">
+      <div class="approval-no-block" data-page-node-id="6H3HZBTBt1pDSev7K1DKPo">
+        <span class="approval-no" data-page-node-id="J3qnQ9AGw7DTEvgXELq2Mc">审批编号：<span data-page-node-id="elzZMM7QFfuAG2SXbDm5ho">WB-2026-000135</span></span>
+      </div>
+    </div>
+
+    <!-- 申请信息 -->
+    <div class="section" data-page-node-id="kt7wsH90fyUmYszQQT6NoE">
+      <div class="section-title" data-page-node-id="GNHO5i1lgjDYdS0BNtJJc9">
+        <div class="dot" data-page-node-id="GUx87VMsKL1zbucPYH2csi"></div>
+        申请信息
+      </div>
+      <div class="detail-block" data-page-node-id="nsWgizwnRd741lHktj2dNa">
+        <div class="detail-row" data-page-node-id="8i7X3f91eAAHw4z0xsSny5">
+          <span class="d-label" data-page-node-id="QdC0fWglwuChuNmU8YPPdQ">报修类型</span>
+          <span class="d-value" style="font-weight:600;color:var(--primary);" data-page-node-id="ZZ83Il1EaFdXIwuyS7ASvK">家电维修</span>
+        </div>
+        <div class="detail-row" data-page-node-id="65FyE8SaaHbLRrCtiysB7l">
+          <span class="d-label" data-page-node-id="TUMhTIKZ7nweKbtEoXoKrJ">报修位置</span>
+          <span class="d-value" data-page-node-id="nKoUmLxaCm3nZAwqJ3CEnH">3号楼201会议室</span>
+        </div>
+        <div class="detail-row" data-page-node-id="tZxzPXHWzthbEXRvdQmmw0">
+          <span class="d-label" data-page-node-id="6tCp2F612UheY4n5rEWt1g">报修描述</span>
+          <span class="d-value" data-page-node-id="huenttMSHFcn8xHQfyHmc7">会议室空调不制冷，出风微弱且有异响，影响会议使用</span>
+        </div>
+        <div class="detail-row" data-page-node-id="BwXCmnUFmGk7J0BhOfqhY5">
+          <span class="d-label" data-page-node-id="MoGygU02rCGCJ9JE2N9vOK">紧急程度</span>
+          <span class="d-value" data-page-node-id="rexabDE4WBRCSos9sOj1Bd">一般</span>
+        </div>
+        <div class="detail-row" data-page-node-id="PBdx4Jo9DZc2D6z5DPD7j4">
+          <span class="d-label" data-page-node-id="AN2mzWulD9kptIY7GGkWv3">期望上门</span>
+          <span class="d-value" data-page-node-id="jSwO2YDIafI8EIYS01gVaU">2026-07-25 14:00 前</span>
+        </div>
+        <div class="detail-row" data-page-node-id="CIg5iFzCo4XuIGmwr6tzCJ">
+          <span class="d-label" data-page-node-id="ghqhWFVwldNEOQfQOBTd0A">现场照片</span>
+          <span class="d-value" data-page-node-id="eel1la7WmQGY21EOPUQEo2">
+            <div class="photo-preview-row" data-page-node-id="E3QJFQdMQaI4PVsTeAhlkK">
+              <div class="photo-thumb" onclick="openImagePreview(0)" data-page-node-id="l2ByBpZqQawpbcwcS1BGWa">
+                <div class="photo-thumb-inner" style="background:linear-gradient(135deg,#E6F0FF,#1677FF);" data-page-node-id="89oULrrnSvB7mJCFFMsal8">
+                  <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#FFFFFF" stroke-width="1.5" data-page-node-id="oQR7WUrw0ByhvzbsHOtUng">
+                    <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" data-page-node-id="nHKpHt7l4M3SfznJFVLKN4"/>
+                    <circle cx="12" cy="13" r="4" data-page-node-id="gWhlHzhWmH84JCYAyGQqvM"/>
+                  </svg>
+                </div>
+                <span class="photo-thumb-label" data-page-node-id="6DE5TfAY7I8D5bKDEkWYk3">图1</span>
+              </div>
+              <div class="photo-thumb" onclick="openImagePreview(1)" data-page-node-id="dkW5Vp8A4AVrEPyOchLiPh">
+                <div class="photo-thumb-inner" style="background:linear-gradient(135deg,#FFF3E8,#ED7B2F);" data-page-node-id="eoCNQ9UNCe7PzFtVoTPrfb">
+                  <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#FFFFFF" stroke-width="1.5" data-page-node-id="AjAj0EejrARr7LvpjeuN86">
+                    <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" data-page-node-id="D8QPPvXwdV1C17QwrFBWci"/>
+                    <circle cx="12" cy="13" r="4" data-page-node-id="XnhA9SVBhwcIHytc2KF5Vj"/>
+                  </svg>
+                </div>
+                <span class="photo-thumb-label" data-page-node-id="AzhsNI41124FoBEcHFqCli">图2</span>
+              </div>
+            </div>
+          </span>
+        </div>
+        <div class="detail-row" data-page-node-id="3aPYL0dhGqdCcLiSzvC1ni">
+          <span class="d-label" data-page-node-id="j4URVvGmprCELioUml4dCL">申请人</span>
+          <span class="d-value" data-page-node-id="qeVbU2MBZIUyLtRGzhb2oT">张三</span>
+        </div>
+        <div class="detail-row" data-page-node-id="5OSyT0rZKYcER99RnA5oQm">
+          <span class="d-label" data-page-node-id="bIVcwmWHKgtoQdd2iDoqvo">申请部门</span>
+          <span class="d-value" data-page-node-id="GRdtbG5wCDpqm8zT4WQ62T">后勤管理科</span>
+        </div>
+        <div class="detail-row" data-page-node-id="jSXd90GtvxzZoVEsrMSBu4">
+          <span class="d-label" data-page-node-id="trqP3ANVOEWIgnyjE3D1jT">提交时间</span>
+          <span class="d-value" data-page-node-id="QXnC7ZNrbAyj86CszsZgWv">2026-07-25 09:00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 审批流程 -->
+    <div class="section" data-page-node-id="WMmU5mxAFPTHP8UkKUIHdA">
+      <div class="section-title" data-page-node-id="09m3hJJBHFXiL6YbMYMsD7">
+        <div class="dot" data-page-node-id="36webEvumXppRrQqElFhmF"></div>
+        审批流程
+      </div>
+      <div class="flow-timeline" data-page-node-id="TPZKsF0FYeQIDJbBSGNCJW">
+
+        <!-- 发起申请 -->
+        <div class="flow-node" data-page-node-id="15Zr9enB5zG1hmscrUfOn9">
+          <div class="flow-avatar" data-page-node-id="OqhBQCp0cT2N6C9A9VQHhs">
+            张三
+            <span class="flow-status done" data-page-node-id="pCtcwUS0tT5LarK6afvypq">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="2yNIPlM8heRlnWRun8Tm1T"><polyline points="20 6 9 17 4 12" data-page-node-id="M5JeJFbJ1Gh2pcIdTkCbNy"/></svg>
+            </span>
+          </div>
+          <div class="flow-body" data-page-node-id="euAszHHsRpggQXXn3qS0wb">
+            <div class="flow-meta" data-page-node-id="DsHS3PLRglNqaMOXmLPuCv">发起申请</div>
+            <div class="flow-name" data-page-node-id="Hx7AwUr7CBeS48aw1vgtxF">我</div>
+          </div>
+          <div class="flow-time" data-page-node-id="DJdZSdGYqxs7RO6Y3YM2CL">07.25 09:00</div>
+        </div>
+
+        <!-- 主管审批（已通过） -->
+        <div class="flow-node" data-page-node-id="m3Oo20lSdLDtvDcFD8RBWk">
+          <div class="flow-avatar" data-page-node-id="3Co922L0HujSCM6bv6eX8n">
+            赵
+            <span class="flow-status done" data-page-node-id="9Vg4huZ4kFqVGTbLqLTwtH">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="ZzFa4Y272EjQVp0jP6J7wy"><polyline points="20 6 9 17 4 12" data-page-node-id="GXyJgl1jsGly5GGThHi3gx"/></svg>
+            </span>
+          </div>
+          <div class="flow-body" data-page-node-id="0ogTSRAvOkLQDBZrQfChMw">
+            <div class="flow-meta" data-page-node-id="ITN1UmCKr6u8spsJlhj77p">主管审批</div>
+            <div class="flow-name" data-page-node-id="DpkwaMEhlxNhMgAe4fm1kZ">赵主任（已同意）</div>
+            <div class="flow-detail" data-page-node-id="hvlgS9gLvGwkEC6lJatsht">审批意见：同意维修，请尽快派工处理</div>
+          </div>
+          <div class="flow-time" data-page-node-id="4mASl6ZnnTUmzOVvGHA9bh">07.25 11:00</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 维修工单（审批通过后派工结果） -->
+    <div class="section" data-page-node-id="BWBxM5o6EBGhlkyYxYz9Nf">
+      <div class="section-title" data-page-node-id="hwe35IUmOlssyMiSApVl2G">
+        <div class="dot" data-page-node-id="wt2CfgK2QIN3eCoAfQFZvK"></div>
+        维修工单
+      </div>
+      <div class="detail-block" data-page-node-id="43FdvL9wlIy7r5S6cMh6ZG">
+        <div class="detail-row" data-page-node-id="W0wKIcePzvnM2Cxbv2eyCe">
+          <span class="d-label" data-page-node-id="1VlV5US9QX0gC8Kdg5vfbq">维修人员</span>
+          <span class="d-value" style="font-weight:600;color:var(--primary);" data-page-node-id="sbDEwAugzPqriZocU4BPAp">王建国</span>
+        </div>
+        <div class="detail-row" data-page-node-id="8QBf8CfckT7qIlDDsTKeZ1">
+          <span class="d-label" data-page-node-id="CYF3Nkb7UTDDAFVjqjZCjw">联系电话</span>
+          <span class="d-value" style="font-weight:600;color:var(--primary);" data-page-node-id="Hl2MenFUzR65YC4vULib9S">139****6688</span>
+        </div>
+        <div class="detail-row" data-page-node-id="qDwhD6e8tH9luqCQLPvPMy">
+          <span class="d-label" data-page-node-id="nlqqvFzKGS6IeRMWfLvxxx">预约上门</span>
+          <span class="d-value" data-page-node-id="6NGIJ0GxeAbTgr5Yi8WZVc">2026-07-25 14:00-16:00</span>
+        </div>
+        <div class="detail-row" data-page-node-id="eS8mxGhXnrsEebBug7vgEM">
+          <span class="d-label" data-page-node-id="rF2JQQM6xpXRWfDbW1IVmH">工单备注</span>
+          <span class="d-value" data-page-node-id="bMVm5GMP4F9QHEY4JinAHb">上门前将电话联系，请保持电话畅通</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="spacer" data-page-node-id="Ihwbtxl59MtYItIOhWWBA5"></div>
+
+  </div>
+
+  <!-- 图片预览 -->
+  <div class="image-preview-mask" id="imagePreviewMask" data-page-node-id="8nW0jZFFxDkhXfKhGfdOYm">
+    <div class="image-preview-close" onclick="closeImagePreview()" data-page-node-id="AOy7LEyVRTNNYZgFqAQyBH">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="fg5CKAUPDx80WLRblHJW1Q">
+        <path d="M18 6L6 18M6 6l12 12" data-page-node-id="gJItki6VDlwgZDCIXn4NWq"/>
+      </svg>
+    </div>
+    <svg id="imagePreviewSvg" viewBox="0 0 24 24" width="120" height="120" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.6" data-page-node-id="88yUjCJlenW8C9cCogf9Yg">
+      <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" data-page-node-id="OUNY9DwOWR3REl9gurtRUZ"/>
+      <circle cx="12" cy="13" r="4" data-page-node-id="lOVSS8OjCUMynxUsP0EUlO"/>
+    </svg>
+    <span class="image-preview-label" id="imagePreviewLabel" data-page-node-id="DSQWgeKfGk43Q0RPXA4vrN">现场照片</span>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" data-page-node-id="1zgKoGAdLbm4KXgSTk9nSj">
+    <div class="toast-icon" data-page-node-id="E2YTl0XJCmMO5Xs4mbmrXD"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="50x8lflctRACumBSXTjHqd"><circle cx="12" cy="12" r="10" data-page-node-id="oCFZO8FnAi1DshPaZPN7Xm"/><path d="M12 16v-4M12 8h.01" data-page-node-id="RJf7l5ytP3GeT8sn6eZAcB"/></svg></div>
+    <span id="toastText" data-page-node-id="bT0eeTrQc8ueQYzqXOItXG"></span>
+  </div>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  /* ==================== Image Preview ==================== */
+  var imageData = [
+    { name: '现场照片-空调故障部位', color1: '#E6F0FF', color2: '#1677FF' },
+    { name: '现场照片-会议室全景', color1: '#FFF3E8', color2: '#ED7B2F' }
+  ];
+
+  window.openImagePreview = function(index) {
+    var mask = document.getElementById('imagePreviewMask');
+    var svg = document.getElementById('imagePreviewSvg');
+    var label = document.getElementById('imagePreviewLabel');
+    var data = imageData[index] || imageData[0];
+
+    svg.style.display = '';
+    label.textContent = data.name;
+    mask.classList.add('show');
+  };
+
+  window.closeImagePreview = function() {
+    document.getElementById('imagePreviewMask').classList.remove('show');
+  };
+
+  document.getElementById('imagePreviewMask').addEventListener('click', function(e) {
+    if (e.target === this) closeImagePreview();
+  });
+
+  /* ==================== Status Bar Time ==================== */
+  function updateStatusTime() {
+    var now = new Date();
+    var h = String(now.getHours()).padStart(2, '0');
+    var m = String(now.getMinutes()).padStart(2, '0');
+    var el = document.querySelector('.status-bar .time');
+    if (el) el.textContent = h + ':' + m;
+  }
+  updateStatusTime();
+  setInterval(updateStatusTime, 60000);
+
+})();
+</script>
+
+</body>
+</html>
