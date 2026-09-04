@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="26gpgCFk6kRjF4TlXEe66F">
+<head data-page-node-id="jsX0Z66wdQHWYZQEZnps6G">
+<meta charset="UTF-8" data-page-node-id="RNQHX2632wQv1p629ZwZ5A">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="cItbryvVc99iqtleGTc6Se">
+<title>P41 - 白沙门审批详情（未审批）</title>
+<link rel="stylesheet" href="common.css" data-page-node-id="BAE0jqXt8MHsst6cPAxHnL">
+<style>
+/* ==================== Detail Info Row ==================== */
+.detail-block {
+  padding: 4px 16px 14px;
+}
+.detail-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 8px 0;
+  gap: 12px;
+}
+.detail-row .d-label {
+  font-size: 13px;
+  color: var(--text-3);
+  width: 70px;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+.detail-row .d-value {
+  font-size: 14px;
+  color: var(--text-1);
+  flex: 1;
+  line-height: 1.5;
+}
+
+/* ==================== Approval Number ==================== */
+.approval-no-block {
+  padding: 16px;
+  text-align: center;
+}
+.approval-no {
+  font-size: 14px;
+  color: var(--text-2);
+  font-weight: 500;
+}
+.approval-no span {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+}
+
+/* ==================== Approval Flow Timeline ==================== */
+.flow-timeline { padding: 4px 16px 16px; }
+.flow-node {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  padding: 0 0 20px 0;
+}
+.flow-node:last-child { padding-bottom: 0; }
+.flow-node:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 44px;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+.flow-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--primary-gradient);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.flow-status {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--success);
+  border: 2px solid #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.flow-status svg { width: 10px; height: 10px; color: #FFFFFF; }
+.flow-status.pending { background: var(--warning); }
+.flow-body {
+  flex: 1;
+  margin-left: 12px;
+  min-width: 0;
+  padding-top: 2px;
+}
+.flow-meta {
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.4;
+}
+.flow-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-1);
+  line-height: 1.5;
+  margin-top: 2px;
+}
+.flow-time {
+  font-size: 12px;
+  color: var(--text-3);
+  flex-shrink: 0;
+  margin-left: 8px;
+  line-height: 1.4;
+  padding-top: 2px;
+}
+
+/* ==================== Confirm Text ==================== */
+.confirm-text {
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+
+/* ==================== Reject Textarea ==================== */
+.reject-textarea {
+  width: 100%;
+  min-height: 88px;
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  font-size: 14px;
+  color: var(--text-1);
+  background: var(--bg);
+  resize: none;
+  outline: none;
+  font-family: inherit;
+  line-height: 1.5;
+  transition: border-color 0.2s;
+}
+.reject-textarea::placeholder { color: var(--text-4); }
+.reject-textarea:focus { border-color: var(--primary); }
+
+/* ==================== Bottom Button Area ==================== */
+.btn-fixed-bottom.flex-row {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px calc(12px + var(--safe-bottom));
+  background: var(--card-bg);
+  border-top: 0.5px solid var(--divider);
+}
+.btn-fixed-bottom.flex-row .btn {
+  flex: 1;
+}
+
+/* ==================== Spacer ==================== */
+.spacer { height: 80px; }
+</style>
+</head>
+<body data-page-node-id="aDACFr7ztxV2HKkRDWAejN">
+
+<div class="miniprogram" id="app" data-page-node-id="sNZQiWnWVVINcjodqF0pot">
+
+  <!-- Status Bar -->
+  <div class="status-bar light" data-page-node-id="TbOjtqm6NUbHQNGDbxiJhT">
+    <span class="time" data-page-node-id="PFMPRFyLLRaSYAJAb9mMuF">09:42</span>
+    <div class="icons" data-page-node-id="wDl1hP1CmW2D4V5LoatzVL">
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="0D7KEYFBCEUCrHIoil865b"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" data-page-node-id="lnYdv4JU6GVpRY07ACktEs"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="RPsbEFadChI2b4LxPiV4xb"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" data-page-node-id="MJWXa5jox2CCe2iCU8uUTL"/></svg>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar white" data-page-node-id="rbmmJc8CNjYs1s3UNHTCeR">
+    <div class="nav-back" data-page-node-id="hbY626eWs43jtspD1E0zqn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="DBFdkHv3p5NEzAse3SRZL1">
+        <polyline points="15 18 9 12 15 6" data-page-node-id="3sis71NvT94NbSu9C1a1Cp"/>
+      </svg>
+    </div>
+    <span class="nav-title" data-page-node-id="jdIVFDnQ4OBIoH3qLFOple">白沙门审批详情</span>
+    <span class="nav-placeholder" data-page-node-id="mRxOQ3n3aL9PEEtvkY1ONh"></span>
+  </div>
+
+  <!-- Content -->
+  <div class="content fade-in" data-page-node-id="NVVC9JhlxokAhuKZiUSDfs">
+
+    <!-- 审批编号区 -->
+    <div class="section" style="margin-top:16px;">
+      <div class="approval-no-block">
+        <span class="approval-no">审批编号：<span>BS-2026-000789</span></span>
+      </div>
+    </div>
+
+    <!-- 申请信息区 -->
+    <div class="section">
+      <div class="section-title">
+        <div class="dot"></div>
+        申请信息
+      </div>
+      <div class="detail-block">
+        <div class="detail-row">
+          <span class="d-label">预订类型</span>
+          <span class="d-value" style="font-weight:600;color:var(--primary);">客房预订</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">入住日期</span>
+          <span class="d-value">2026-07-25</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">离店日期</span>
+          <span class="d-value">2026-07-27</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">人数</span>
+          <span class="d-value">2人</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">事由</span>
+          <span class="d-value">调研人员住宿</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">申请人</span>
+          <span class="d-value">张三</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">申请部门</span>
+          <span class="d-value">海事处</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">提交时间</span>
+          <span class="d-value">2026-07-22 10:00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 审批流程 -->
+    <div class="section">
+      <div class="section-title">
+        <div class="dot"></div>
+        审批流程
+      </div>
+      <div class="flow-timeline">
+
+        <!-- 发起申请 -->
+        <div class="flow-node">
+          <div class="flow-avatar">
+            张三
+            <span class="flow-status done">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+          </div>
+          <div class="flow-body">
+            <div class="flow-meta">发起申请</div>
+            <div class="flow-name">我</div>
+          </div>
+          <div class="flow-time">07.22 10:00</div>
+        </div>
+
+        <!-- 主管审批（待审批） -->
+        <div class="flow-node">
+          <div class="flow-avatar">
+            赵
+            <span class="flow-status pending">
+              <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg>
+            </span>
+          </div>
+          <div class="flow-body">
+            <div class="flow-meta">主管审批</div>
+            <div class="flow-name">赵主任（审批中）</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
+  </div>
+
+  <!-- Bottom Action Buttons -->
+  <div class="btn-fixed-bottom flex-row">
+    <button class="btn btn-outline-gray" id="btnReject">驳回</button>
+    <button class="btn btn-success" id="btnApprove">通过</button>
+  </div>
+
+  <!-- 确认通过弹窗 -->
+  <div class="modal-mask" id="confirmModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">确认通过</div>
+      </div>
+      <div class="modal-body">
+        <p class="confirm-text">确认通过此客房预订申请？通过后将通知白沙门培训基地确认安排。</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-success btn-block" id="confirmApproveBtn">确认通过</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 驳回弹窗 -->
+  <div class="modal-mask" id="rejectModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">驳回申请</div>
+      </div>
+      <div class="modal-body">
+        <textarea class="reject-textarea" id="rejectReason" placeholder="请输入驳回原因"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger btn-block" id="confirmRejectBtn">确认驳回</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" data-page-node-id="gxhOcVIxvFzLZddWy2VXAF">
+    <div class="toast-icon" data-page-node-id="ZOxcEMRopD8pFMCbGBFKEV"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="KaV0zOn0FESm2NDo270Un3"><circle cx="12" cy="12" r="10" data-page-node-id="cFvLNWGAKaStSkgnY082AW"/><path d="M12 16v-4M12 8h.01" data-page-node-id="Z6I4Gb4SGTGQPouE9jQn6U"/></svg></div>
+    <span id="toastText" data-page-node-id="npOHhexDEGsGOn5Hyu8GOI"></span>
+  </div>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  /* ==================== Toast ==================== */
+  var toastTimer = null;
+  function showToast(text, iconType) {
+    var toast = document.getElementById('toast');
+    var toastText = document.getElementById('toastText');
+    var toastIcon = toast.querySelector('.toast-icon');
+    toastText.textContent = text;
+    var iconHtml = '';
+    if (iconType === 'success') {
+      iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+    } else if (iconType === 'error') {
+      iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>';
+    } else {
+      iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>';
+    }
+    toastIcon.innerHTML = iconHtml;
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() { toast.classList.remove('show'); }, 1800);
+  }
+
+  /* ==================== Modal Helpers ==================== */
+  function showModal(id) {
+    document.getElementById(id).classList.add('show');
+  }
+  function hideModal(id) {
+    document.getElementById(id).classList.remove('show');
+  }
+
+  /* ==================== Approve Button ==================== */
+  document.getElementById('btnApprove').addEventListener('click', function() {
+    showModal('confirmModal');
+  });
+
+  document.getElementById('confirmApproveBtn').addEventListener('click', function() {
+    hideModal('confirmModal');
+    showToast('审批通过，已通知基地确认预订', 'success');
+  });
+
+  document.getElementById('confirmModal').addEventListener('click', function(e) {
+    if (e.target === this) hideModal('confirmModal');
+  });
+
+  /* ==================== Reject Button ==================== */
+  document.getElementById('btnReject').addEventListener('click', function() {
+    document.getElementById('rejectReason').value = '';
+    showModal('rejectModal');
+  });
+
+  document.getElementById('confirmRejectBtn').addEventListener('click', function() {
+    var reason = document.getElementById('rejectReason').value.trim();
+    if (!reason) {
+      showToast('请填写驳回原因', 'error');
+      return;
+    }
+    hideModal('rejectModal');
+    showToast('已驳回该申请', 'info');
+  });
+
+  document.getElementById('rejectModal').addEventListener('click', function(e) {
+    if (e.target === this) hideModal('rejectModal');
+  });
+
+  /* ==================== Status Bar Time ==================== */
+  function updateStatusTime() {
+    var now = new Date();
+    var h = String(now.getHours()).padStart(2, '0');
+    var m = String(now.getMinutes()).padStart(2, '0');
+    var el = document.querySelector('.status-bar .time');
+    if (el) el.textContent = h + ':' + m;
+  }
+  updateStatusTime();
+  setInterval(updateStatusTime, 60000);
+
+})();
+</script>
+
+</body>
+</html>
