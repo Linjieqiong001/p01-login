@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="U3t1G2PFsuxSz62oTAUyc5">
+<head data-page-node-id="hzohsMU5ij34fiOFhC3kRL">
+<meta charset="UTF-8" data-page-node-id="bIiRQRSDdVWuHBUsZvOeoG">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="rkoPd9KCjBangfuqKQqKfw">
+<title>P17 - 住房首页</title>
+<link rel="stylesheet" href="common.css" data-page-node-id="b87TllBIN9yDcm1Uo1lzua">
+<style>
+/* ==================== Housing Info Card ==================== */
+.housing-card {
+  background: var(--card-bg);
+  margin: 12px 16px 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.housing-img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: linear-gradient(150deg, #4D9FFF 0%, #1677FF 30%, #0052D9 60%, #003399 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative elements */
+.housing-img::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -10%;
+  width: 60%;
+  height: 80%;
+  background: radial-gradient(ellipse, rgba(255,255,255,0.1) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.housing-img::after {
+  content: '';
+  position: absolute;
+  bottom: -20%;
+  left: -10%;
+  width: 50%;
+  height: 60%;
+  background: radial-gradient(ellipse, rgba(255,255,255,0.06) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.housing-img-tag {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #FFFFFF;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  letter-spacing: 0.5px;
+}
+
+.housing-img svg {
+  width: 80px;
+  height: 80px;
+  opacity: 0.3;
+  position: relative;
+  z-index: 1;
+}
+
+.housing-info {
+  padding: 14px 16px;
+}
+
+.housing-address {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.housing-address .community {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+.housing-address .tag {
+  font-size: 10px;
+  background: var(--primary-light);
+  color: var(--primary);
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.housing-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 0;
+}
+
+.housing-detail-item {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.housing-detail-item .label {
+  font-size: 12px;
+  color: var(--text-3);
+  min-width: 52px;
+}
+
+.housing-detail-item .value {
+  font-size: 13px;
+  color: var(--text-1);
+  font-weight: 500;
+}
+
+.housing-detail-item .value.rent {
+  color: var(--danger);
+  font-weight: 700;
+  font-size: 15px;
+}
+
+/* ==================== Function Grid ==================== */
+.func-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  background: var(--card-bg);
+  margin: 12px 16px 0;
+  border-radius: var(--radius-lg);
+  padding: 16px 4px;
+  box-shadow: var(--shadow-sm);
+}
+
+.func-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.func-item:active {
+  transform: scale(0.92);
+}
+
+.func-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.func-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.func-1 { background: linear-gradient(135deg, #5DADE2, #3498DB); }
+.func-2 { background: linear-gradient(135deg, #F1948A, #E74C3C); }
+.func-3 { background: linear-gradient(135deg, #FFB443, #FF9800); }
+.func-4 { background: linear-gradient(135deg, #58D68D, #27AE60); }
+.func-1 svg, .func-2 svg, .func-3 svg, .func-4 svg { color: #FFFFFF; }
+
+.func-label {
+  font-size: 12px;
+  color: var(--text-2);
+  text-align: center;
+}
+
+/* ==================== Announcement Section ==================== */
+.announce-section {
+  background: var(--card-bg);
+  margin: 12px 16px 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.announce-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 8px;
+}
+
+.announce-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.announce-dot {
+  width: 4px;
+  height: 14px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+.announce-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.announce-more {
+  font-size: 12px;
+  color: var(--text-3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.announce-more svg {
+  width: 14px;
+  height: 14px;
+}
+
+.announce-more:active {
+  color: var(--primary);
+}
+
+.announce-list {
+  padding: 0 16px 12px;
+}
+
+.announce-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 0.5px solid var(--border);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.announce-item:last-child {
+  border-bottom: none;
+}
+
+.announce-item:active {
+  opacity: 0.7;
+}
+
+.announce-item-title {
+  font-size: 13px;
+  color: var(--text-1);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 12px;
+}
+
+.announce-item-time {
+  font-size: 11px;
+  color: var(--text-4);
+  flex-shrink: 0;
+}
+
+/* Bottom spacer for scroll */
+.bottom-spacer {
+  height: 20px;
+}
+</style>
+</head>
+<body data-page-node-id="qtURVj8BVr3kbwhDNPNWr9">
+
+<div class="miniprogram" id="app" data-page-node-id="Lz1eiWKFl7ZjcPpyEdLlMi">
+
+  <!-- Status Bar -->
+  <div class="status-bar light" data-page-node-id="oZuHtL6ACSb8XqgMHm3Wq4">
+    <span class="time" data-page-node-id="8ByNF9lVB4OtLuFzizDsCu">09:38</span>
+    <div class="icons" data-page-node-id="NCDUONo4hn6OW3Iz5spWgQ">
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="nUSSrfZfo1KngZ1iIZ5BaC"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" data-page-node-id="JeAWkesnqrz1YlVxHlLOt0"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="OXbYQ9aCDrLPERC6exSzyP"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" data-page-node-id="RdT8MTdbQl8YLWlNslqt47"/></svg>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar white" data-page-node-id="NuQtA4iTQH1MtqmOF3NF88">
+    <div class="nav-back" data-page-node-id="I6mBxseDwTj1zXFoCw684n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="xmRedTEujoNt9KYf1ZrOxV"><polyline points="15 18 9 12 15 6" data-page-node-id="AuPcpW4wEA1DsIR6belHQX"/></svg></div>
+    <span class="nav-title" data-page-node-id="U1pDRXXTfhPDmdnWSZ6Zv9">公有住房</span>
+    <span class="nav-placeholder" data-page-node-id="bG3drIoulTXC3QBEjiYorA"></span>
+  </div>
+
+  <!-- Content -->
+  <div class="content" data-page-node-id="AwQkMxVRMVHaHpWCHFCt12">
+    <!-- Housing Info Card -->
+    <div class="housing-card" data-page-node-id="EDMTA9mPF5U4LgaETDvMsL">
+      <div class="housing-img" data-page-node-id="vnHOv6q96mBHuJeqsIOrma">
+        <span class="housing-img-tag" data-page-node-id="M3sSyNiSjSOwBZkx8WECeo">当前住所</span>
+        <svg viewBox="0 0 120 120" fill="none" data-page-node-id="xqahzld1cbOpkZq2pjc1Tr">
+          <!-- Main house body -->
+          <path d="M15 95V45L60 15L105 45V95" stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round" data-page-node-id="FzjOpJTVcrTwHpG3ReDMqv"/>
+          <!-- Roof -->
+          <path d="M10 45L60 12L110 45" stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round" data-page-node-id="rLGHLjZdDhRQB277RxXwnM"/>
+          <!-- Door -->
+          <rect x="48" y="65" width="24" height="30" rx="2" stroke="#FFFFFF" stroke-width="2" data-page-node-id="hGJp1Zc7dpjsDqAqGdsPug"/>
+          <circle cx="66" cy="80" r="1.5" fill="#FFFFFF" data-page-node-id="D97jFecdPqK6cTQqfPcqnt"/>
+          <!-- Left window -->
+          <rect x="22" y="52" width="18" height="14" rx="2" stroke="#FFFFFF" stroke-width="2" data-page-node-id="xRIep2mVtZ7EVuXixjMy9o"/>
+          <line x1="31" y1="52" x2="31" y2="66" stroke="#FFFFFF" stroke-width="1" data-page-node-id="5CLOzbXFlqC2apENo0RzFk"/>
+          <!-- Right window -->
+          <rect x="80" y="52" width="18" height="14" rx="2" stroke="#FFFFFF" stroke-width="2" data-page-node-id="08P18A1cYaJALgNiEV1bwZ"/>
+          <line x1="89" y1="52" x2="89" y2="66" stroke="#FFFFFF" stroke-width="1" data-page-node-id="fLes9dyqQeJ6bOclWyFmN1"/>
+          <!-- Trees -->
+          <circle cx="20" cy="80" r="12" stroke="#FFFFFF" stroke-width="2" data-page-node-id="8U8LvbELpLSl8R9piXt7My"/>
+          <line x1="20" y1="92" x2="20" y2="100" stroke="#FFFFFF" stroke-width="2" data-page-node-id="tKg5sr7JhCRtOqpOaEypHU"/>
+          <circle cx="100" cy="78" r="10" stroke="#FFFFFF" stroke-width="2" data-page-node-id="zfpf1IqG9jETl1rocnTHFP"/>
+          <line x1="100" y1="88" x2="100" y2="100" stroke="#FFFFFF" stroke-width="2" data-page-node-id="tACWbAwRGmVAbN0nNuYiQH"/>
+          <!-- Ground -->
+          <line x1="5" y1="95" x2="115" y2="95" stroke="#FFFFFF" stroke-width="2" opacity="0.5" data-page-node-id="6ssactx9CSjW8UIGy1VuI1"/>
+        </svg>
+      </div>
+      <div class="housing-info" data-page-node-id="V2gzjxa3QjYVLwDpq6dxW1">
+        <div class="housing-address" data-page-node-id="6GbRdziVdgdTnEwVq0CPAV">
+          <span class="community" data-page-node-id="Jxl9Ntkq9k5POxF7G5qzeC">海事局家属院</span>
+          <span class="tag" data-page-node-id="EuDtRs5sLweDjpm5moBxig">已入住</span>
+        </div>
+        <div class="housing-details" data-page-node-id="t6WlXBwrR0MZN2vOiA1E76">
+          <div class="housing-detail-item" data-page-node-id="o8OiHYeAEXq5vXShQKMnCo">
+            <span class="label" data-page-node-id="rvd9gWjTLh1DVzEHdxNLSd">楼栋</span>
+            <span class="value" data-page-node-id="BFttFrqMyThlzS26VjCfJL">3栋</span>
+          </div>
+          <div class="housing-detail-item" data-page-node-id="S80JqLI8jbRA5QTicG2CVE">
+            <span class="label" data-page-node-id="Kc8zLH3x5WQA16YY04gH0A">房号</span>
+            <span class="value" data-page-node-id="8shk2ulQDqkAGUuQzV6lT3">302室</span>
+          </div>
+          <div class="housing-detail-item" data-page-node-id="HS8NIThxRqIe1NBhlf4BP3">
+            <span class="label" data-page-node-id="6PQGvf3ADKxhGLQcu8Fsit">房型</span>
+            <span class="value" data-page-node-id="vJYYYdu4PGwmsvJfIl6Jbf">两室一厅</span>
+          </div>
+          <div class="housing-detail-item" data-page-node-id="DcMGheULZG0FLXojhbKBC2">
+            <span class="label" data-page-node-id="lhhCjkyAVRoThmKzui3Uad">入住时间</span>
+            <span class="value" data-page-node-id="NlWYuRnPXwIVE6fd1WRbEk">2025-01-15</span>
+          </div>
+          <div class="housing-detail-item" data-page-node-id="WXavWalqYUofvTnGuVTvaE">
+            <span class="label" data-page-node-id="g9TELdFMJipH3TxUxugARZ">租金</span>
+            <span class="value rent" data-page-node-id="eKu3vsbgoDZ2zVHUhq2ePJ">¥800</span>
+          </div>
+          <div class="housing-detail-item" data-page-node-id="EOWXV1ao1rthMW0brZk35J">
+            <span class="label" data-page-node-id="9LWFNwVNP4nQZf5GVUX4NP">面积</span>
+            <span class="value" data-page-node-id="GdOzhvpa0Zdntt07YHqLu3">约68㎡</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Function Grid -->
+    <div class="func-grid" data-page-node-id="EmQ5r6i4u8RfWPhkJOMUHF">
+      <div class="func-item" data-action="apply" data-page-node-id="3NVJvUN03BfxV4As4lo5Gl">
+        <div class="func-icon func-1" data-page-node-id="vdpCy1sb7ISMajabFKQuDs">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="ZQS3c1EhX2rO0AsmvENS4x">
+            <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2" data-page-node-id="760koU6jbmAWYASSPRFyj2"/>
+            <rect x="8" y="2" width="8" height="4" rx="1" data-page-node-id="qFMslO77jabgRh8xAJU2Hz"/>
+            <path d="M9 14l2 2 4-4" data-page-node-id="ArhOcGuOuCcEQ7sNFV0R6q"/>
+          </svg>
+        </div>
+        <span class="func-label" data-page-node-id="kBD3woYyQVK8KQ6nKY4WMT">入住申请</span>
+      </div>
+      <div class="func-item" data-action="checkout" data-page-node-id="CfmqF5QEEoJPAOlmOwSR5E">
+        <div class="func-icon func-2" data-page-node-id="5lznd7gWqRNUWqJ5XWIWRf">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="f8Lk134S7KbArgWeV8sS4v">
+            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" data-page-node-id="D4ScNW8rJmDjmxeKCPF0Ug"/>
+            <polyline points="16 17 21 12 16 7" data-page-node-id="AnU6ilqwTqFOE1tVCqhsgA"/>
+            <line x1="21" y1="12" x2="9" y2="12" data-page-node-id="uhnXD72derTju5H7C72DdJ"/>
+          </svg>
+        </div>
+        <span class="func-label" data-page-node-id="BCApOEVW5RLGasmSR16n9f">退宿申请</span>
+      </div>
+      <div class="func-item" data-action="repair" data-page-node-id="724P5FEHDEBDCOCkUIItGv">
+        <div class="func-icon func-3" data-page-node-id="4ZduuMwiTRPTWJ3WjWCqwJ">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="66QKUqPWymlWPmSC7oObPD">
+            <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" data-page-node-id="s7p7r5Az7F4RCj5VAzOwzC"/>
+          </svg>
+        </div>
+        <span class="func-label" data-page-node-id="ZQzqFj4uXGHErz40JBeoId">住房报修</span>
+      </div>
+      <div class="func-item" data-action="furniture" data-page-node-id="TtjZbApbwidYyeWlr2XVqT">
+        <div class="func-icon func-4" data-page-node-id="YYEbZxcXzQioEloM1SW0bo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="LZvivBLl60QxsybVqB42H2">
+            <rect x="3" y="3" width="18" height="18" rx="2" data-page-node-id="WI3CuuUuTIEuLJV0w3YGiY"/>
+            <line x1="3" y1="9" x2="21" y2="9" data-page-node-id="IxRcsskBYSEFcu3jKW0anr"/>
+            <line x1="9" y1="3" x2="9" y2="9" data-page-node-id="E8hd1YOMTlbJeQlJDAfD4y"/>
+            <line x1="15" y1="9" x2="15" y2="21" data-page-node-id="yYUhbsAPtaLyJL0hdREgHG"/>
+          </svg>
+        </div>
+        <span class="func-label" data-page-node-id="ewQa6ECWGEMpo78sj4nFDY">家具清单</span>
+      </div>
+    </div>
+
+    <!-- Announcement Section -->
+    <div class="announce-section" data-page-node-id="aHfmB71Y0ZuAxIy9kJY8pK">
+      <div class="announce-header" data-page-node-id="Bj2azTKDvk2MSRz6zmoiMD">
+        <div class="announce-title-wrap" data-page-node-id="21BgIm1GM7tE2lWpaVcfEP">
+          <span class="announce-dot" data-page-node-id="7sOMQBjyuWjGddfBdb5snj"></span>
+          <span class="announce-title" data-page-node-id="AsIxhKsiBDlCTydcwputou">住房公告</span>
+        </div>
+        <div class="announce-more" data-action="viewAll" data-page-node-id="24GrUACnpWyFUjMXdv723t">
+          查看全部
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="v344HK4hS4IKkH1zrAIqDZ">
+            <polyline points="9 18 15 12 9 6" data-page-node-id="Qzji8xZrsQrAu0dJU7gE9l"/>
+          </svg>
+        </div>
+      </div>
+      <div class="announce-list" data-page-node-id="Bgf4t3zML8F97h4LFjVFTA">
+        <div class="announce-item" data-announce="1" data-page-node-id="QfzAREzfUcw7HDEXRzpgjO">
+          <span class="announce-item-title" data-page-node-id="HD8qdnB1liu4QizgOk0WCZ">关于海事局家属院2026年第三季度住房租金调整的通知</span>
+          <span class="announce-item-time" data-page-node-id="JYdDPFTtssgMp1U4Y8sPyE">2026-07-18</span>
+        </div>
+        <div class="announce-item" data-announce="2" data-page-node-id="o9o6TWc0DZl3oPhHDiZ8E9">
+          <span class="announce-item-title" data-page-node-id="LM78uLsJ8G0sVAoIur7qC3">关于开展公有住房安全隐患排查工作的通知</span>
+          <span class="announce-item-time" data-page-node-id="MS685fYSGfwMC1ZC2d0l4p">2026-07-10</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-spacer" data-page-node-id="WjDrC38gDR93Kvz241Ovc9"></div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" data-page-node-id="DCXlHTnvsF4qhlz4QGkIA5">
+    <div class="toast-icon" data-page-node-id="CxkvRA6m4keHd4q7Ivk5mD"></div>
+    <span id="toastText" data-page-node-id="x379CJOlxpd3C2RMvdi5SG"></span>
+  </div>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // ==================== Function Grid Click Handlers ====================
+  var funcItems = document.querySelectorAll('.func-item');
+  funcItems.forEach(function(item) {
+    item.addEventListener('click', function() {
+      var action = this.getAttribute('data-action');
+      if (action === 'apply') {
+        window.location.href = 'P18-housing-apply.html';
+      } else if (action === 'checkout') {
+        window.location.href = 'P18-housing-apply.html';
+      } else if (action === 'repair') {
+        window.location.href = 'P19-housing-repair.html';
+      } else if (action === 'furniture') {
+        MS.showToast('跳转家具清单页', 'info');
+      }
+    });
+  });
+
+  // ==================== View All Announcements ====================
+  var moreBtn = document.querySelector('.announce-more');
+  moreBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    MS.showToast('查看全部住房公告', 'info');
+  });
+
+  // ==================== Announcement Items Click ====================
+  var announceItems = document.querySelectorAll('.announce-item');
+  announceItems.forEach(function(item, index) {
+    item.addEventListener('click', function() {
+      var title = this.querySelector('.announce-item-title').textContent.trim();
+      MS.showToast(title, 'info');
+    });
+  });
+
+})();
+</script>
+
+</body>
+</html>
