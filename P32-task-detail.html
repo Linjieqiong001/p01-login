@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="5k21rhcMgg8CkqPGwD1J6L">
+<head data-page-node-id="JAj28eUqJctRwxFmkH2Mw4">
+<meta charset="UTF-8" data-page-node-id="5GGCm1id9ORx93I5PKzoSL">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="BvWbhSv3XDC0EL3sllADD9">
+<title>P32 - 任务详情</title>
+<link rel="stylesheet" href="common.css" data-page-node-id="0tkOIOBDCkbqERPUXPMRvv">
+<style>
+/* ==================== Page Specific Styles ==================== */
+
+/* ==================== Workorder Number (P53 审批编号口径) ==================== */
+.approval-no-block {
+  padding: 16px;
+  text-align: center;
+}
+.approval-no {
+  font-size: 14px;
+  color: var(--text-2);
+  font-weight: 500;
+}
+.approval-no span {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+}
+
+/* ==================== Detail Info Row (P51 申请信息模块) ==================== */
+.detail-block {
+  padding: 4px 16px 14px;
+}
+.detail-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 8px 0;
+  gap: 12px;
+}
+.detail-row .d-label {
+  font-size: 13px;
+  color: var(--text-3);
+  width: 80px;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+.detail-row .d-value {
+  font-size: 14px;
+  color: var(--text-1);
+  flex: 1;
+  line-height: 1.5;
+}
+
+/* ==================== Photo Items in Detail ==================== */
+.photo-preview-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 2px;
+}
+.photo-thumb {
+  width: 68px;
+  height: 68px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.photo-thumb:active { opacity: 0.8; }
+.photo-thumb-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.photo-thumb-label {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  font-size: 9px;
+  color: #FFFFFF;
+  background: rgba(0,0,0,0.45);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+/* ==================== Image Preview Mask ==================== */
+.image-preview-mask {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s;
+}
+.image-preview-mask.show { opacity: 1; visibility: visible; }
+.image-preview-close {
+  position: absolute;
+  top: 24px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.image-preview-close svg { width: 20px; height: 20px; color: #FFFFFF; }
+.image-preview-label {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,0.7);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* Bottom action button */
+.btn-fixed-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px calc(12px + var(--safe-bottom));
+  background: var(--card-bg);
+  border-top: 0.5px solid var(--divider);
+}
+.btn-fixed-bottom .btn { flex: 1; }
+
+.spacer { height: 80px; }
+
+/* ==================== End-task Modal Options ==================== */
+.end-options {
+  padding: 2px 0;
+}
+.end-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 4px;
+  border-bottom: 0.5px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+  border-radius: var(--radius-sm);
+}
+.end-option:last-child { border-bottom: none; }
+.end-option:active { background: var(--bg); }
+.end-option .end-info { flex: 1; min-width: 0; }
+.end-option .end-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+  line-height: 1.4;
+}
+.end-option .end-desc {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+.end-radio {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--divider);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.end-option.selected .end-radio {
+  border-color: var(--primary);
+}
+.end-option.selected .end-radio::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+
+/* ==================== Not-repaired Reason Textarea ==================== */
+.reason-block {
+  margin-top: 4px;
+  padding-top: 4px;
+}
+.reason-label {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-bottom: 8px;
+}
+.reason-textarea {
+  width: 100%;
+  min-height: 88px;
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  font-size: 14px;
+  color: var(--text-1);
+  background: var(--bg);
+  resize: none;
+  outline: none;
+  font-family: inherit;
+  line-height: 1.5;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+.reason-textarea::placeholder { color: var(--text-4); }
+.reason-textarea:focus { border-color: var(--primary); }
+</style>
+</head>
+<body data-page-node-id="gcs0FveStAYpQB9gjeKhZ6">
+
+<div class="miniprogram" id="app" data-page-node-id="lcCvwumrt0SqSRo7SkGEha">
+
+  <!-- Status Bar (light) -->
+  <div class="status-bar light" data-page-node-id="gBVnSqabpDwufFqc6o9Sek">
+    <span class="time" id="statusTime" data-page-node-id="pQbgeqZRRocZX2ZyIYAuGG">09:38</span>
+    <div class="icons" data-page-node-id="OEUelvYf0V4BTj7QO4QBv6">
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="OaaU8Y5qrv2PZhxFV4DM2P"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" data-page-node-id="riylH3zVCkOhr1j0rjQjzU"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="O0ur2ZAIkO74c2Er8x3z5f"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" data-page-node-id="UKFFKDkpVQGa7VZPKLztsM"/></svg>
+    </div>
+  </div>
+
+  <!-- Navigation Bar (white, with back) -->
+  <div class="nav-bar white" data-page-node-id="DADgYvz391f7SyRUOECfnt">
+    <div class="nav-back" data-page-node-id="oqycETtQPqyYZRy3jXc1et">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="CQZuhcrqqgfsyeSw92Q0Hz">
+        <polyline points="15 18 9 12 15 6" data-page-node-id="YTlgM0ppG6ermw18jJdVbV"/>
+      </svg>
+    </div>
+    <span class="nav-title" data-page-node-id="4kKmZzTGYMj8JdF3zBVehh">任务详情</span>
+    <div class="nav-placeholder" data-page-node-id="RICYfQigfUCNhvQ1nmkoAs"></div>
+  </div>
+
+  <!-- Content -->
+  <div class="content fade-in" data-page-node-id="Fk326nKG0jw0JhDslhY06n">
+
+    <!-- 工单号区 -->
+    <div class="section" style="margin-top:16px;" data-page-node-id="kHdRNtvEp2guVdYvbgj1bb">
+      <div class="approval-no-block" data-page-node-id="XsfNuqPqEcs3GF7Yoxo240">
+        <span class="approval-no" data-page-node-id="nYLYIfZeCIR1G0HTtsIcgR">工单号：<span data-page-node-id="XUYGFIQlrY5VLI0ZT0a8ra">WX20260722001</span></span>
+      </div>
+    </div>
+
+    <!-- 申请信息（同 P51 申请信息模块） -->
+    <div class="section" data-page-node-id="TZWtbxymmEKqGMEJcV1j5n">
+      <div class="section-title" data-page-node-id="CZFKmEB3VEJmasCKfXo9vb">
+        <div class="dot" data-page-node-id="pWsllwjNm70ffpHKC8UYxX"></div>
+        申请信息
+      </div>
+      <div class="detail-block" data-page-node-id="NjhsXLroQUMB9GtDK1fCSA">
+        <div class="detail-row" data-page-node-id="qWs12kjWvLGVNS25yRUl4L">
+          <span class="d-label" data-page-node-id="Ynh1XfHIIge3vXMlk3HWqA">报修类型</span>
+          <span class="d-value" style="font-weight:600;color:var(--primary);" data-page-node-id="qtEF94QFR8JXujt72rRAIe">水电维修</span>
+        </div>
+        <div class="detail-row" data-page-node-id="I9TMDcGinEUZhDf2LwAeDX">
+          <span class="d-label" data-page-node-id="A47OITWPv2hN6WW8VKhfyQ">报修位置</span>
+          <span class="d-value" data-page-node-id="VPG9rEdus1J8K9BpXNTRNJ">行政楼3楼东侧卫生间</span>
+        </div>
+        <div class="detail-row" data-page-node-id="FbgnQ13aBT6AzJTQgjipEB">
+          <span class="d-label" data-page-node-id="7viOU6Zjz2tF2yuDCl9iNt">报修描述</span>
+          <span class="d-value" data-page-node-id="6cJRHjl6iSAwwzORG0cMPv">水管接口处持续滴水，已影响卫生间正常使用，地面出现积水，需尽快维修处理</span>
+        </div>
+        <div class="detail-row" data-page-node-id="lEmyKAwBg0hvOlWeEbhRRG">
+          <span class="d-label" data-page-node-id="jD81n9Cw8SvApWU7vrX9KQ">紧急程度</span>
+          <span class="d-value" data-page-node-id="MSuBm8tytMqh1GdzKFbHmX">紧急</span>
+        </div>
+        <div class="detail-row" data-page-node-id="IAQIj5DLbMY4yGB4clWDnZ">
+          <span class="d-label" data-page-node-id="XHzF3fgWC0d2z4ZyHro3Bu">期望上门</span>
+          <span class="d-value" data-page-node-id="d8agkh7EQ7RTkuqCjjsrqz">2026-07-22 11:00 前</span>
+        </div>
+        <div class="detail-row" data-page-node-id="1sv9nrkw58xTyLhRBMkhsv">
+          <span class="d-label" data-page-node-id="HGXAJH1P00FXkLdJmcKE4n">现场照片</span>
+          <span class="d-value" data-page-node-id="8oCQSDuoA1GGM8927WFyiP">
+            <div class="photo-preview-row" data-page-node-id="GvoM9U2O48VyNtHhJyEv6T">
+              <div class="photo-thumb" onclick="openImagePreview(0)" data-page-node-id="Fsrzrsc22mVIsUJXopcT6D">
+                <div class="photo-thumb-inner" style="background:linear-gradient(135deg,#E6F0FF,#1677FF);" data-page-node-id="ZycQEqMC4S4hHCa9AGGce2">
+                  <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#FFFFFF" stroke-width="1.5" data-page-node-id="d5SONtlAxmxq7uXC6elsUg">
+                    <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" data-page-node-id="4rxmtGBo2h9UJICOqN5bbS"/>
+                    <circle cx="12" cy="13" r="4" data-page-node-id="Kr8nU1bum85hrvUAkmEonQ"/>
+                  </svg>
+                </div>
+                <span class="photo-thumb-label" data-page-node-id="JFrpRZfu1lLQ77KNCMUbUc">图1</span>
+              </div>
+              <div class="photo-thumb" onclick="openImagePreview(1)" data-page-node-id="ZAESzHhtyYJyF4LNAvlJuX">
+                <div class="photo-thumb-inner" style="background:linear-gradient(135deg,#FFF3E8,#ED7B2F);" data-page-node-id="MGfP1KsNpAuMVkYEMLr0jc">
+                  <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#FFFFFF" stroke-width="1.5" data-page-node-id="1ybF6j5M3YADhQmr4qa9Wx">
+                    <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" data-page-node-id="sHrXIUpXC3ZgUW9GD8ANVo"/>
+                    <circle cx="12" cy="13" r="4" data-page-node-id="nyGhFZ0GJVq3jANpO2kQ6q"/>
+                  </svg>
+                </div>
+                <span class="photo-thumb-label" data-page-node-id="0HuOTvqat0Nx2pXM22RAKM">图2</span>
+              </div>
+            </div>
+          </span>
+        </div>
+        <div class="detail-row" data-page-node-id="QFqDlg8VOmS15eWgkABuiD">
+          <span class="d-label" data-page-node-id="OsBRXNguP3dRQzRV4bBihZ">申请人</span>
+          <span class="d-value" data-page-node-id="e4G1WIhxfhwPWjnostMyIB">张三</span>
+        </div>
+        <div class="detail-row" data-page-node-id="RhAudGPEMoDNuYEWBEaJ7Q">
+          <span class="d-label" data-page-node-id="tFl7TfAIZj7UtW3rMmxNUc">申请部门</span>
+          <span class="d-value" data-page-node-id="I3rUP8C6BWPCTpMp6WtNWr">后勤管理科</span>
+        </div>
+        <div class="detail-row" data-page-node-id="BWqpvmbj9pNqECQoL0VZ7V">
+          <span class="d-label" data-page-node-id="2uthHLjYR2BkVTtaSrQDGS">提交时间</span>
+          <span class="d-value" data-page-node-id="YhZdwpFGYWaFYlt20zutEL">2026-07-22 09:15</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 维修人员信息 -->
+    <div class="section">
+      <div class="section-title">
+        <div class="dot"></div>
+        维修人员信息
+      </div>
+      <div class="detail-block">
+        <div class="detail-row">
+          <span class="d-label">维修人员</span>
+          <span class="d-value" style="font-weight:600;color:var(--primary);">王建国</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">联系电话</span>
+          <span class="d-value" style="font-weight:600;color:var(--primary);">139****6688</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">预约上门</span>
+          <span class="d-value">2026-07-22 14:00-16:00</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">工单备注</span>
+          <span class="d-value">上门前将电话联系，请保持电话畅通</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="spacer" data-page-node-id="8yxO8fN25G8UR4uSH1IH9G"></div>
+
+  </div>
+
+  <!-- Bottom Action Button -->
+  <div class="btn-fixed-bottom" data-page-node-id="vcmeJQze36dRxF3vDrnTFy">
+    <button class="btn btn-primary" id="btnEndTask" data-page-node-id="2ezsp8gfEvbP1wRlIWVNTm">结束任务</button>
+  </div>
+
+  <!-- 结束任务弹窗 -->
+  <div class="modal-mask" id="endTaskModal" data-page-node-id="qlK2n2r7WHsqGBPugaO5BB">
+    <div class="modal-content" data-page-node-id="2Wq0ZU5ujCVDteZx9v5bAN">
+      <div class="modal-header" data-page-node-id="aL11xrc8Cop2PpYhgT2IGp">
+        <div class="modal-title" data-page-node-id="WoLnjCg8QnjOXmuxSGUH8b">结束任务</div>
+      </div>
+      <div class="modal-body" data-page-node-id="B5DQHMwrkDZFzKpwhroOMQ">
+        <div class="end-options" id="endOptions" data-page-node-id="tDaMRSHDe6A9ILASabnsYE">
+          <div class="end-option selected" data-choice="done" data-page-node-id="mOA5lGtWNo2M0j9zFB7KwZ">
+            <div class="end-info" data-page-node-id="iTzN5pE3a61Fi5XuODF4tH">
+              <div class="end-title" data-page-node-id="d492294TAwmPDZYt1uHGIm">已维修</div>
+              <div class="end-desc" data-page-node-id="O67ehhrW7hjOn55HEgptF5">本次维修任务已完成</div>
+            </div>
+            <div class="end-radio" data-page-node-id="Cd99Pv9EC0Xb8CvrTkJ8bC"></div>
+          </div>
+          <div class="end-option" data-choice="notdone" data-page-node-id="74ZI2GFkMZIp32rD1kpe9B">
+            <div class="end-info" data-page-node-id="DLX1E4bk9klVwimWYuNmhT">
+              <div class="end-title" data-page-node-id="ReF969TijexD74ykq0VHlv">未维修</div>
+              <div class="end-desc" data-page-node-id="AHUTUES54UV4LsgKgukwxl">本次任务因故未能完成维修</div>
+            </div>
+            <div class="end-radio" data-page-node-id="JiPOdHNJygG1OsPcthaEO1"></div>
+          </div>
+        </div>
+        <div class="reason-block" id="reasonBlock" style="display:none;" data-page-node-id="u8D8EtLOq2V1gYwCFttfGJ">
+          <div class="reason-label" data-page-node-id="cI8NetetEDNdeCaAHYCM3Z">未维修原因</div>
+          <textarea class="reason-textarea" id="notDoneReason" placeholder="请填写未维修原因"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer" data-page-node-id="sQHIfMA96gGbFJDeL5E6uG">
+        <button class="btn btn-primary btn-block" id="endConfirmBtn" data-page-node-id="umTHjqyZxJ7NIMzBShBbF5">确认结束</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image Preview Mask -->
+  <div class="image-preview-mask" id="imagePreviewMask" data-page-node-id="xcSiUw2sXN9mSE5kcsjzYa">
+    <div class="image-preview-close" onclick="closeImagePreview()" data-page-node-id="PMcXoeGY6F7RKbUke0QceK">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="sWjxP30afulEgjU02P3UXY">
+        <path d="M18 6L6 18M6 6l12 12" data-page-node-id="C2edjC5Qh7LoPDY0Crqloq"/>
+      </svg>
+    </div>
+    <svg id="imagePreviewSvg" viewBox="0 0 24 24" width="120" height="120" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.6" data-page-node-id="Vbcu3cZmOmuff1MKToi47m">
+      <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" data-page-node-id="4gxCT9a8S9xZ0IcAGIgtfi"/>
+      <circle cx="12" cy="13" r="4" data-page-node-id="Yj716zW9IAgnABceXUMKCJ"/>
+    </svg>
+    <span class="image-preview-label" id="imagePreviewLabel" data-page-node-id="beK0yafBxEoAi8OvMilDx4">现场照片</span>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" data-page-node-id="pa26S46fgRreyuNR2S2j50">
+    <div class="toast-icon" data-page-node-id="WgYTNQ4151UAPUhDFEDVJR"></div>
+    <span id="toastText" data-page-node-id="WEvWEBlzFFxfqJXt8keC7Y"></span>
+  </div>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  /* ==================== Status Bar Time ==================== */
+  function updateStatusTime() {
+    var now = new Date();
+    var h = String(now.getHours()).padStart(2, '0');
+    var m = String(now.getMinutes()).padStart(2, '0');
+    var el = document.querySelector('.status-bar .time');
+    if (el) el.textContent = h + ':' + m;
+  }
+  updateStatusTime();
+  setInterval(updateStatusTime, 60000);
+
+  /* ==================== End-task Modal ==================== */
+  var endTaskModal = document.getElementById('endTaskModal');
+  var reasonBlock = document.getElementById('reasonBlock');
+  var notDoneReason = document.getElementById('notDoneReason');
+  var currentChoice = 'done';
+
+  // Open end-task modal
+  document.getElementById('btnEndTask').addEventListener('click', function() {
+    // 每次打开重置为「已维修」并收起原因输入
+    currentChoice = 'done';
+    notDoneReason.value = '';
+    document.querySelectorAll('#endOptions .end-option').forEach(function(o) {
+      o.classList.toggle('selected', o.getAttribute('data-choice') === 'done');
+    });
+    reasonBlock.style.display = 'none';
+    endTaskModal.classList.add('show');
+  });
+
+  // Choice radio switch
+  document.querySelectorAll('#endOptions .end-option').forEach(function(opt) {
+    opt.addEventListener('click', function() {
+      document.querySelectorAll('#endOptions .end-option').forEach(function(o) {
+        o.classList.remove('selected');
+      });
+      this.classList.add('selected');
+      currentChoice = this.getAttribute('data-choice');
+      if (currentChoice === 'notdone') {
+        reasonBlock.style.display = 'block';
+        notDoneReason.focus();
+      } else {
+        reasonBlock.style.display = 'none';
+        notDoneReason.value = '';
+      }
+    });
+  });
+
+  // Confirm end
+  document.getElementById('endConfirmBtn').addEventListener('click', function() {
+    if (currentChoice === 'notdone') {
+      var reason = notDoneReason.value.trim();
+      if (!reason) {
+        MS.showToast('请填写未维修原因', 'error');
+        notDoneReason.focus();
+        return;
+      }
+      endTaskModal.classList.remove('show');
+      MS.showToast('已记录未维修，任务关闭', 'info');
+    } else {
+      endTaskModal.classList.remove('show');
+      MS.showToast('任务已完成', 'success');
+    }
+  });
+
+  // Modal mask close
+  endTaskModal.addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('show');
+  });
+
+  /* ==================== Image Preview ==================== */
+  var imageData = [
+    { name: '现场照片 · 漏水处' },
+    { name: '现场照片 · 地面积水' }
+  ];
+
+  window.openImagePreview = function(index) {
+    var mask = document.getElementById('imagePreviewMask');
+    var label = document.getElementById('imagePreviewLabel');
+    var data = imageData[index] || imageData[0];
+    label.textContent = data.name;
+    mask.classList.add('show');
+  };
+
+  window.closeImagePreview = function() {
+    document.getElementById('imagePreviewMask').classList.remove('show');
+  };
+
+  document.getElementById('imagePreviewMask').addEventListener('click', function(e) {
+    if (e.target === this) closeImagePreview();
+  });
+
+})();
+</script>
+
+</body>
+</html>
