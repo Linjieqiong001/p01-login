@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="3sqzDBTwvgkSvBxow2BT4R">
+<head data-page-node-id="BjJ4DaPQSDz4MMWbo9KwVe">
+<meta charset="UTF-8" data-page-node-id="KqURqcZhv8VxsyaB2sRfBe">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="z3JDsBsLjpmh62UcT3DaW2">
+<title>P08 - 我的行程</title>
+<link rel="stylesheet" href="common.css" data-page-node-id="qQtV4cMmL9yulUb3m2Qbvo">
+<style>
+/* Tab content */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Trip card route display */
+.trip-route {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  background: var(--bg);
+  border-radius: var(--radius-md);
+  margin: 8px 0 4px;
+}
+.route-endpoint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+.route-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2.5px solid var(--primary);
+  flex-shrink: 0;
+}
+.route-dot.end {
+  border-color: var(--success);
+  background: var(--success);
+}
+.route-text { min-width: 0; }
+.route-label-sm { font-size: 10px; color: var(--text-3); line-height: 1.2; }
+.route-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.route-arrow {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+.route-arrow svg { width: 24px; height: 16px; color: var(--text-3); }
+
+/* Time range in card */
+.trip-time {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+.trip-time svg { width: 14px; height: 14px; color: var(--text-3); flex-shrink: 0; }
+
+/* Card footer */
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 0.5px solid var(--border);
+}
+.card-footer .footer-info {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.card-footer .footer-info span {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.card-footer .footer-info svg { width: 13px; height: 13px; }
+.card-footer .arrow-hint {
+  font-size: 11px;
+  color: var(--text-4);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.card-footer .arrow-hint svg { width: 12px; height: 12px; }
+
+/* Empty state for tabs */
+.tab-content .empty-state { padding: 80px 20px; }
+</style>
+</head>
+<body data-page-node-id="lqcisBiVeLYtuGUT8Owihz">
+<div class="miniprogram" data-page-node-id="xSd1zRHKFeYSE8Eko99sGI">
+  <!-- Status Bar -->
+  <div class="status-bar light" data-page-node-id="NCSABLousX6REox3blg0yi">
+    <span class="time" data-page-node-id="2L2zr5rmXh4SHa1u0x41kz">09:38</span>
+    <div class="icons" data-page-node-id="VbAfn3GcVz29eEE4mKgetc">
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="myzVmAstNoJfTyf3p9H9zm"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" data-page-node-id="Rob5La1TU4GwLchBj7KVP9"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="mH9pvHDIsLxbXMMSd66Sh9"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" data-page-node-id="Mom7SkHawgQ9yoLNZGMJod"/></svg>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar white" data-page-node-id="EBY3qcgPKmmpAWi2NXa16t">
+    <div class="nav-back" data-page-node-id="itJ7ApSiPs9xjcTSc6ZdUi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="BFdPeTVXI3h8QS5n4D3JkF"><polyline points="15 18 9 12 15 6" data-page-node-id="skP12WWqRVwLBEDqgHZdsB"/></svg></div>
+    <span class="nav-title" data-page-node-id="4YlQie4EwPUKJ5TLNHRUr6">我的行程</span>
+    <span class="nav-placeholder" data-page-node-id="dG1pHjmSLUPDiV0W6C9CiE"></span>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs" data-page-node-id="XtGZwF5e2tDWCSqWmFFCIz">
+    <div class="tab active" data-tab="pending" data-page-node-id="1GyGa14wMD2YQGFzBJYHwy">待审批<span class="tab-badge" data-page-node-id="kLbZzmXZwLFs68Op0u8KjG">2</span></div>
+    <div class="tab" data-tab="processing" data-page-node-id="mP06nn2kvsXYKotlY2eTBR">已派车<span class="tab-badge" data-page-node-id="lGwRrVi1l2FJkTaRSQE0mC">1</span></div>
+    <div class="tab" data-tab="done" data-page-node-id="PkZyXmuoyoJ0PsWIniwA9s">已完成</div>
+  </div>
+
+  <!-- Content -->
+  <div class="content" data-page-node-id="3PlHRFazyHIWDl6pChZUAi">
+    <!-- 待审批 -->
+    <div class="tab-content active" data-content="pending" data-page-node-id="S5d1kAwkLDWGxcWvRv8HUp">
+
+      <!-- Card 1 -->
+      <div class="card" data-trip="1" data-page-node-id="CHNUAeUebsy2TGpxnRQu7t">
+        <div class="card-header" data-page-node-id="DDe7A1Hc8efPbTWzMRCGUv">
+          <span class="card-title" data-page-node-id="ORT7IvFoyE7DvujBH8BUMs">张三提交的用车申请</span>
+          <span class="status-tag pending" data-page-node-id="GjCIevJc6HacZsrtKn0Ovn">待审批</span>
+        </div>
+        <div class="trip-route" data-page-node-id="HTgSqYTwjAdEX3G3LsBbFr">
+          <div class="route-endpoint" data-page-node-id="xTEU640v1oAeVbRv5qaRe0">
+            <div class="route-dot" data-page-node-id="UYYBI7M73KvqI2Mwo9HLI8"></div>
+            <div class="route-text" data-page-node-id="mzSxcXPAfwZ7wCwpjA90lD">
+              <div class="route-label-sm" data-page-node-id="QcgCAaKJHpKC57ZNmHohjT">出发</div>
+              <div class="route-name" data-page-node-id="C7i1TaiS1Zg5Hek3AOQcqC">海口海事局</div>
+            </div>
+          </div>
+          <div class="route-arrow" data-page-node-id="VStgQtWDOOI1RqTtWHcU8n">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-page-node-id="Y8wLt3AbXTnO1Il8fRMGhB"><line x1="3" y1="12" x2="19" y2="12" stroke-dasharray="3 3" data-page-node-id="Tyl2rsJiFw3op0Lq1EPg6n"/><polyline points="15 8 19 12 15 16" data-page-node-id="37g1JYzjZgnqOm4zG3tbHc"/></svg>
+          </div>
+          <div class="route-endpoint" data-page-node-id="b3WVPtTuraQIZQDS0w0eWs">
+            <div class="route-dot end" data-page-node-id="gMWKcjw0CYE4L7zrShrnq8"></div>
+            <div class="route-text" data-page-node-id="roiuT4BvfmAgq8Hvm9zgek">
+              <div class="route-label-sm" data-page-node-id="vI9D5bAKagbz8sNtzQ9lfG">到达</div>
+              <div class="route-name" data-page-node-id="6oxt4nivVxM8u63ABWnYxk">洋浦海事局</div>
+            </div>
+          </div>
+        </div>
+        <div class="trip-time" data-page-node-id="cmP26aAgpGQB7UaubH4hzq">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="G0uox3NYoF391o4nxISFi1"><circle cx="12" cy="12" r="10" data-page-node-id="STDUiYGntzkBov4vsYzzN3"/><polyline points="12 6 12 12 16 14" data-page-node-id="IIbEC9Kth91qjzRjMHpCF7"/></svg>
+          <span data-page-node-id="PinlkGdpgKgTzxWnbuwWt9">2026-07-22 09:00 至 2026-07-22 17:00</span>
+        </div>
+        <div class="card-footer" data-page-node-id="YVXFVrxNP5wnOiWTVBEFUp">
+          <div class="footer-info" data-page-node-id="pHJymPvZj0bUX7QEHNVP29">
+            <span data-page-node-id="6jvbJ8OBji4CewrnTrnfNf">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="a2ECukJJZHimXW7JyFgDeA"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" data-page-node-id="FCxbAs2FStu2WDPAFoP3d6"/><circle cx="9" cy="7" r="4" data-page-node-id="B1g3Lt6UUUX0eZDxxkuUxm"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" data-page-node-id="pKqiqlR6llgjV4w32TFKcd"/></svg>
+              3人
+            </span>
+            <span data-page-node-id="bHzG3Q0DzUwTmiQCAafEZ3">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="R2qfSPfR0NwQmTEe4xtAfT"><path d="M5 17h14M3 17V11l3-5h12l3 5v6M7 17v2M17 17v2" data-page-node-id="VF86vPkrhOkbwpaHDO61bZ"/><circle cx="7.5" cy="14.5" r="1.5" fill="currentColor" data-page-node-id="pcNt6zpXHwABwqX3VD4IHe"/><circle cx="16.5" cy="14.5" r="1.5" fill="currentColor" data-page-node-id="NNvERxuoXY9bRA4wLNUq3o"/></svg>
+              需要司机
+            </span>
+          </div>
+          <span class="arrow-hint" data-page-node-id="uawjDaoBaFlbXdjwBYpKUd">查看详情 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="ASB48L6QSustjyx14B7pio"><polyline points="9 18 15 12 9 6" data-page-node-id="9e4shE1W6GrMO0rnzdVGJD"/></svg></span>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="card" data-trip="2" data-page-node-id="7WvwajLFlLKk0SB9OZ8Akx">
+        <div class="card-header" data-page-node-id="AMc0MHEmU7ydVeFwQsYmbr">
+          <span class="card-title" data-page-node-id="9d6Xaqeg82RLS0lwsHvNJS">张三提交的用车申请</span>
+          <span class="status-tag pending" data-page-node-id="WBFbWAOdM7GReUwfcwBClD">待审批</span>
+        </div>
+        <div class="trip-route" data-page-node-id="zccNfpK2jAFIMj71qILOsr">
+          <div class="route-endpoint" data-page-node-id="E4EqS7HBpO0f277icBFjph">
+            <div class="route-dot" data-page-node-id="3a6bq3JhtnmPx6fragbSSb"></div>
+            <div class="route-text" data-page-node-id="JBARJiHVfnxK971q9dYqHz">
+              <div class="route-label-sm" data-page-node-id="AUQgSzVqJamiT0HXzySVtB">出发</div>
+              <div class="route-name" data-page-node-id="c3DgIa7ZzPNfWUZCLkQEkh">海口海事局</div>
+            </div>
+          </div>
+          <div class="route-arrow" data-page-node-id="67XKVAH8gG1Zli2ZR5WQur">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-page-node-id="3HV0oCqxfak8cvZcNGeYCL"><line x1="3" y1="12" x2="19" y2="12" stroke-dasharray="3 3" data-page-node-id="GVYCjHuxwZUPukPSL3gIZ9"/><polyline points="15 8 19 12 15 16" data-page-node-id="nczZXKeCJGvnberwqCOeNV"/></svg>
+          </div>
+          <div class="route-endpoint" data-page-node-id="4kLUAHYQrmGeaEANwsGoSC">
+            <div class="route-dot end" data-page-node-id="yLnUDGaIpBGgIHsbKb6hyu"></div>
+            <div class="route-text" data-page-node-id="CmijuRGFCSsxtKdtcWFJon">
+              <div class="route-label-sm" data-page-node-id="AUaK97fE4JAKXFJQZNpZiK">到达</div>
+              <div class="route-name" data-page-node-id="sKVp4mxGsj3gceh7LEgQua">海南省海事局</div>
+            </div>
+          </div>
+        </div>
+        <div class="trip-time" data-page-node-id="DgjsQu6OQWsRG7Yu9NEOW7">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="6wdqfB8l9WMOkCVZDTF8mf"><circle cx="12" cy="12" r="10" data-page-node-id="UIFQ3Eh6UlwkVUb5otFZh3"/><polyline points="12 6 12 12 16 14" data-page-node-id="UMYUXwmQW0YCYqyT4KUQfq"/></svg>
+          <span data-page-node-id="KRxirkitUiBCoqyQTeCzaA">2026-07-25 08:30 至 2026-07-25 18:00</span>
+        </div>
+        <div class="card-footer" data-page-node-id="LLnsDLpSa6abteIiDd39hh">
+          <div class="footer-info" data-page-node-id="c8zvOdt8fDOFHEmTW1rIAN">
+            <span data-page-node-id="ITZEHhA7Yjanqg10Y9Wp45">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="TEkUEW5pKrWBGVUciw68Dt"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" data-page-node-id="o1SuGjWdSiA7LXVR0VTcO6"/><circle cx="9" cy="7" r="4" data-page-node-id="AGAkLTU1ucDLIpXhR4fJAd"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" data-page-node-id="ILDmI0rZNZEbpSWfwn8IX3"/></svg>
+              2人
+            </span>
+            <span data-page-node-id="qoZIxnF992Exj6k8rrtRkg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="Bh19h31GheWhXRPi09bsK7"><path d="M5 17h14M3 17V11l3-5h12l3 5v6M7 17v2M17 17v2" data-page-node-id="wQqTBFn2IhmGuxLtARLshW"/><circle cx="7.5" cy="14.5" r="1.5" fill="currentColor" data-page-node-id="aLSR0v4WLCvIXPqyyNhSi6"/><circle cx="16.5" cy="14.5" r="1.5" fill="currentColor" data-page-node-id="m5jgSDyHmMWN9gVygBPotN"/></svg>
+              需要司机
+            </span>
+          </div>
+          <span class="arrow-hint" data-page-node-id="3u4KaUpGHCH5IXOtUALbQT">查看详情 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="fXCBl0WnJKDdVVEPZazIMi"><polyline points="9 18 15 12 9 6" data-page-node-id="5ZHFCWJi0sFGTYAbdLzVZ6"/></svg></span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 已派车 -->
+    <div class="tab-content" data-content="processing" data-page-node-id="olr3TLQKqGbzvUfXrp7W7H">
+
+      <!-- Card 3 -->
+      <div class="card" data-trip="3" data-page-node-id="3ZFPZOwE9jZsVsHt8c4WF0">
+        <div class="card-header" data-page-node-id="ZURuH0feAany2qVruONuAo">
+          <span class="card-title" data-page-node-id="GxMbQBifbG6yhoHtpxPnr9">张三提交的用车申请</span>
+          <span class="status-tag processing" data-page-node-id="5cyFV7oTeSGv1uK2cZybTl">已派车</span>
+        </div>
+        <div class="trip-route" data-page-node-id="uXo3eyQ5G9rxGbi0vlfDqJ">
+          <div class="route-endpoint" data-page-node-id="RYFTOKDc1ArGaplsXO1xPU">
+            <div class="route-dot" data-page-node-id="QEYm4wlcXAavwruy9XLxwS"></div>
+            <div class="route-text" data-page-node-id="Kby2iNatSj9Qe45ZhMvLP9">
+              <div class="route-label-sm" data-page-node-id="BBJULuQ9F8hqeFkqTNjvof">出发</div>
+              <div class="route-name" data-page-node-id="k7DaIPrQqXNs5IjvDofqAl">海口海事局</div>
+            </div>
+          </div>
+          <div class="route-arrow" data-page-node-id="vOahsBhw8r8IuIQTahCGwA">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-page-node-id="xiR87CCDPXrMIpYxjNYX27"><line x1="3" y1="12" x2="19" y2="12" stroke-dasharray="3 3" data-page-node-id="hK432vXc0aGulZL6V5v1yk"/><polyline points="15 8 19 12 15 16" data-page-node-id="A0az3wjEfJsEEOIRdvvgxs"/></svg>
+          </div>
+          <div class="route-endpoint" data-page-node-id="01fdv9EZpbTGHrQHCCbUoY">
+            <div class="route-dot end" data-page-node-id="6VTnaFVkwodrUiCROK3g01"></div>
+            <div class="route-text" data-page-node-id="5dl7cPIHpsbBJcShcCKavL">
+              <div class="route-label-sm" data-page-node-id="tMCm91CMsG0onPgVBkWNnC">到达</div>
+              <div class="route-name" data-page-node-id="ko7DsPSUwNHYkHqZNDHlX2">洋浦海事局</div>
+            </div>
+          </div>
+        </div>
+        <div class="trip-time" data-page-node-id="YM2dPn0LTL3j2TNGiKS6pX">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="DRa6UFzAh8wOPbHvU3aN4B"><circle cx="12" cy="12" r="10" data-page-node-id="SXfgHgXw3bIGeDX8AGX58k"/><polyline points="12 6 12 12 16 14" data-page-node-id="QQemLoK6CyfhFb7ozYVtYf"/></svg>
+          <span data-page-node-id="plh4SJ8nTbe05Kupw4voNn">2026-07-22 09:00 至 2026-07-22 17:00</span>
+        </div>
+        <div class="card-footer" data-page-node-id="T4B55mzUXIg31AZKuB96ZW">
+          <div class="footer-info" data-page-node-id="i02wBkynzD42Dnw1qrqnb4">
+            <span data-page-node-id="wekUQthBiZhhyXP7blV2WC">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="ZOslPXOhKQ8dIdORa0IBQR"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" data-page-node-id="Gx4VuDvdme4HBhojsTnGwx"/><circle cx="9" cy="7" r="4" data-page-node-id="nD2V1mzCdikRETHD8LvOVJ"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" data-page-node-id="02EfL0kMqoA3JK1b4gkhFR"/></svg>
+              3人
+            </span>
+            <span data-page-node-id="Fyw7oKb8PURPUrEshMzy2X">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="uncYGqR3sfZwS8IXT4qOBl"><path d="M5 17h14M3 17V11l3-5h12l3 5v6M7 17v2M17 17v2" data-page-node-id="p3JBqxp3o1JeT0v26ETbjs"/><circle cx="7.5" cy="14.5" r="1.5" fill="currentColor" data-page-node-id="th54m0gssv75yYDOIwo39i"/><circle cx="16.5" cy="14.5" r="1.5" fill="currentColor" data-page-node-id="EqFuGDm1oMo1sQYmNQK22O"/></svg>
+              琼A12345
+            </span>
+          </div>
+          <span class="arrow-hint" data-page-node-id="UDPwj1bLX0hCUNEcPNcE8v">查看详情 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="LJ2Aew1eHuQoHtIqyxBgMK"><polyline points="9 18 15 12 9 6" data-page-node-id="fznkSPYcRwCiSBAFIstIBT"/></svg></span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 已完成 -->
+    <div class="tab-content" data-content="done" data-page-node-id="ixsulakekV8IE2AU6woXit">
+
+      <!-- Card 4 -->
+      <div class="card" data-trip="4" data-page-node-id="ZBwTxdrBua2JFzWscQaIun">
+        <div class="card-header" data-page-node-id="yxPIGjBV0EX0BNq234G0XK">
+          <span class="card-title" data-page-node-id="KZlwUDsK0iadUlCeiAA9wC">张三提交的用车申请</span>
+          <span class="status-tag done" data-page-node-id="RsQtO2GPx0qQU8dlleFKKQ">已完成</span>
+        </div>
+        <div class="trip-route" data-page-node-id="vNGBSB0WbNpzuTr0mzLkUb">
+          <div class="route-endpoint" data-page-node-id="DsbxEPBErUjDjACWjn75Tz">
+            <div class="route-dot" data-page-node-id="wh0beknttKgZnipIcfJGzv"></div>
+            <div class="route-text" data-page-node-id="8WKFBfGpRNxb6jwcI3xqQr">
+              <div class="route-label-sm" data-page-node-id="fn38zEoXwE3uvV82BIfSPh">出发</div>
+              <div class="route-name" data-page-node-id="0PnO2v9dtO5e3wlKfCQ48x">海口海事局</div>
+            </div>
+          </div>
+          <div class="route-arrow" data-page-node-id="Vukishe4ZlmrrtWFzU8QmQ">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-page-node-id="DyoZoYrbGv7R5qXDHrAJtU"><line x1="3" y1="12" x2="19" y2="12" stroke-dasharray="3 3" data-page-node-id="5wXdFWltRHY2Dz0QWvt4ZP"/><polyline points="15 8 19 12 15 16" data-page-node-id="qmDZMdcBJ4iezEgcP6Tvw6"/></svg>
+          </div>
+          <div class="route-endpoint" data-page-node-id="hSoEtkB95E2fyHdAabocHr">
+            <div class="route-dot end" data-page-node-id="DlFpZYv653LAfeNvdm44lU"></div>
+            <div class="route-text" data-page-node-id="Bvmu7CkPzQgMtE3xgkjfHf">
+              <div class="route-label-sm" data-page-node-id="chZjd0s9P8UhlRPyV67AtE">到达</div>
+              <div class="route-name" data-page-node-id="Y3TvkUJhohS1uBcw1i7GlD">海口港</div>
+            </div>
+          </div>
+        </div>
+        <div class="trip-time" data-page-node-id="o42bCI5wXjg4feiZHthtH0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="poXKyXzCVLtfqwprwOlQHq"><circle cx="12" cy="12" r="10" data-page-node-id="qqpcJQLjPTrr2gvziz5QdH"/><polyline points="12 6 12 12 16 14" data-page-node-id="CdZtMLo7W0MceEHWK467g4"/></svg>
+          <span data-page-node-id="DZ6pd5m7246iSmeCOw1JW1">2026-07-18 07:00 至 2026-07-18 16:00</span>
+        </div>
+        <div class="card-footer" data-page-node-id="JA2MqK6DqjpryWjCUukeYU">
+          <div class="footer-info" data-page-node-id="BKx3vpw6AZThBtXafFW6Ov">
+            <span data-page-node-id="0jOu2oSQu3rzFWFIHImpf1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="OoIq0kIvIEgFPL8tcKgzCU"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" data-page-node-id="N5oJL64ZrWlrpe7zGn0lCT"/><circle cx="9" cy="7" r="4" data-page-node-id="Fhe8SrWEh0i2x6CCJvGX8k"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" data-page-node-id="cN8P07VDiKyPXCDBtG5DeX"/></svg>
+              4人
+            </span>
+            <span data-page-node-id="eAeuXVbckhTaPMwlEdMyiB">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="xuVFIzx5zPryTOBVebGW0J"><path d="M5 17h14M3 17V11l3-5h12l3 5v6M7 17v2M17 17v2" data-page-node-id="GA0w9de1m7Va6AzbKlGJ9S"/><circle cx="7.5" cy="14.5" r="1.5" fill="currentColor" data-page-node-id="vOiTwHvyHi9BNkzjrHNJv3"/><circle cx="16.5" cy="14.5" r="1.5" fill="currentColor" data-page-node-id="pY9FASEGXITA4qeBho8KuI"/></svg>
+              琼A67890
+            </span>
+          </div>
+          <span class="arrow-hint" data-page-node-id="JEdByGgVQX2niFfdz94zx7">查看详情 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="NWfF992AsZgvRFTGmJKPlG"><polyline points="9 18 15 12 9 6" data-page-node-id="GAIryAXQk8s5uFg57YymfP"/></svg></span>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="height: 20px;" data-page-node-id="BAoNlKOLFFCzGfOFjV2yqQ"></div>
+  </div>
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // Tab switching
+  var tabs = document.querySelectorAll('.tab');
+  var tabContents = document.querySelectorAll('.tab-content');
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      var target = this.getAttribute('data-tab');
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      this.classList.add('active');
+      tabContents.forEach(function(c) {
+        if (c.getAttribute('data-content') === target) {
+          c.classList.add('active');
+          c.classList.add('fade-in');
+          setTimeout(function() { c.classList.remove('fade-in'); }, 400);
+        } else {
+          c.classList.remove('active');
+        }
+      });
+    });
+  });
+
+  // Card click
+  document.querySelectorAll('.card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      window.location.href = 'P09-trip-detail.html';
+    });
+  });
+})();
+</script>
+</body>
+</html>
