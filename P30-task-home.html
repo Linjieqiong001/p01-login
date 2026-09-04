@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>P30 - 任务首页</title>
+<link rel="stylesheet" href="common.css">
+<style>
+/* ==================== Page Specific Styles ==================== */
+
+/* Task overview header */
+.task-overview-header {
+  background: var(--primary-gradient);
+  padding: 16px 16px 20px;
+  position: relative;
+}
+.task-overview-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 14px;
+  background: var(--bg);
+  border-radius: 14px 14px 0 0;
+}
+.task-overview-title {
+  font-size: 13px;
+  color: rgba(255,255,255,0.75);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.task-cards-row {
+  display: flex;
+  gap: 10px;
+}
+.task-stat-card {
+  flex: 1;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(8px);
+  border-radius: var(--radius-md);
+  padding: 12px 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.task-stat-card:active {
+  transform: scale(0.96);
+  background: rgba(255,255,255,0.25);
+}
+.task-stat-card .tsc-num {
+  font-size: 26px;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1;
+}
+.task-stat-card .tsc-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.7);
+  margin-top: 4px;
+}
+.task-stat-card .tsc-icon {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  opacity: 0.12;
+}
+.task-stat-card .tsc-icon svg {
+  width: 44px;
+  height: 44px;
+  color: #FFFFFF;
+}
+
+/* Section task cards */
+.section-task-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.section-task-icon svg {
+  width: 22px;
+  height: 22px;
+  color: #FFFFFF;
+}
+.ic-driver { background: linear-gradient(135deg, #5DADE2, #3498DB); }
+.ic-repair { background: linear-gradient(135deg, #48C9B0, #1ABC9C); }
+.ic-housing { background: linear-gradient(135deg, #F1948A, #E74C3C); }
+
+.section-task-card {
+  background: var(--card-bg);
+  margin: 0 16px;
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: transform 0.15s;
+  position: relative;
+}
+.section-task-card:active {
+  transform: scale(0.98);
+}
+.section-task-card .task-info {
+  flex: 1;
+  min-width: 0;
+}
+.section-task-card .task-info .task-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+  margin-bottom: 6px;
+}
+.section-task-card .task-info .task-stats {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+}
+.section-task-card .task-info .task-stats .stat-item {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.section-task-card .task-info .task-stats .stat-num {
+  font-weight: 700;
+  font-size: 15px;
+}
+.section-task-card .task-info .task-stats .stat-num.pending { color: var(--warning); }
+.section-task-card .task-info .task-stats .stat-num.done { color: var(--success); }
+.section-task-card .task-info .task-stats .stat-label { color: var(--text-3); }
+.section-task-card .task-arrow {
+  width: 16px;
+  height: 16px;
+  color: var(--text-4);
+  flex-shrink: 0;
+}
+.section-task-card .task-badge-mini {
+  position: absolute;
+  top: 10px;
+  right: 40px;
+  min-width: 18px;
+  height: 18px;
+  background: var(--badge);
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 16px 4px;
+}
+.section-header .section-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+.section-header .dot {
+  width: 4px;
+  height: 14px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+/* Task card grid spacing */
+.task-cards-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 0 12px;
+}
+.task-cards-wrapper .section-task-card:first-child {
+  margin-top: 12px;
+}
+
+/* Spacer */
+.content-spacer {
+  height: 16px;
+}
+</style>
+</head>
+<body>
+
+<div class="miniprogram" id="app">
+
+  <!-- Status Bar (light) -->
+  <div class="status-bar light">
+    <span class="time" id="statusTime">09:38</span>
+    <div class="icons">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+    </div>
+  </div>
+
+  <!-- Navigation Bar (white, no back) -->
+  <div class="nav-bar white">
+    <div class="nav-placeholder"></div>
+    <span class="nav-title">任务</span>
+    <div class="nav-placeholder"></div>
+  </div>
+
+  <!-- Scrollable Content -->
+  <div class="content" id="content">
+
+    <!-- Task Overview Header -->
+    <div class="task-overview-header">
+      <div class="task-overview-title">任务总览</div>
+      <div class="task-cards-row">
+        <div class="task-stat-card" id="statDriver">
+          <div class="tsc-num">6</div>
+          <div class="tsc-label">公车管理任务</div>
+          <div class="tsc-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17h14M3 17V11l3-5h12l3 5v6M7 17v2M17 17v2"/><circle cx="7.5" cy="14.5" r="1.5" fill="currentColor"/><circle cx="16.5" cy="14.5" r="1.5" fill="currentColor"/></svg>
+          </div>
+        </div>
+        <div class="task-stat-card" id="statRepair">
+          <div class="tsc-num">10</div>
+          <div class="tsc-label">维护报修任务</div>
+          <div class="tsc-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+          </div>
+        </div>
+        <div class="task-stat-card" id="statHousing">
+          <div class="tsc-num">3</div>
+          <div class="tsc-label">住房维修任务</div>
+          <div class="tsc-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section: 公车管理-司机作业 -->
+    <div class="section-task-card" id="cardDriver" onclick="window.location.href='P31-task-list.html';">
+      <div class="section-task-icon ic-driver">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 17h14M3 17V11l3-5h12l3 5v6M7 17v2M17 17v2"/>
+          <circle cx="7.5" cy="14.5" r="1.5" fill="currentColor"/>
+          <circle cx="16.5" cy="14.5" r="1.5" fill="currentColor"/>
+        </svg>
+      </div>
+      <div class="task-info">
+        <div class="task-name">司机作业</div>
+        <div class="task-stats">
+          <div class="stat-item">
+            <span class="stat-num pending">1</span>
+            <span class="stat-label">待出行</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num done">5</span>
+            <span class="stat-label">已完成</span>
+          </div>
+        </div>
+      </div>
+      <svg class="task-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+      <span class="task-badge-mini">1</span>
+    </div>
+
+    <!-- Section: 维护报修-维护报修任务 -->
+    <div class="section-task-card" id="cardRepair" style="margin-top:10px;" onclick="window.location.href='P31-task-list.html';">
+      <div class="section-task-icon ic-repair">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
+        </svg>
+      </div>
+      <div class="task-info">
+        <div class="task-name">维护报修任务</div>
+        <div class="task-stats">
+          <div class="stat-item">
+            <span class="stat-num pending">2</span>
+            <span class="stat-label">待处理</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num done">8</span>
+            <span class="stat-label">已完成</span>
+          </div>
+        </div>
+      </div>
+      <svg class="task-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+      <span class="task-badge-mini">2</span>
+    </div>
+
+    <!-- Section: 公有住房-住房维修任务 -->
+    <div class="section-task-card" id="cardHousing" style="margin-top:10px;" onclick="window.location.href='P31-task-list.html';">
+      <div class="section-task-icon ic-housing">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+          <path d="M9 22V12h6v10"/>
+        </svg>
+      </div>
+      <div class="task-info">
+        <div class="task-name">住房维修任务</div>
+        <div class="task-stats">
+          <div class="stat-item">
+            <span class="stat-num pending">0</span>
+            <span class="stat-label">待处理</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num done">3</span>
+            <span class="stat-label">已完成</span>
+          </div>
+        </div>
+      </div>
+      <svg class="task-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </div>
+
+    <!-- Spacer -->
+    <div class="content-spacer"></div>
+
+  </div>
+
+  <!-- Bottom Tab Bar -->
+  <div class="tabbar">
+    <div class="tabbar-item" data-tab="首页">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+        <path d="M9 22V12h6v10"/>
+      </svg>
+      <span class="tabbar-label">首页</span>
+    </div>
+    <div class="tabbar-item" data-tab="审批">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 11H5a2 2 0 00-2 2v7a2 2 0 002 2h14a2 2 0 002-2v-7a2 2 0 00-2-2h-4"/>
+        <path d="M9 11V5a2 2 0 014 0v6"/>
+        <path d="M8 17h2M14 17h2"/>
+      </svg>
+      <span class="tabbar-badge">1</span>
+      <span class="tabbar-label">审批</span>
+    </div>
+    <div class="tabbar-item active" data-tab="任务">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 11l3 3L22 4"/>
+        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+      </svg>
+      <span class="tabbar-badge">1</span>
+      <span class="tabbar-label">任务</span>
+    </div>
+    <div class="tabbar-item" data-tab="我的">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg>
+      <span class="tabbar-label">我的</span>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <div class="toast-icon"></div>
+    <span id="toastText"></span>
+  </div>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // Init TabBar with current page "任务"
+  MS.initTabBar('任务');
+
+  // Stat card clicks
+  document.getElementById('statDriver').addEventListener('click', function() {
+    window.location.href = 'P31-task-list.html';
+  });
+  document.getElementById('statRepair').addEventListener('click', function() {
+    window.location.href = 'P31-task-list.html';
+  });
+  document.getElementById('statHousing').addEventListener('click', function() {
+    window.location.href = 'P31-task-list.html';
+  });
+
+})();
+</script>
+
+</body>
+</html>
