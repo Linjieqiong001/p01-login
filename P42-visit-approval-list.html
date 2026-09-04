@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="JGcyjSEP0yV9tOeM16XK0M">
+<head data-page-node-id="MNPiTCsTK4LKvfeIx92k8w">
+<meta charset="UTF-8" data-page-node-id="kRqX9jyDLzKlwxWs1AedVB">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="nKSTpd3uaRlg1sHDBl5An3">
+<title>P42 - 拜访审批列表</title>
+<link rel="stylesheet" href="common.css" data-page-node-id="kjHcy24mTGrwgY5vymNlfY">
+<style>
+/* ==================== Custom Status Tags ==================== */
+.tag-pass { background: var(--success-light); color: var(--success); border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 500; display: inline-block; }
+.tag-reject { background: var(--danger-light); color: var(--danger); border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 500; display: inline-block; }
+.tag-pending { background: var(--warning-light); color: var(--warning); border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 500; display: inline-block; }
+
+/* ==================== Approval Card ==================== */
+.approval-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  margin: 10px 16px 0;
+  padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.approval-card:active { transform: scale(0.99); }
+.approval-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.approval-card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+  flex: 1;
+  min-width: 0;
+}
+.approval-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.approval-card-meta .time-icon {
+  width: 14px;
+  height: 14px;
+}
+.approval-card-summary {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-bottom: 12px;
+  padding: 8px 10px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  line-height: 1.5;
+}
+.approval-card-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.approval-card.hidden { display: none; }
+
+/* ==================== Empty State ==================== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: 12px;
+}
+.empty-state svg { width: 64px; height: 64px; color: var(--divider); }
+.empty-state .empty-text { font-size: 14px; color: var(--text-3); }
+.empty-state.hidden { display: none; }
+
+/* ==================== Reject Textarea ==================== */
+.reject-textarea {
+  width: 100%;
+  min-height: 88px;
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  font-size: 14px;
+  color: var(--text-1);
+  background: var(--bg);
+  resize: none;
+  outline: none;
+  font-family: inherit;
+  line-height: 1.5;
+  transition: border-color 0.2s;
+}
+.reject-textarea::placeholder { color: var(--text-4); }
+.reject-textarea:focus { border-color: var(--primary); }
+
+/* ==================== Confirm Text ==================== */
+.confirm-text {
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+
+.spacer { height: 20px; }
+</style>
+</head>
+<body data-page-node-id="IUFcHSVVlOGyuouAdaQE9v">
+
+<div class="miniprogram" id="app" data-page-node-id="OtuD17DheOjhCvAZuU1J8y">
+
+  <!-- Status Bar -->
+  <div class="status-bar light" data-page-node-id="pgQWTx89lbd1rHjStP3KiL">
+    <span class="time" data-page-node-id="YYbctS2ZjMXP0HVJypdiHh">09:42</span>
+    <div class="icons" data-page-node-id="JZkXJwLFMX108paSR8LDAV">
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="kQ4ne1yMLyYNUWTSZl4Trh"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" data-page-node-id="tqjyIQGafzZp3XuJO3DDPB"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="D4YAIyFLlaquUSbIye2tiG"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" data-page-node-id="GBqwmDBqjY9b6Nh6lrEbVE"/></svg>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar white" data-page-node-id="QOS60cJdvbMSwtHjfyCC8C">
+    <div class="nav-back" data-page-node-id="27BRfHgC8tGj5eBFVqIGNu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="4rvs3GVq5HNkCRCtktW3sE">
+        <polyline points="15 18 9 12 15 6" data-page-node-id="cyUleHFqVoJHaSt3JKy8P0"/>
+      </svg>
+    </div>
+    <span class="nav-title" data-page-node-id="tPCubAleAO3boFW7E24eRn">拜访审批列表</span>
+    <span class="nav-placeholder" data-page-node-id="ObO8EYxEXKOiejAcwlM6Yt"></span>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs" id="tabBar" data-page-node-id="VBrkYSUcGH7h4oSgs4PUYe">
+    <div class="tab active" data-tab="pending" data-page-node-id="2ZhYWTA2vYL97J4vcJeUg9">
+      待审批<span class="tab-badge" id="badgePending" data-page-node-id="tHEEHIXGMMfaK9F7C3TLjL">2</span>
+    </div>
+    <div class="tab" data-tab="done" data-page-node-id="5agp9qv0LoJUAp2mOsLc5e">
+      已处理
+    </div>
+    <div class="tab" data-tab="all" data-page-node-id="LOud6kd5wE9i9pc2VyTvGn">
+      全部
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content fade-in" id="contentArea" data-page-node-id="T56FTps43AH8guFYzqz5gb">
+
+    <!-- Card 1: 待处理 -->
+    <div class="approval-card" data-status="pending" data-id="card-1" data-page-node-id="Cx2hb41pygLxahwtv4GlT8">
+      <div class="approval-card-header" data-page-node-id="Qg9GNy8THMkkudnDTBU7Nz">
+        <span class="approval-card-title" data-page-node-id="TwdjDbx96P81dy32Q3ClGA">张三提交的访客预约申请</span>
+        <span class="tag-pending" data-page-node-id="H0l72rbvcKY5SF6Nwxj6n7">待处理</span>
+      </div>
+      <div class="approval-card-meta" data-page-node-id="3OPbIDA0tomp4i74AN5qO1">
+        <svg class="time-icon" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" data-page-node-id="GBoiIF6ZZ7rkrI2udssDRi">
+          <circle cx="12" cy="12" r="10" data-page-node-id="2JzXH4xjOeCFByCg8LFtRY"/><path d="M12 6v6l4 2" data-page-node-id="5yJNFTh9z9bmyItoPFAXiE"/>
+        </svg>
+        <span data-page-node-id="tcuUtr2bpwRSGtMdmOck3s">发起时间：2026-07-22 09:00</span>
+      </div>
+      <div class="approval-card-summary" data-page-node-id="huW8zl7oaRvUl35u4Dif4k">
+        访客：李明；来访时间：2026-07-22 14:00；事由：业务洽谈；被访人：张三
+      </div>
+      <div class="approval-card-actions" data-page-node-id="fv2d58lNzTqF0bpVa6U0W7">
+        <button class="btn btn-sm btn-outline-gray" data-action="reject" data-page-node-id="P0kxmOHa52FWvysuj90CWU">驳回</button>
+        <button class="btn btn-sm btn-primary" data-action="approve" data-page-node-id="GcsnVVyd9ZfcqhqTaQaN23">通过</button>
+      </div>
+    </div>
+
+    <!-- Card 2: 待处理 -->
+    <div class="approval-card" data-status="pending" data-id="card-2" data-page-node-id="ruhcVN0qzc9vHoRTMw4AVi">
+      <div class="approval-card-header" data-page-node-id="BcBvcRU9sCC6GoZgWA75hK">
+        <span class="approval-card-title" data-page-node-id="lqAsTd7KyhcAthAOge1sEe">张三提交的访客预约申请</span>
+        <span class="tag-pending" data-page-node-id="FLdcnbjwJ7TlLgcGz3OgXg">待处理</span>
+      </div>
+      <div class="approval-card-meta" data-page-node-id="dtUqVRGfLKgASNXAivPjbB">
+        <svg class="time-icon" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" data-page-node-id="3v0Z35lC2qM7VVlnAAT4Bu">
+          <circle cx="12" cy="12" r="10" data-page-node-id="GqwlSZyic8m7wShYkbuT3M"/><path d="M12 6v6l4 2" data-page-node-id="43Zcz2czU4fQNiDORByg5X"/>
+        </svg>
+        <span data-page-node-id="U9pJLHJOlNwnfyapFkVBmn">发起时间：2026-07-21 15:00</span>
+      </div>
+      <div class="approval-card-summary" data-page-node-id="QjIADFFpFpITN1OdGqA9W2">
+        访客：王芳；来访时间：2026-07-23 10:00；事由：技术交流；被访人：李四
+      </div>
+      <div class="approval-card-actions" data-page-node-id="rjuD64T7P3DRn9kkasNz4g">
+        <button class="btn btn-sm btn-outline-gray" data-action="reject" data-page-node-id="p1C5GquBwGTDr1QJB5GPvD">驳回</button>
+        <button class="btn btn-sm btn-primary" data-action="approve" data-page-node-id="G7rEPqsL9efoBGpD2tbbby">通过</button>
+      </div>
+    </div>
+
+    <!-- Card 3: 已通过 -->
+    <div class="approval-card" data-status="done" data-id="card-3" data-page-node-id="sYuAbBBnLOJjll9kCTBULg">
+      <div class="approval-card-header" data-page-node-id="teEpWfVM0EwpIrJHL88nvA">
+        <span class="approval-card-title" data-page-node-id="Ob1C60ViYIC4WsGzG3HDJ5">张三提交的访客预约申请</span>
+        <span class="tag-pass" data-page-node-id="Zv8HPAwqn1MXGgHWLdG4nt">已通过</span>
+      </div>
+      <div class="approval-card-meta" data-page-node-id="RomrU1w8Is8OX0eTphJXyH">
+        <svg class="time-icon" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" data-page-node-id="2wbB18iPsNy1LgKiDV5jK6">
+          <circle cx="12" cy="12" r="10" data-page-node-id="emwmCOeKKeznxGU3A553yj"/><path d="M12 6v6l4 2" data-page-node-id="I6KmSfAeL4Bpf3QXeBonfV"/>
+        </svg>
+        <span data-page-node-id="SwD9guYmKXoQp3dtv2CQ0X">发起时间：2026-07-20 10:00</span>
+      </div>
+      <div class="approval-card-summary" data-page-node-id="lzHBMWFarHPFovnUBaq9e9">
+        访客：陈强；来访时间：2026-07-21 09:00；事由：项目汇报；被访人：张三
+      </div>
+      <div class="approval-card-actions" data-page-node-id="ptFvoVDs7VKF5KIAuD31LC">
+        <button class="btn btn-sm btn-outline-gray" data-action="view" data-page-node-id="Lp3JMCunBVtIfpheNEfPBB">查看</button>
+      </div>
+    </div>
+
+    <!-- Card 4: 已通过 -->
+    <div class="approval-card" data-status="done" data-id="card-4" data-page-node-id="fb31yXuUigyWv7njQUjB4t">
+      <div class="approval-card-header" data-page-node-id="jrgEPYFUiYLNa2OEw1xg8c">
+        <span class="approval-card-title" data-page-node-id="TnTlgMhY9ASlEDuDvyXBL8">张三提交的访客预约申请</span>
+        <span class="tag-pass" data-page-node-id="7CXvTXLTHFLIEzrzTIxcQS">已通过</span>
+      </div>
+      <div class="approval-card-meta" data-page-node-id="T9MbG3UEwY5qA0xCv2S0Zx">
+        <svg class="time-icon" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" data-page-node-id="2DptFo2C65AEgrQsGrWzPU">
+          <circle cx="12" cy="12" r="10" data-page-node-id="5fjsTMJFFiaWE5VyAAbXWO"/><path d="M12 6v6l4 2" data-page-node-id="4VA1hLpAnmM3DIf46nMS5y"/>
+        </svg>
+        <span data-page-node-id="cemoAlyggcUrDP8wVJ1CdO">发起时间：2026-07-19 14:00</span>
+      </div>
+      <div class="approval-card-summary" data-page-node-id="OPk29roAE0jc7fkLV0ASQX">
+        访客：刘洋；来访时间：2026-07-20 15:00；事由：合同签约；被访人：王五
+      </div>
+      <div class="approval-card-actions" data-page-node-id="No1aN19YrDpUopaW3hZFtb">
+        <button class="btn btn-sm btn-outline-gray" data-action="view" data-page-node-id="xRTbYr1ZJYYnK1N8feHQN7">查看</button>
+      </div>
+    </div>
+
+    <!-- Card 5: 已驳回 -->
+    <div class="approval-card" data-status="done" data-id="card-5" data-page-node-id="mvHcWo8NaxaNe9345ITfp8">
+      <div class="approval-card-header" data-page-node-id="0d6A72BIJO6YKhJwSEWv72">
+        <span class="approval-card-title" data-page-node-id="7ITUycG8MBVZJE90ikClPE">张三提交的访客预约申请</span>
+        <span class="tag-reject" data-page-node-id="E1juEL0WhQuDU7jgapRDln">已驳回</span>
+      </div>
+      <div class="approval-card-meta" data-page-node-id="99kk9upw3NfNHtPXFsTUVj">
+        <svg class="time-icon" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" data-page-node-id="FMqG4xhpgjwQZnygoopGMc">
+          <circle cx="12" cy="12" r="10" data-page-node-id="USWRfxZ9GjWsHGy0r5iCoi"/><path d="M12 6v6l4 2" data-page-node-id="T2p2wHgYDWNBBe3BLbrLos"/>
+        </svg>
+        <span data-page-node-id="kfLVByA1IpEBaqBideSPir">发起时间：2026-07-18 09:30</span>
+      </div>
+      <div class="approval-card-summary" data-page-node-id="Sqa5DsxPXyqxwepaH4ftnH">
+        访客：赵磊；来访时间：2026-07-19 10:00；事由：私人拜访；被访人：张三
+      </div>
+      <div class="approval-card-actions" data-page-node-id="t2EpOaAj0kNmsYtdabd339">
+        <button class="btn btn-sm btn-outline-gray" data-action="view" data-page-node-id="8ALQhAJIihg8K4hesJM7ho">查看</button>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div class="empty-state hidden" id="emptyState" data-page-node-id="lY2J1GvmfEAqn7tw8dOxRx">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="H208DaSoaTq9JDiayyXC8Y">
+        <path d="M9 11H5a2 2 0 00-2 2v7a2 2 0 002 2h14a2 2 0 002-2v-7a2 2 0 00-2-2h-4" data-page-node-id="Y27vgGR4mj755p0G2j65WW"/>
+        <path d="M9 11V5a2 2 0 014 0v6" data-page-node-id="KRCntG0qn5MAwSyLhMHPB8"/>
+      </svg>
+      <span class="empty-text" data-page-node-id="GBDc19lDxJGfyrA2EqbCDD">暂无审批数据</span>
+    </div>
+
+    <div class="spacer" data-page-node-id="oYBeK3HzpskaZFyCpzm8BB"></div>
+  </div>
+
+  <!-- 确认通过弹窗 -->
+  <div class="modal-mask" id="confirmModal" data-page-node-id="77tScjZDkcSS9aF1MF5CHV">
+    <div class="modal-content" data-page-node-id="9eQAuSCH99PBlguyqIi6W1">
+      <div class="modal-header" data-page-node-id="qgflAHYzEnQrQ2Nt5hHlGY">
+        <div class="modal-title" data-page-node-id="K88B83LWRGDvYvpwCTRbLz">确认通过</div>
+      </div>
+      <div class="modal-body" data-page-node-id="sLxujJwufvG3AClxhphAdi">
+        <p class="confirm-text" data-page-node-id="dhFcsLGVAVwmzMdXJ8OC99">确认通过此访客预约？通过后将自动生成访客确认信息并同步至安保端今日访客名单。</p>
+      </div>
+      <div class="modal-footer" data-page-node-id="2bBiFz7QIVV7zQYkLyJvcZ">
+        <button class="btn btn-success btn-block" id="confirmApproveBtn" data-page-node-id="oAg8I3LfayOJAZuyWDUedv">确认通过</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 驳回弹窗 -->
+  <div class="modal-mask" id="rejectModal" data-page-node-id="8sUrWhIKU3K7yY7sARs6FQ">
+    <div class="modal-content" data-page-node-id="2WvDNEyOuHFED8zBmRVXQt">
+      <div class="modal-header" data-page-node-id="gaIs1YV7Y7mM54s5dYoT67">
+        <div class="modal-title" data-page-node-id="OL9ifedcF9QzjH14VPkGwL">驳回申请</div>
+      </div>
+      <div class="modal-body" data-page-node-id="HBX8A2A5nGu8zPaeCSDprh">
+        <textarea class="reject-textarea" id="rejectReason" placeholder="请输入驳回理由"></textarea>
+      </div>
+      <div class="modal-footer" data-page-node-id="xKWTrHGf9Qfszx53e6Gsgv">
+        <button class="btn btn-danger btn-block" id="confirmRejectBtn" data-page-node-id="Lr5QjlB3QolKe8RJrP2zG1">确认驳回</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" data-page-node-id="0YMbgHAPXXXHvCgmU2HsvS">
+    <div class="toast-icon" data-page-node-id="2A4wqkegjgnLBvtTXre4RR"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="paDRrnG1qdIaK35FRxy2YX"><circle cx="12" cy="12" r="10" data-page-node-id="ZVEYIGG5zEHMgKoaCLofxd"/><path d="M12 16v-4M12 8h.01" data-page-node-id="TefLvdshwyfU4fzz341dOr"/></svg></div>
+    <span id="toastText" data-page-node-id="5Tkr4P2b3DyoFYgQFUkZM0"></span>
+  </div>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  var currentCardId = null;
+
+  // ==================== Toast ====================
+  var toastTimer = null;
+  function showToast(text, iconType) {
+    var toast = document.getElementById('toast');
+    var toastText = document.getElementById('toastText');
+    var toastIcon = toast.querySelector('.toast-icon');
+
+    toastText.textContent = text;
+
+    var iconHtml = '';
+    if (iconType === 'success') {
+      iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+    } else if (iconType === 'error') {
+      iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>';
+    } else {
+      iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>';
+    }
+    toastIcon.innerHTML = iconHtml;
+
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() {
+      toast.classList.remove('show');
+    }, 1800);
+  }
+
+  // ==================== Modal Helpers ====================
+  function showModal(id) {
+    document.getElementById(id).classList.add('show');
+  }
+  function hideModal(id) {
+    document.getElementById(id).classList.remove('show');
+  }
+
+  // ==================== Update Badges ====================
+  function updateBadges() {
+    var pendingCount = document.querySelectorAll('.approval-card[data-status="pending"]:not(.hidden)').length;
+    var allCards = document.querySelectorAll('.approval-card');
+    var doneCount = 0;
+    allCards.forEach(function(c) {
+      if (c.getAttribute('data-status') === 'done' && !c.classList.contains('hidden')) doneCount++;
+    });
+    var allVisible = document.querySelectorAll('.approval-card:not(.hidden)').length;
+
+    document.getElementById('badgePending').textContent = pendingCount;
+    var bd = document.getElementById('badgeDone');
+    var ba = document.getElementById('badgeAll');
+    if (bd) bd.textContent = doneCount;
+    if (ba) ba.textContent = allVisible;
+  }
+
+  // ==================== Change Card Status ====================
+  function changeCardStatus(cardId, newStatus) {
+    var card = document.querySelector('.approval-card[data-id="' + cardId + '"]');
+    if (!card) return;
+
+    card.setAttribute('data-status', newStatus);
+
+    var statusTag = card.querySelector('.approval-card-header span:last-child');
+    var actionsDiv = card.querySelector('.approval-card-actions');
+
+    if (newStatus === 'done-approved') {
+      // 标记为已通过（但 data-status 仍为 done，因为已处理）
+      card.setAttribute('data-status', 'done');
+      statusTag.className = 'tag-pass';
+      statusTag.textContent = '已通过';
+      actionsDiv.innerHTML = '<button class="btn btn-sm btn-outline-gray" data-action="view">查看</button>';
+    } else if (newStatus === 'done-rejected') {
+      card.setAttribute('data-status', 'done');
+      statusTag.className = 'tag-reject';
+      statusTag.textContent = '已驳回';
+      actionsDiv.innerHTML = '<button class="btn btn-sm btn-outline-gray" data-action="view">查看</button>';
+    }
+
+    // Rebind button events
+    bindCardButtons(card);
+    updateBadges();
+
+    // Re-apply current tab filter
+    var activeTab = document.querySelector('#tabBar .tab.active');
+    if (activeTab) {
+      filterCards(activeTab.getAttribute('data-tab'));
+    }
+  }
+
+  // ==================== Tab Filtering ====================
+  function filterCards(status) {
+    var cards = document.querySelectorAll('.approval-card');
+    var emptyState = document.getElementById('emptyState');
+    var visibleCount = 0;
+
+    cards.forEach(function(card) {
+      if (status === 'all' || card.getAttribute('data-status') === status) {
+        card.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    if (visibleCount === 0) {
+      emptyState.classList.remove('hidden');
+    } else {
+      emptyState.classList.add('hidden');
+    }
+  }
+
+  // ==================== Route to Detail by Status ====================
+  function goDetail(card) {
+    var status = card.getAttribute('data-status');
+    if (status === 'pending') {
+      window.location.href = 'P43-visit-approval-detail.html';
+    } else {
+      window.location.href = 'P49-visit-approval-detail-done.html';
+    }
+  }
+
+  // ==================== Bind Card Buttons ====================
+  function bindCardButtons(card) {
+    var buttons = card.querySelectorAll('.approval-card-actions .btn');
+    buttons.forEach(function(btn) {
+      // Remove old listeners by cloning
+      var newBtn = btn.cloneNode(true);
+      btn.parentNode.replaceChild(newBtn, btn);
+
+      newBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var action = this.getAttribute('data-action');
+        var cardEl = this.closest('.approval-card');
+        var cardId = cardEl.getAttribute('data-id');
+
+        if (action === 'approve') {
+          currentCardId = cardId;
+          showModal('confirmModal');
+        } else if (action === 'reject') {
+          currentCardId = cardId;
+          document.getElementById('rejectReason').value = '';
+          showModal('rejectModal');
+        } else if (action === 'view') {
+          goDetail(cardEl);
+        }
+      });
+    });
+  }
+
+  // ==================== Init All Cards ====================
+  var allCards = document.querySelectorAll('.approval-card');
+  allCards.forEach(function(card) {
+    bindCardButtons(card);
+
+    // Card body click → detail
+    card.addEventListener('click', function(e) {
+      if (e.target.tagName === 'BUTTON') return;
+      goDetail(card);
+    });
+  });
+
+  // ==================== Confirm Approve ====================
+  document.getElementById('confirmApproveBtn').addEventListener('click', function() {
+    hideModal('confirmModal');
+    if (currentCardId) {
+      changeCardStatus(currentCardId, 'done-approved');
+      showToast('审批通过，访客确认信息已同步安保端', 'success');
+      currentCardId = null;
+    }
+  });
+
+  // ==================== Confirm Reject ====================
+  document.getElementById('confirmRejectBtn').addEventListener('click', function() {
+    var reason = document.getElementById('rejectReason').value.trim();
+    if (!reason) {
+      showToast('请填写驳回理由', 'error');
+      return;
+    }
+    hideModal('rejectModal');
+    if (currentCardId) {
+      changeCardStatus(currentCardId, 'done-rejected');
+      showToast('已驳回该申请', 'info');
+      currentCardId = null;
+    }
+  });
+
+  // ==================== Modal Mask Click to Close ====================
+  document.getElementById('confirmModal').addEventListener('click', function(e) {
+    if (e.target === this) { hideModal('confirmModal'); currentCardId = null; }
+  });
+  document.getElementById('rejectModal').addEventListener('click', function(e) {
+    if (e.target === this) { hideModal('rejectModal'); currentCardId = null; }
+  });
+
+  // ==================== Tab Switching ====================
+  var tabs = document.querySelectorAll('#tabBar .tab');
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      if (this.classList.contains('active')) return;
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      this.classList.add('active');
+      filterCards(this.getAttribute('data-tab'));
+    });
+  });
+
+  // ==================== Status Bar Time ====================
+  function updateStatusTime() {
+    var now = new Date();
+    var h = String(now.getHours()).padStart(2, '0');
+    var m = String(now.getMinutes()).padStart(2, '0');
+    var el = document.querySelector('.status-bar .time');
+    if (el) el.textContent = h + ':' + m;
+  }
+  updateStatusTime();
+  setInterval(updateStatusTime, 60000);
+
+})();
+</script>
+
+</body>
+</html>
