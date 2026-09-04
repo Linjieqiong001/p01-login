@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="WmxV15J5p09DF2L59JDA4I">
+<head data-page-node-id="j4VLEV47aKKpVPb0nSdbqU">
+<meta charset="UTF-8" data-page-node-id="8W7jbDcdao7QDTjSIBoiOL">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="ZJ1Ap3ELNqQ24gFkxDrvrg">
+<title>P06 - 账单明细</title>
+<link rel="stylesheet" href="common.css" data-page-node-id="vndZq6T03LwAPzOETLf8qr">
+<style>
+/* ==================== Page Specific ==================== */
+.wallet-header {
+  background: var(--primary-gradient);
+  padding: 0 0 24px;
+  position: relative;
+}
+.wallet-amount {
+  text-align: center;
+  padding: 24px 20px 20px;
+}
+.wallet-amount .wa-label {
+  font-size: 13px;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.wallet-amount .wa-label svg { width: 16px; height: 16px; }
+.wallet-amount .wa-value {
+  font-size: 40px;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.1;
+}
+.wallet-amount .wa-value .wa-yen { font-size: 22px; font-weight: 400; vertical-align: top; margin-right: 2px; }
+.wallet-amount .wa-sub {
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  margin-top: 10px;
+}
+.wallet-amount .wa-sub .wa-sub-num { color: rgba(255,255,255,0.9); font-weight: 600; }
+
+/* Action buttons */
+.wallet-actions {
+  display: flex;
+  gap: 12px;
+  padding: 0 16px;
+  margin-top: -16px;
+  position: relative;
+  z-index: 2;
+}
+.wallet-actions .btn {
+  flex: 1;
+  height: 44px;
+}
+.btn-refund {
+  background: rgba(255,255,255,0.95);
+  border: 1px solid var(--divider);
+  color: var(--text-1);
+}
+.btn-refund:active { background: var(--bg); }
+
+/* Bill list */
+.bill-section {
+  margin-top: 16px;
+}
+.bill-list {
+  background: var(--card-bg);
+  margin: 0 16px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.bill-item {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  border-bottom: 0.5px solid var(--border);
+  gap: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.bill-item:last-child { border-bottom: none; }
+.bill-item:active { background: var(--bg); }
+.bill-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.bill-icon svg { width: 20px; height: 20px; color: #FFFFFF; }
+.bill-icon.expense { background: linear-gradient(135deg, #FF7676, #FF5252); }
+.bill-icon.income { background: linear-gradient(135deg, #58D68D, #27AE60); }
+.bill-info { flex: 1; min-width: 0; }
+.bill-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-1);
+  margin-bottom: 3px;
+}
+.bill-desc {
+  font-size: 12px;
+  color: var(--text-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bill-right {
+  text-align: right;
+  flex-shrink: 0;
+}
+.bill-amount {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.bill-amount.expense { color: var(--text-1); }
+.bill-amount.income { color: var(--success); }
+.bill-time {
+  font-size: 11px;
+  color: var(--text-4);
+}
+
+/* View all */
+.view-all-wrap {
+  text-align: center;
+  padding: 14px 0 20px;
+}
+
+/* Bottom sheet content */
+.amount-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.amount-opt {
+  flex: 1;
+  min-width: calc(50% - 5px);
+  padding: 16px 0;
+  text-align: center;
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1.5px solid transparent;
+  position: relative;
+}
+.amount-opt:active { transform: scale(0.97); }
+.amount-opt.active {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+.amount-opt .ao-val {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+.amount-opt.active .ao-val { color: var(--primary); }
+.amount-opt .ao-label {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+.amount-opt .ao-tag {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--danger);
+  color: #FFFFFF;
+}
+
+.custom-amount {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--bg);
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+}
+.custom-amount .ca-yen {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-1);
+  margin-right: 6px;
+}
+.custom-amount input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-1);
+  font-family: inherit;
+}
+.custom-amount input::placeholder { color: var(--text-4); font-weight: 400; }
+
+/* Refund form */
+.refund-amount-display {
+  text-align: center;
+  padding: 16px 0 12px;
+  border-bottom: 0.5px solid var(--border);
+  margin-bottom: 16px;
+}
+.refund-amount-display .rad-label {
+  font-size: 13px;
+  color: var(--text-3);
+  margin-bottom: 6px;
+}
+.refund-amount-display .rad-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+.refund-amount-display .rad-value .yen { font-size: 18px; }
+.refund-amount-display .rad-hint {
+  font-size: 11px;
+  color: var(--text-4);
+  margin-top: 6px;
+}
+
+.refund-form .form-item {
+  padding: 14px 0;
+  border-bottom: 0.5px solid var(--border);
+}
+.refund-reason-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.refund-reason-opt {
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--text-2);
+  background: var(--bg);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+.refund-reason-opt.active {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+/* Section title */
+.bill-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px 10px;
+}
+.bill-section-title .bst-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+.bill-section-title .bst-left .dot {
+  width: 4px;
+  height: 14px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+.bill-section-title .bst-count {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+/* Quick filter bar */
+.bill-filter {
+  display: flex;
+  margin: 12px 16px 0;
+  padding: 3px;
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 0.5px solid var(--border);
+}
+.filter-tab {
+  flex: 1;
+  text-align: center;
+  padding: 8px 0;
+  font-size: 13px;
+  color: var(--text-2);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.filter-tab.active {
+  background: var(--primary);
+  color: #FFFFFF;
+  font-weight: 600;
+}
+.filter-tab:active { opacity: 0.85; }
+</style>
+</head>
+<body data-page-node-id="HKhlgFaL2TKholR7bGvQth">
+<div class="miniprogram" data-page-node-id="cY35fIeIPbEHRCUyHJOEi8">
+  <div class="status-bar" data-page-node-id="thpVNz7qKsDCKx69A4qfcf">
+    <span class="time" data-page-node-id="ifH7GWBLsCSk4OEDItgEzI">09:38</span>
+    <div class="icons" data-page-node-id="g6hMX52VKGZC3Qs0gH5vUi">
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="FwJFr5pF1Nmk31nImodfGz"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" data-page-node-id="kuHqbpiwEeOykmBSlrX6RL"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="ObH2Ul40L8RilWoBDfFOLq"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" data-page-node-id="unJdYFqSsqgCVUIBxTRtcD"/></svg>
+    </div>
+  </div>
+  <div class="nav-bar white" data-page-node-id="b3YjBDtoMvDai3QH1uBKe3">
+    <div class="nav-back" data-page-node-id="kzVrTf4fWWrv2TlepJzExZ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="jOXIKtnzpUwAJ1kUPpj1Of"><polyline points="15 18 9 12 15 6" data-page-node-id="WoNdBfdMCe7UohZJMzvOig"/></svg></div>
+    <span class="nav-title" data-page-node-id="BAdKXkQeQZgn6eEXFl0pZq">账单明细</span>
+    <span class="nav-placeholder" data-page-node-id="6J2d3mherQQ06K4C6wUxjK"></span>
+  </div>
+
+  <div class="content" style="background:var(--bg);" data-page-node-id="PmAI54gR4Dp2F9hfQNfv24">
+
+    <!-- 快速筛选 -->
+    <div class="bill-filter">
+      <div class="filter-tab active" data-range="7d">近7天</div>
+      <div class="filter-tab" data-range="1m">近一月</div>
+      <div class="filter-tab" data-range="all">全部</div>
+    </div>
+
+    <!-- 账单明细 -->
+    <div class="bill-section" data-page-node-id="MVsAqTledbb7pXq7fh46h7">
+      <div class="bill-section-title" data-page-node-id="4UNtpjCF4CMgg4pvDha0FD">
+        <div class="bst-left" data-page-node-id="oarYY6PeyqKXsBUYYgZz9g"><span class="dot" data-page-node-id="tRWamiWgQKB8vKNNc93Giw"></span>账单明细</div>
+        <span class="bst-count" id="billCount" data-page-node-id="JhdCLjb3URhBhTtC3J4QZV">近7天 · 6笔记录</span>
+      </div>
+      <div class="bill-list" data-page-node-id="z4FsGOTcAsp9VmwJptUlDc">
+
+        <div class="bill-item" data-page-node-id="QBorfCAlAB32giRDbmGI12">
+          <div class="bill-icon expense" data-page-node-id="q2ouunetY09hVSO7VTCHQq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="iWI63rRx5v07VcQlibwMsR"><path d="M3 2v7c0 1.1.9 2 2 2h0a2 2 0 002-2V2M7 2v20M21 15V2a5 5 0 00-3 9v4c0 1.1.9 2 2 2h1a2 2 0 002-2z" data-page-node-id="4x7NeaeiltOJw6fS2tRmCj"/></svg></div>
+          <div class="bill-info" data-page-node-id="2KGDCIKrkZICVRLdUIiBoR">
+            <div class="bill-title" data-page-node-id="9OEsbL2s77bfyWwJKeuWJ1">食堂消费</div>
+            <div class="bill-desc" data-page-node-id="75VUIOvCzGRRVSGxFJVDWa">成品菜午餐 · 红烧排骨、清炒时蔬、紫菜蛋花汤</div>
+          </div>
+          <div class="bill-right" data-page-node-id="VMiThQF8cot676F9AKwVNP">
+            <div class="bill-amount expense" data-page-node-id="Eqd8cTBDHZauxXH7BiLdFD">-¥18.00</div>
+            <div class="bill-time" data-page-node-id="eiBz2EkTl2rRKswY8sqbjz">2026-07-22 09:15</div>
+          </div>
+        </div>
+
+        <div class="bill-item" data-page-node-id="H4ruQRXvJmU5bpCCfEFyCA">
+          <div class="bill-icon income" data-page-node-id="dE0bO4S7Xy3r6TGlIpAjiu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="IcgEB4WLSGViO2Abi6Ucwl"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" data-page-node-id="0HdRTnhBpThcUvABCI5BiH"/></svg></div>
+          <div class="bill-info" data-page-node-id="SPMuYcGA1JRwfbHft8EwZW">
+            <div class="bill-title" data-page-node-id="OBiXye3uqUFdeQqydzoG4U">充值</div>
+            <div class="bill-desc" data-page-node-id="3P0itZzBHPapW6MHMLPnIl">微信支付 · 充值100元赠送2元</div>
+          </div>
+          <div class="bill-right" data-page-node-id="DZSH6gnid3YH8w6sxc1Fpz">
+            <div class="bill-amount income" data-page-node-id="Eoz0mD51H2etEBrVgFBTuU">+¥100.00</div>
+            <div class="bill-time" data-page-node-id="5drEtzYebKA8A6SGwLZ18i">2026-07-21 14:30</div>
+          </div>
+        </div>
+
+        <div class="bill-item" data-page-node-id="pAK4OUZ5BUrSfgXCnilkIi">
+          <div class="bill-icon expense" data-page-node-id="3mLLMIbxRVOZlDQULl6SrH"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="4jPwAgJuC50u80uTvMsAHw"><path d="M17 8h2a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2v-8a2 2 0 012-2h2M9 8V5a2 2 0 012-2h2a2 2 0 012 2v3" data-page-node-id="E1q87zGeLV0e7yur90p1rX"/></svg></div>
+          <div class="bill-info" data-page-node-id="cy1egHO1OCSaH0HYewB4iL">
+            <div class="bill-title" data-page-node-id="6TYlYUbrCCEOetpr4QZMtf">食堂消费</div>
+            <div class="bill-desc" data-page-node-id="0vOOyBmOA6KPafEfvBeEU9">晚餐接龙 · 周三晚餐套餐</div>
+          </div>
+          <div class="bill-right" data-page-node-id="NLq34xunLzHdZJxiaBtj8b">
+            <div class="bill-amount expense" data-page-node-id="TsbV4R95zTG9mOlDFiGbNv">-¥10.00</div>
+            <div class="bill-time" data-page-node-id="TW0XcTgQ8CKDGHScW6Ad6N">2026-07-20 15:20</div>
+          </div>
+        </div>
+
+        <div class="bill-item" data-page-node-id="2MwHTzwcvCAGFYpSC8xH3T">
+          <div class="bill-icon expense" data-page-node-id="lWvzvdrdI3duHjGMktt8Jx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="3NYlC29VYJCgP4ZrV7JdTI"><path d="M3 2v7c0 1.1.9 2 2 2h0a2 2 0 002-2V2M7 2v20M21 15V2a5 5 0 00-3 9v4c0 1.1.9 2 2 2h1a2 2 0 002-2z" data-page-node-id="KiocEoOQkKY3Fytyx4AFtd"/></svg></div>
+          <div class="bill-info" data-page-node-id="MrADCHBMNiijZho5WGVG6c">
+            <div class="bill-title" data-page-node-id="rwDRSVgyHia5dnwpEBBCzk">食堂消费</div>
+            <div class="bill-desc" data-page-node-id="fpjfof0tCcikUqER5CXhg5">成品菜晚餐 · 糖醋里脊、蒜蓉西兰花</div>
+          </div>
+          <div class="bill-right" data-page-node-id="I0Cwo6UAGt25299EI5GEUd">
+            <div class="bill-amount expense" data-page-node-id="oKKw0rNC6wgxYH6pxMkjtc">-¥15.00</div>
+            <div class="bill-time" data-page-node-id="FYhTUbd4TzEG6Kn8lPX0DQ">2026-07-19 17:45</div>
+          </div>
+        </div>
+
+        <div class="bill-item" data-page-node-id="N86DF3IUbdHQVDqRfIIrbn">
+          <div class="bill-icon income" data-page-node-id="L63fHnM8e2zIrVnYFILaui"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="bWGbPKbUSihO4u8GVPjBfV"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" data-page-node-id="gUBZoGIHxxrtTDwfFRdwVY"/></svg></div>
+          <div class="bill-info" data-page-node-id="kPtE23PYb9XKABj0xoLeQk">
+            <div class="bill-title" data-page-node-id="I0k186cRBHBxTmLrRFY8xq">充值</div>
+            <div class="bill-desc" data-page-node-id="OwBoLpV3mi5qFu6ABVHNWK">微信支付 · 充值200元赠送5元</div>
+          </div>
+          <div class="bill-right" data-page-node-id="EDYt9xNyiHrSEhK36lXY64">
+            <div class="bill-amount income" data-page-node-id="rmGqXRGmtDtTtur2he0F09">+¥200.00</div>
+            <div class="bill-time" data-page-node-id="56xoY6PHzI2Z5x9zvY1jB2">2026-07-18 10:00</div>
+          </div>
+        </div>
+
+        <div class="bill-item" data-page-node-id="fXodBKaWymPOQluXor9JCC">
+          <div class="bill-icon expense" data-page-node-id="nHOicsPxQrbsx7p3Ja7cGr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="EfTDcRJEhccAxY2YzsCVvV"><path d="M3 11h18M5 11V7a2 2 0 012-2h10a2 2 0 012 2v4M6 11v6a2 2 0 002 2h8a2 2 0 002-2v-6" data-page-node-id="c5cwe6IsMNpa1s7GXjjIcj"/></svg></div>
+          <div class="bill-info" data-page-node-id="896xHJKRExckPy4F6Hxkuq">
+            <div class="bill-title" data-page-node-id="slANVggSUrY1C129fnI3Dp">食堂消费</div>
+            <div class="bill-desc" data-page-node-id="LJOLGCu44RELSzIanEgA8O">面点卤味 · 卤鸡腿、卤蛋、葱油饼</div>
+          </div>
+          <div class="bill-right" data-page-node-id="cNNsWGYh9Be0ubAJ4KV6EZ">
+            <div class="bill-amount expense" data-page-node-id="tIbA04Os7mXEHFolqlMmqZ">-¥8.00</div>
+            <div class="bill-time" data-page-node-id="IbuZHusEtu2INNyi7gp5fH">2026-07-17 12:10</div>
+          </div>
+        </div>
+
+        <div class="bill-item">
+          <div class="bill-icon expense"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h0a2 2 0 002-2V2M7 2v20M21 15V2a5 5 0 00-3 9v4c0 1.1.9 2 2 2h1a2 2 0 002-2z"/></svg></div>
+          <div class="bill-info">
+            <div class="bill-title">食堂消费</div>
+            <div class="bill-desc">成品菜午餐 · 宫保鸡丁、清炒油麦菜、冬瓜汤</div>
+          </div>
+          <div class="bill-right">
+            <div class="bill-amount expense">-¥18.00</div>
+            <div class="bill-time">2026-07-10 12:05</div>
+          </div>
+        </div>
+
+        <div class="bill-item">
+          <div class="bill-icon income"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+          <div class="bill-info">
+            <div class="bill-title">充值</div>
+            <div class="bill-desc">微信支付 · 充值100元赠送2元</div>
+          </div>
+          <div class="bill-right">
+            <div class="bill-amount income">+¥100.00</div>
+            <div class="bill-time">2026-07-03 09:20</div>
+          </div>
+        </div>
+
+        <div class="bill-item">
+          <div class="bill-icon expense"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h0a2 2 0 002-2V2M7 2v20M21 15V2a5 5 0 00-3 9v4c0 1.1.9 2 2 2h1a2 2 0 002-2z"/></svg></div>
+          <div class="bill-info">
+            <div class="bill-title">食堂消费</div>
+            <div class="bill-desc">自助早餐 · 豆浆油条、茶叶蛋</div>
+          </div>
+          <div class="bill-right">
+            <div class="bill-amount expense">-¥6.00</div>
+            <div class="bill-time">2026-06-28 08:10</div>
+          </div>
+        </div>
+
+        <div class="bill-item">
+          <div class="bill-icon expense"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8h2a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2v-8a2 2 0 012-2h2M9 8V5a2 2 0 012-2h2a2 2 0 012 2v3"/></svg></div>
+          <div class="bill-info">
+            <div class="bill-title">食堂消费</div>
+            <div class="bill-desc">晚餐接龙 · 周四晚餐套餐</div>
+          </div>
+          <div class="bill-right">
+            <div class="bill-amount expense">-¥10.00</div>
+            <div class="bill-time">2026-06-15 15:30</div>
+          </div>
+        </div>
+
+        <div class="bill-item">
+          <div class="bill-icon income"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+          <div class="bill-info">
+            <div class="bill-title">充值</div>
+            <div class="bill-desc">微信支付 · 充值200元赠送5元</div>
+          </div>
+          <div class="bill-right">
+            <div class="bill-amount income">+¥200.00</div>
+            <div class="bill-time">2026-06-02 11:00</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // ==================== 账单明细时间筛选 ====================
+  var filterTabs = document.querySelectorAll('.filter-tab');
+  var billItems = document.querySelectorAll('.bill-item');
+  var countEl = document.getElementById('billCount');
+  // 演示基准日：与页面账单时间轴保持一致（2026-07）
+  var TODAY = '2026-07-22';
+  var RANGES = {
+    '7d':  { label: '近7天', from: '2026-07-16' },
+    '1m':  { label: '近一月', from: '2026-06-22' },
+    'all': { label: '全部', from: null }
+  };
+
+  function getBillDate(item) {
+    var t = item.querySelector('.bill-time');
+    return t ? t.textContent.trim().slice(0, 10) : '';
+  }
+
+  function applyFilter(range) {
+    var cfg = RANGES[range];
+    var visible = 0;
+    billItems.forEach(function(item) {
+      var date = getBillDate(item);
+      var show = !cfg.from || (date >= cfg.from && date <= TODAY);
+      item.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    filterTabs.forEach(function(tab) {
+      if (tab.getAttribute('data-range') === range) {
+        tab.classList.add('active');
+      } else {
+        tab.classList.remove('active');
+      }
+    });
+    if (countEl) countEl.textContent = cfg.label + ' · ' + visible + '笔记录';
+  }
+
+  filterTabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      applyFilter(this.getAttribute('data-range'));
+    });
+  });
+
+  // 初始默认：近7天
+  applyFilter('7d');
+
+})();
+</script>
+</body>
+</html>
