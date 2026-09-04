@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="zGHO8hfyiiAbWK0G6dWDrl">
+<head data-page-node-id="gMgE0P6pmE8ixCFUZKqUmK">
+<meta charset="UTF-8" data-page-node-id="XDviYLHREbBC70wbMUdg2v">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="RwDq1R6QYIo8ECYOJonBkk">
+<title>P01 - 登录</title>
+<link rel="stylesheet" href="common.css" data-page-node-id="8vh6Zo3F2adzrBTDAdPyxI">
+<style>
+/* ==================== 登录页专属样式 ==================== */
+.miniprogram {
+  background: var(--primary-gradient);
+}
+
+.login-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 装饰圆 */
+.deco-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+}
+.deco-circle.c1 { width: 200px; height: 200px; top: -60px; right: -50px; }
+.deco-circle.c2 { width: 140px; height: 140px; top: 100px; left: -50px; }
+.deco-circle.c3 { width: 300px; height: 300px; bottom: -100px; right: -100px; }
+
+/* 品牌区 */
+.brand-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 56px;
+  position: relative;
+  z-index: 2;
+}
+.brand-logo {
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  margin-bottom: 16px;
+}
+.brand-logo svg { width: 44px; height: 44px; }
+.brand-name {
+  font-size: 19px;
+  font-weight: 600;
+  color: #FFFFFF;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.brand-sub {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.5px;
+}
+
+/* 欢迎语 */
+.welcome-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  padding: 0 40px;
+}
+.welcome-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+.welcome-desc {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  line-height: 1.8;
+}
+
+/* 特性图标 */
+.feature-row {
+  display: flex;
+  gap: 32px;
+  margin-top: 36px;
+}
+.feature-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.feature-icon {
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.feature-icon svg { width: 22px; height: 22px; color: #FFFFFF; }
+.feature-label { font-size: 11px; color: rgba(255, 255, 255, 0.7); }
+
+/* 底部登录区 */
+.login-bottom {
+  padding: 0 32px calc(32px + var(--safe-bottom));
+  position: relative;
+  z-index: 2;
+}
+
+/* 微信登录按钮 */
+.btn-wechat {
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #07C160 0%, #06AD56 100%);
+  color: #FFFFFF;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+  box-shadow: 0 6px 20px rgba(7, 193, 96, 0.35);
+  transition: transform 0.15s, opacity 0.2s;
+}
+.btn-wechat:active { transform: scale(0.98); opacity: 0.9; }
+.btn-wechat svg { width: 22px; height: 22px; }
+
+/* 协议勾选 */
+.agreement-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 18px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+}
+.agreement-row .checkbox {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  border-radius: 3px;
+}
+.agreement-row .checkbox.checked {
+  background: #FFFFFF;
+  border-color: #FFFFFF;
+}
+.agreement-row .checkbox.checked svg { color: var(--primary); }
+.agreement-row .link {
+  color: #FFFFFF;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.5);
+}
+
+/* 其他登录方式 */
+.other-login {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* 底部版权 */
+.copyright {
+  text-align: center;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.35);
+  margin-top: 20px;
+  line-height: 1.6;
+}
+</style>
+</head>
+<body data-page-node-id="8giyoMS0g2dVccp7gUoCTw">
+<div class="miniprogram" data-page-node-id="1eQatWJLEFY9hyicO67gDV">
+
+  <!-- ==================== Status Bar ==================== -->
+  <div class="status-bar" data-page-node-id="MKfJJnWuM47B6cIXsE8iws">
+    <span class="time" data-page-node-id="Aejkk9TtDN3prgDuVE03A4">09:38</span>
+    <div class="icons" data-page-node-id="xpFSQO92D9XNSWJ1wmbk0y">
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="udDiyEv2LBdHlOCr6jr8M7"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" data-page-node-id="8ZjVKbQSzb0qv5pK2FqMit"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="5Y5cpVVfGHEmbtta38CihK"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" data-page-node-id="Fq4vTnraGTIpZPKyqk2AMG"/></svg>
+    </div>
+  </div>
+
+  <!-- ==================== Login Content ==================== -->
+  <div class="login-content" data-page-node-id="gpvD00A0oEu5bSjt7i8WQ2">
+
+    <!-- 装饰圆 -->
+    <div class="deco-circle c1" data-page-node-id="9ZRbTT0COngD02t7XYIylm"></div>
+    <div class="deco-circle c2" data-page-node-id="jDT8d92O2kBvLFfXhyOFsC"></div>
+    <div class="deco-circle c3" data-page-node-id="XECd0FKkspFO1h3awg8Xyb"></div>
+
+    <!-- 品牌区 -->
+    <div class="brand-area" data-page-node-id="sOeA4thckloW38InxqwdBw">
+      <div class="brand-logo" data-page-node-id="XMJe06qULc9xbdkSfVormo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="HCRRrg6jgDhG9umQo3QhvG">
+          <path d="M12 2L2 7l10 5 10-5-10-5z" data-page-node-id="V2kUL5vYEzZ0g3nCVzZNBG"/>
+          <path d="M2 17l10 5 10-5" data-page-node-id="v2QWlLZPAG7rOrZqVyZUWz"/>
+          <path d="M2 12l10 5 10-5" data-page-node-id="ZMuKw9wm0yiWt3wubrGbEm"/>
+        </svg>
+      </div>
+      <div class="brand-name" data-page-node-id="s8FEvPvc5T4lLAAdwPBqYw">海事局智慧后勤</div>
+      <div class="brand-sub" data-page-node-id="RdXYKE4Pn0rJ76hN4WoFAq">Haikou Maritime Safety Administration</div>
+    </div>
+
+    <!-- 欢迎语 -->
+    <div class="welcome-area" data-page-node-id="qync0STHeoOqFLLmfrDKAM">
+      <div class="welcome-title" data-page-node-id="v4tEzNRS9J90YOFX96CZyB">智慧后勤，服务随行</div>
+      <div class="welcome-desc" data-page-node-id="ohMQKV2Oik6hSnM0CcHcMl">一站式后勤服务平台<br data-page-node-id="Q7fIMHWWLDQIayEXw3ggNj">为海事职工提供便捷高效的后勤服务</div>
+
+      <!-- 特性图标 -->
+      <div class="feature-row" data-page-node-id="L3HECdU9gT10xeVTGqy8a9">
+        <div class="feature-item" data-page-node-id="3M7jM61rc1vVPdVt4AwozO">
+          <div class="feature-icon" data-page-node-id="wovLmNyXLCI2G7jjNhhXOl">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="jXmvneYIc64CPYcMLEqilT">
+              <path d="M22 11.08V12a10 10 0 11-5.93-9.14" data-page-node-id="IdzbX6w8Y98phv7LMizP1F"/>
+              <polyline points="22 4 12 14.01 9 11.01" data-page-node-id="RZbsfF9bBbWRvXgRzLIP3q"/>
+            </svg>
+          </div>
+          <span class="feature-label" data-page-node-id="mUc5pzBskUMxoy7eY4JNBU">便捷高效</span>
+        </div>
+        <div class="feature-item" data-page-node-id="Ja8AruFrn5B4FNrR2Go0Mg">
+          <div class="feature-icon" data-page-node-id="2cflR7UbYCYdrHEWrLbHU5">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="9b7c2oqfFckKCAAN09Ol1I">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" data-page-node-id="m17hrsD7d8easyssQiLwvh"/>
+            </svg>
+          </div>
+          <span class="feature-label" data-page-node-id="7ZUBNPCZDnStYscKoR6egn">安全可靠</span>
+        </div>
+        <div class="feature-item" data-page-node-id="9og2FrY9GXLkUKzMBfxAZA">
+          <div class="feature-icon" data-page-node-id="1XcLUfCxa8PVJYpxdQ7Gos">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="4swHdk6qwGf7EERPqCU9wd">
+              <circle cx="12" cy="12" r="10" data-page-node-id="YBeTuX0Gg1UADzd46qjl4U"/>
+              <path d="M12 6v6l4 2" data-page-node-id="8tghM3HtwQOJG2n5yhQ68e"/>
+            </svg>
+          </div>
+          <span class="feature-label" data-page-node-id="ixBXosf5yHjQCRGQlBix84">实时响应</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部登录区 -->
+    <div class="login-bottom" data-page-node-id="QudJDVXCZQNZb9hivqRVxP">
+      <button class="btn-wechat" id="loginBtn" data-page-node-id="HVbrH6l8P3wHmofaitzLrF">
+        <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="EXlmSC7vU2SOPM1Bh7IWe0">
+          <path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.802-.66-3.38-4.29-5.872-8.596-5.872zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178A1.17 1.17 0 0 1 4.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178 1.17 1.17 0 0 1-1.162-1.178c0-.651.52-1.18 1.162-1.18zm3.68 4.094c-3.781 0-6.868 2.574-6.868 5.748 0 3.176 3.087 5.748 6.868 5.748.792 0 1.549-.115 2.252-.319a.722.722 0 0 1 .585.08l1.482.864a.27.27 0 0 0 .137.044c.132 0 .24-.107.24-.24 0-.06-.024-.117-.039-.174l-.303-1.148a.487.487 0 0 1 .175-.543c1.523-1.106 2.399-2.724 2.399-4.316 0-3.174-3.087-5.748-6.868-5.748zm-2.322 3.354c.527 0 .954.434.954.97a.963.963 0 0 1-.954.969.963.963 0 0 1-.955-.969c0-.536.428-.97.955-.97zm4.644 0c.527 0 .954.434.954.97a.963.963 0 0 1-.954.969.963.963 0 0 1-.955-.969c0-.536.428-.97.955-.97z" data-page-node-id="V0TsqyjhD64PYIcpd4LBxp"/>
+        </svg>
+        微信一键登录
+      </button>
+
+      <div class="agreement-row" id="agreementRow" data-page-node-id="R9mylUqGqu8j6YorWx2oYY">
+        <div class="checkbox" id="agreeCheckbox" data-page-node-id="NDN44yFQqp0C43UDZZvx1D"></div>
+        <span data-page-node-id="d5Br1GAJCMmVGo9ihgdbci">我已阅读并同意</span>
+        <span class="link" id="userAgreement" data-page-node-id="CPVvrCRZtXfKFBTwshVErf">《用户协议》</span>
+        <span data-page-node-id="Z8QNwuBdlvhmTjTpLSmFgP">和</span>
+        <span class="link" id="privacyPolicy" data-page-node-id="JFpnBRsP2h7IwH6w9Btxaq">《隐私政策》</span>
+      </div>
+
+      <div class="other-login" data-page-node-id="WB6DCWQX3WMBpd16dNwPgH">其他登录方式</div>
+
+      <div class="copyright" data-page-node-id="NbImp26gUpKvYGx3AEcQDt">
+        © 海口海事局 · 智慧后勤服务平台<br data-page-node-id="R9n3MJa2fubTrDgvIA7J7m">技术支持：海事局信息化办公室
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  var agreed = false;
+
+  // 协议勾选
+  var checkbox = document.getElementById('agreeCheckbox');
+  checkbox.addEventListener('click', function() {
+    agreed = !agreed;
+    if (agreed) {
+      checkbox.classList.add('checked');
+      checkbox.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+    } else {
+      checkbox.classList.remove('checked');
+      checkbox.innerHTML = '';
+    }
+  });
+
+  // 登录按钮
+  document.getElementById('loginBtn').addEventListener('click', function() {
+    if (!agreed) {
+      MS.showToast('请先同意用户协议', 'error');
+      return;
+    }
+    MS.showToast('正在调用微信授权登录...', 'info');
+    setTimeout(function() {
+      window.location.href = 'P02-phone-bind.html';
+    }, 1500);
+  });
+
+  // 协议链接
+  document.getElementById('userAgreement').addEventListener('click', function(e) {
+    e.stopPropagation();
+    MS.showToast('正在打开《用户协议》', 'info');
+  });
+
+  document.getElementById('privacyPolicy').addEventListener('click', function(e) {
+    e.stopPropagation();
+    MS.showToast('正在打开《隐私政策》', 'info');
+  });
+
+})();
+</script>
+</body>
+</html>
