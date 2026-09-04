@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="YeHux3MAdiHSCnEFnBCtec">
+<head data-page-node-id="mBrbXJkrF9VzK2T76O6rGM">
+<meta charset="UTF-8" data-page-node-id="0d3ukmQ02m3ZKYk9oxQZkh">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="9RwYB4YHBQCXSnGYtnScsr">
+<title>P03 - 餐次预订</title>
+<link rel="stylesheet" href="common.css" data-page-node-id="YvLbzzFTo2F5DWE1p2Arix">
+<style>
+/* ==================== Page Specific ==================== */
+.sidebar-content-wrap {
+  padding-bottom: 60px;
+}
+
+/* Date pills for meal booking */
+.meal-date-pills {
+  display: flex;
+  gap: 8px;
+  padding: 12px 12px 8px;
+  overflow-x: auto;
+  background: var(--card-bg);
+}
+.meal-date-pills::-webkit-scrollbar { display: none; }
+.meal-date-pill {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+.meal-date-pill.active {
+  background: var(--primary);
+  color: #FFFFFF;
+}
+.meal-date-pill .mdp-day { font-size: 12px; font-weight: 600; }
+.meal-date-pill .mdp-date { font-size: 10px; opacity: 0.7; margin-top: 2px; }
+.meal-date-pill.active .mdp-date { opacity: 0.85; }
+
+/* Dish card */
+.dish-list {
+  padding: 4px 12px 12px;
+}
+.dish-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  margin-bottom: 8px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+}
+.dish-img {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dish-img svg { width: 36px; height: 36px; }
+.dish-img.img-1 { background: linear-gradient(135deg, #FFE0B2, #FFB74D); }
+.dish-img.img-2 { background: linear-gradient(135deg, #C8E6C9, #81C784); }
+.dish-img.img-3 { background: linear-gradient(135deg, #FFF9C4, #FFF176); }
+.dish-img.img-4 { background: linear-gradient(135deg, #E1F5FE, #81D4FA); }
+.dish-img.img-5 { background: linear-gradient(135deg, #FCE4EC, #F48FB1); }
+.dish-img.img-6 { background: linear-gradient(135deg, #F3E5F5, #CE93D8); }
+.dish-info {
+  flex: 1;
+  min-width: 0;
+}
+.dish-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-1);
+  margin-bottom: 4px;
+}
+.dish-tags {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+.dish-tag {
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--primary-light);
+  color: var(--primary);
+}
+.dish-tag.hot { background: var(--danger-light); color: var(--danger); }
+.dish-tag.veg { background: var(--success-light); color: var(--success); }
+.dish-price {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--danger);
+}
+.dish-price .yen { font-size: 12px; }
+
+/* Dinner relay (晚餐接龙) */
+.relay-section {
+  padding: 16px 16px 80px;
+}
+.relay-info-card {
+  background: var(--primary-light);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 14px;
+}
+.relay-info-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.relay-info-title svg { width: 16px; height: 16px; }
+.relay-info-desc {
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+.relay-date-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.relay-date-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.relay-date-item:active { background: var(--bg); }
+.relay-date-item.selected {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+.relay-date-left { display: flex; flex-direction: column; gap: 2px; }
+.relay-date-day { font-size: 14px; font-weight: 600; color: var(--text-1); }
+.relay-date-meta { font-size: 12px; color: var(--text-3); }
+.relay-date-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.relay-count {
+  font-size: 12px;
+  color: var(--text-3);
+}
+.relay-radio {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--divider);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.relay-date-item.selected .relay-radio {
+  border-color: var(--primary);
+  background: var(--primary);
+}
+.relay-date-item.selected .relay-radio::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #FFFFFF;
+}
+.relay-submit {
+  margin-top: 16px;
+}
+
+/* Holiday meal (节假日用餐) */
+.holiday-section {
+  padding: 16px 16px 80px;
+}
+.holiday-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 12px;
+}
+.holiday-label {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.holiday-date-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.holiday-date-opt {
+  flex: 1;
+  min-width: 80px;
+  padding: 10px;
+  text-align: center;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+.holiday-date-opt.active {
+  background: var(--primary);
+  color: #FFFFFF;
+}
+.holiday-date-opt .hd-day { font-size: 13px; font-weight: 600; }
+.holiday-date-opt .hd-name { font-size: 11px; opacity: 0.7; margin-top: 2px; }
+.holiday-slot-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.holiday-slot-opt {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+  font-size: 13px;
+  color: var(--text-2);
+}
+.holiday-slot-opt.active {
+  background: var(--primary);
+  color: #FFFFFF;
+  font-weight: 600;
+}
+.holiday-price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-top: 0.5px solid var(--border);
+}
+.holiday-price-label { font-size: 14px; color: var(--text-2); }
+.holiday-price-val { font-size: 20px; font-weight: 700; color: var(--danger); }
+.holiday-price-val .yen { font-size: 14px; }
+
+/* Cart badge */
+.cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  height: 16px;
+  background: var(--danger);
+  color: #FFFFFF;
+  font-size: 10px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  font-weight: 600;
+}
+.cart-badge.hidden { display: none; }
+
+/* Category content panels */
+.cat-panel { display: none; }
+.cat-panel.active { display: block; }
+
+/* Notice bar inside sidebar content */
+.notice-bar-inline {
+  margin: 0 12px 8px;
+  border-radius: var(--radius-sm);
+}
+
+/* Sidebar item with icon */
+.sidebar-item .sb-icon {
+  width: 22px;
+  height: 22px;
+  margin: 0 auto 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sidebar-item .sb-icon svg { width: 20px; height: 20px; }
+.sidebar-item.active .sb-icon svg { color: var(--primary); }
+.sidebar-item .sb-icon svg { color: var(--text-3); }
+
+/* Holiday date picker (single input) */
+.holiday-date-picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+  margin-bottom: 14px;
+}
+.holiday-date-picker:active { border-color: var(--primary); }
+.holiday-dp-text { font-size: 14px; color: var(--text-3); }
+.holiday-date-picker svg { width: 18px; height: 18px; color: var(--text-3); }
+
+/* ==================== 菜品清单（购物车 / 支付确认共用） ==================== */
+.cart-sheet-mask { z-index: 100; }
+.pay-sheet-mask { z-index: 105; }
+.pwd-sheet-mask { z-index: 110; }
+#bookingSuccessModal { z-index: 120; }
+
+.cs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.cs-title { font-size: 16px; font-weight: 600; color: var(--text-1); }
+.cs-close {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--text-3);
+  cursor: pointer;
+}
+.cs-close:active { background: var(--divider); }
+.cs-close svg { width: 15px; height: 15px; }
+.cs-list {
+  max-height: 250px;
+  overflow-y: auto;
+}
+.cs-list::-webkit-scrollbar { display: none; }
+.cs-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 0.5px solid var(--divider);
+}
+.cs-item:last-child { border-bottom: none; }
+.cs-item-left { display: flex; flex-direction: column; gap: 3px; }
+.cs-item-name { font-size: 14px; font-weight: 500; color: var(--text-1); }
+.cs-item-meta { font-size: 12px; color: var(--text-3); }
+.cs-item-price { font-size: 14px; font-weight: 600; color: var(--danger); }
+.cs-empty { padding: 30px 0 24px; text-align: center; font-size: 13px; color: var(--text-4); }
+
+/* 合计行 */
+.ps-total-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 12px 0 14px;
+  margin-top: 6px;
+  border-top: 0.5px solid var(--divider);
+}
+.ps-total-label { font-size: 14px; color: var(--text-2); }
+.ps-total-val { font-size: 22px; font-weight: 700; color: var(--danger); }
+.ps-total-val .yen { font-size: 14px; }
+
+/* ==================== 密码支付弹窗 ==================== */
+.pwd-sheet-mask .bottom-sheet {
+  padding: 20px 16px 0;
+  max-height: 80%;
+  overflow: hidden;
+}
+.pwd-title { text-align: center; font-size: 16px; font-weight: 600; color: var(--text-1); }
+.pwd-amount {
+  text-align: center;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--text-1);
+  padding: 14px 0 4px;
+}
+.pwd-amount .yen { font-size: 18px; margin-right: 2px; }
+.pwd-method {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-3);
+  padding-bottom: 18px;
+}
+.pwd-method svg { width: 16px; height: 16px; color: var(--primary); }
+.pwd-boxes {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding-bottom: 20px;
+}
+.pwd-box {
+  width: 42px;
+  height: 46px;
+  border: 1px solid var(--divider);
+  border-radius: 6px;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pwd-box.filled::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--text-1);
+}
+.pwd-keyboard {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -16px;
+  border-top: 0.5px solid var(--divider);
+}
+.pwd-key {
+  width: 33.333%;
+  height: 50px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text-1);
+  background: var(--card-bg);
+  border-right: 0.5px solid var(--divider);
+  border-bottom: 0.5px solid var(--divider);
+  cursor: pointer;
+}
+.pwd-key:nth-child(3n) { border-right: none; }
+.pwd-key:active { background: var(--bg); }
+.pwd-key.fn { background: #F2F3F5; font-size: 15px; }
+
+/* 预订成功弹窗 */
+.success-icon-wrap {
+  display: flex;
+  justify-content: center;
+  padding-top: 24px;
+}
+.success-icon-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--success-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.success-icon-circle svg { width: 30px; height: 30px; color: var(--success); }
+.success-msg {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-1);
+  padding: 14px 20px 18px;
+}
+.modal-btn-row {
+  display: flex;
+  gap: 10px;
+  padding: 0 20px 20px;
+}
+.modal-btn-row .btn { flex: 1; }
+
+/* Special meal (特殊用餐申请) */
+.special-section {
+  padding: 16px 16px 80px;
+}
+.special-info-card {
+  background: var(--primary-light);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 14px;
+}
+.special-info-desc {
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+.special-form-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+}
+.special-form-group { margin-bottom: 14px; }
+.special-form-label {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+.special-form-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  color: var(--text-1);
+  background: var(--bg);
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+.special-form-input::placeholder { color: var(--text-4); }
+.special-form-input:focus { border-color: var(--primary); }
+.special-form-textarea {
+  min-height: 72px;
+  resize: none;
+}
+.special-slot-row {
+  display: flex;
+  gap: 8px;
+}
+.special-slot-opt {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+  font-size: 13px;
+  color: var(--text-2);
+}
+.special-slot-opt.active {
+  background: var(--primary);
+  color: #FFFFFF;
+  font-weight: 600;
+}
+</style>
+</head>
+<body data-page-node-id="3WZTGEwc4aCaDlQVBKqJM3">
+<div class="miniprogram" data-page-node-id="bjL4oep94k4OlawbBHkjwX">
+  <div class="status-bar light" data-page-node-id="C3xl5EHAVg4hD7X1l5f6IV">
+    <span class="time" data-page-node-id="EZa85fkjrIDK2RzwHH5Q6h">09:38</span>
+    <div class="icons" data-page-node-id="AdsDxEFWHc7DzF1KdDioYm">
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="liXJ5h8kDsIb0skPSm5C1r"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" data-page-node-id="VaxK0VWFVQky56wZI7tskB"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="TWoDLjsGYE5tlaA5cIpsIN"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" data-page-node-id="9Ml6aWjqL67jaqEDBgUKKm"/></svg>
+    </div>
+  </div>
+  <div class="nav-bar white" data-page-node-id="Cx5ZIOO0Bxwo1EoK3CLfHl">
+    <div class="nav-back" data-page-node-id="FmUPFk3v7tsykhLT29179J"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="BkF9bIDKFlCaKR3oyDtAmE"><polyline points="15 18 9 12 15 6" data-page-node-id="IUpmJQnVI0OCb68ocgpkkm"/></svg></div>
+    <span class="nav-title" data-page-node-id="tbfdLbMcFSptA1BdheTUz2">食堂预订</span>
+    <span class="nav-right-btn" id="recordsBtn" data-page-node-id="kys5gYc8yHTrbNmjWrTBuk">预订记录</span>
+  </div>
+
+  <div class="sidebar-layout" data-page-node-id="j7oSZ8BpGQEJmP0xuvZd5B">
+    <!-- Sidebar -->
+    <div class="sidebar" data-page-node-id="pdw9pKFAiNARbdvB1qu6sw">
+      <div class="sidebar-item active" data-cat="chengpin" data-page-node-id="z61RrClZUHFFgEaorp9ABU">
+        <div class="sb-icon" data-page-node-id="BcF4LJRp4ZS3aagLrPBJ7l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="KD60c4P9jKzpKOHgAHW0RE"><path d="M3 2v7c0 1.1.9 2 2 2h0a2 2 0 002-2V2M7 2v20M21 15V2a5 5 0 00-3 9v4c0 1.1.9 2 2 2h1a2 2 0 002-2z" data-page-node-id="eZG7eOGtATsOhJwj2DpOzG"/></svg></div>
+        成品菜
+      </div>
+      <div class="sidebar-item" data-cat="miandian" data-page-node-id="Ho7dFgCzRkvmPznaZtvuuJ">
+        <div class="sb-icon" data-page-node-id="zbk5dgPSzgSfskkKG7ZhIW"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="paT11CRCkZffVBCljYSTWy"><path d="M3 11h18M5 11V7a2 2 0 012-2h10a2 2 0 012 2v4M6 11v6a2 2 0 002 2h8a2 2 0 002-2v-6" data-page-node-id="8P6S5Oltl66lym3DSiXzWy"/></svg></div>
+        面点卤味
+      </div>
+      <div class="sidebar-item" data-cat="jielong" data-page-node-id="CoC2xWfWT0KjRAfRSKGxzN">
+        <div class="sb-icon" data-page-node-id="sBWAn7riHIoAjaMsJ2tikT"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="ee7r4DXpcJf0IgE7oUikiu"><path d="M17 8h2a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2v-8a2 2 0 012-2h2M9 8V5a2 2 0 012-2h2a2 2 0 012 2v3M9 12h6M9 16h4" data-page-node-id="eZWuFxgHGTs6YJ7hnv8nMl"/></svg></div>
+        晚餐接龙
+      </div>
+      <div class="sidebar-item" data-cat="holiday" data-page-node-id="g4cQ1HvVALC9ntUvzrDe3g">
+        <div class="sb-icon" data-page-node-id="aKI1AlbAFwKHZg5DGhhySI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="8cxsLsHO9pkXfob6CSgxvx"><rect x="3" y="4" width="18" height="18" rx="2" data-page-node-id="Dab6Ee2a1sUadBBEaW9qxs"/><path d="M16 2v4M8 2v4M3 10h18" data-page-node-id="7C1XCgpQc7IhSbiLyzf43j"/></svg></div>
+        节假日用餐
+      </div>
+      <div class="sidebar-item" data-cat="special" data-page-node-id="W3Fi9wiXOxPienFfdHeEi2">
+        <div class="sb-icon" data-page-node-id="IkrCuOI7SpCkyKMp9mKaex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="lsI2VEh3Nwtq2rATEBPjxu"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" data-page-node-id="PMVdnHedcM7P62BFS3iJWW"/></svg></div>
+        特殊用餐申请
+      </div>
+    </div>
+
+    <!-- Sidebar Content -->
+    <div class="sidebar-content" data-page-node-id="NNxNWphiMg81ESDRslUBAM">
+      <div class="sidebar-content-wrap" data-page-node-id="AuOEaUVS5YyFxBPVZYPhkS">
+
+        <!-- 成品菜 -->
+        <div class="cat-panel active" data-panel="chengpin" data-page-node-id="ASrfkK4XhBRwS6ScJ5314k">
+          <div class="meal-date-pills" id="datePills" data-page-node-id="KtlRCStpABOiiDebfmH5ZP">
+            <div class="meal-date-pill" data-day="周一" data-date="07-20" data-page-node-id="YL94kSKsMB4bsUkvOm7MyF">
+              <div class="mdp-day" data-page-node-id="A5iPhsJGNxWA2qosiKWxGZ">周一</div>
+              <div class="mdp-date" data-page-node-id="hcZdYV8ikHq6w5Py0uAXhq">07-20</div>
+            </div>
+            <div class="meal-date-pill" data-day="周二" data-date="07-21" data-page-node-id="GGQO8ynlt5ujDNCsuEOLWF">
+              <div class="mdp-day" data-page-node-id="kDw1Zne3l8JSohUuJI2KOH">周二</div>
+              <div class="mdp-date" data-page-node-id="opFrfNNp1qefzmNhh7asNM">07-21</div>
+            </div>
+            <div class="meal-date-pill active" data-day="周三" data-date="07-22" data-page-node-id="9LKMqMgQKwWBXC24a8LnhW">
+              <div class="mdp-day" data-page-node-id="dsB4CZU9UkSIEFwsEXl8Pv">周三</div>
+              <div class="mdp-date" data-page-node-id="cVdKowCDyEkHGG5C6J29Bo">07-22</div>
+            </div>
+            <div class="meal-date-pill" data-day="周四" data-date="07-23" data-page-node-id="dsyDbxJxSZyhfjABkdYFey">
+              <div class="mdp-day" data-page-node-id="ALa7bXYBGWz5AFgA9V6Cqf">周四</div>
+              <div class="mdp-date" data-page-node-id="KJudXjcc2SQJYUEuVh4ztj">07-23</div>
+            </div>
+            <div class="meal-date-pill" data-day="周五" data-date="07-24" data-page-node-id="yJGOxIDtegtCinjKcWxcKE">
+              <div class="mdp-day" data-page-node-id="Ae6OtWAbm6mZkZaGKpsLhB">周五</div>
+              <div class="mdp-date" data-page-node-id="B48eip3oMes6X2ijZDJkrs">07-24</div>
+            </div>
+          </div>
+          <div class="notice-bar notice-bar-inline" data-page-node-id="nj0H9IQeNbPLFrDLcvCcLW">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="TAZhGYybTdycOQaafcBh9G"><circle cx="12" cy="12" r="10" data-page-node-id="xnH4AYw8MKeWi6CrjrSA5K"/><path d="M12 8v4M12 16h.01" stroke-linecap="round" data-page-node-id="aB8GSC4r3kccqNwPAjKh1U"/></svg>
+            <span class="notice-text" data-page-node-id="CeKfI8kkwaxqYf4XM84Fwv">2026-07-22 16:30截止订餐，请尽快下单</span>
+          </div>
+          <div class="dish-list" id="dishList" data-page-node-id="8p74xz36d6f64DCQRD7QIH">
+            <div class="dish-card" data-page-node-id="IxvpvpuAibnEKZ6mKz1AGL">
+              <div class="dish-img img-1" data-page-node-id="YiQ0WkmPFKmhxrmDsU94Pu"><svg viewBox="0 0 24 24" fill="none" stroke="#5D4037" stroke-width="1.5" data-page-node-id="89sQSg0jS2ZI9L1yrsD7cA"><path d="M5 12c0-3 2-5 7-5s7 2 7 5-2 6-7 6-7-3-7-6z" data-page-node-id="PG0QsQIsT30hVtpj22XU8X"/><path d="M7 10c2 1 8 1 10 0M7 14c2 1 8 1 10 0" data-page-node-id="VuEEgE2P1Ft099oMwkGbQq"/></svg></div>
+              <div class="dish-info" data-page-node-id="dNIqh0SVmrAOA4KAZzOsHm">
+                <div class="dish-name" data-page-node-id="Uv0qKPKNZ31DX8XlcKlBFo">红烧排骨</div>
+                <div class="dish-tags" data-page-node-id="TVGDSWxWdyIly7jy1zQDec"><span class="dish-tag hot" data-page-node-id="jV1WhxFiVg3nykR7iHJSr0">招牌</span><span class="dish-tag" data-page-node-id="mkln8iHGoZgd7SnlrOJR2Q">荤菜</span></div>
+                <div class="dish-price" data-page-node-id="cKQJabtXLnVOlZRPCmfUx1"><span class="yen" data-page-node-id="zirhjAxERHCmiKQ7Pof5Tx">¥</span>8.00</div>
+              </div>
+              <div class="qty-selector" data-dish="红烧排骨" data-price="8" data-page-node-id="2MmjlritodwKyf1eT2W2qP">
+                <button class="qty-btn minus disabled" data-action="minus" data-page-node-id="OHWBD81S6uNdLGNHZ3WIWX">−</button>
+                <span class="qty-num" data-page-node-id="D5fAE7PoCvwLoEGV97CIEi">0</span>
+                <button class="qty-btn plus" data-action="plus" data-page-node-id="5PzhozjHjiYX0Mf7hDkX3q">+</button>
+              </div>
+            </div>
+            <div class="dish-card" data-page-node-id="va4fGdVNgjdR5kwAhkxzAs">
+              <div class="dish-img img-2" data-page-node-id="B5gbhvaPlhRm0Y9SYDl1E5"><svg viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="1.5" data-page-node-id="hGVmakBkiT8ToHQ41v0FYR"><path d="M12 2C8 6 6 10 6 14a6 6 0 0012 0c0-4-2-8-6-12z" data-page-node-id="VHEZogm3mUwySVHOiCz9h8"/><path d="M12 8v8" data-page-node-id="Hht2eAJeQJABa53YKBQ1XR"/></svg></div>
+              <div class="dish-info" data-page-node-id="zE0EtiU1MLAlF03LQLpxyC">
+                <div class="dish-name" data-page-node-id="xzAVlrO4SWDtM8qQS0Oqii">清炒时蔬</div>
+                <div class="dish-tags" data-page-node-id="9i5LX1egYJaZWlrWo6PASJ"><span class="dish-tag veg" data-page-node-id="9rb66Zb48TmS9cDtPeXgCu">素菜</span><span class="dish-tag" data-page-node-id="N9sjLCiJLtiKuckmiSt4ub">低脂</span></div>
+                <div class="dish-price" data-page-node-id="VXi6mnd7i0N3tyIA95RUYi"><span class="yen" data-page-node-id="KATNhC00lsPkVx278o4HoQ">¥</span>4.00</div>
+              </div>
+              <div class="qty-selector" data-dish="清炒时蔬" data-price="4" data-page-node-id="MMRp98CjUHDpx9JMEY1fPE">
+                <button class="qty-btn minus disabled" data-action="minus" data-page-node-id="h5v0JB0UoypWJffUuRb3ZB">−</button>
+                <span class="qty-num" data-page-node-id="oGoGgaqaC7FaR7nSry1foH">0</span>
+                <button class="qty-btn plus" data-action="plus" data-page-node-id="N59stc9xAV5rRJKlyqE8IL">+</button>
+              </div>
+            </div>
+            <div class="dish-card" data-page-node-id="GEw74c8WHvWWPQ4pIFRP1l">
+              <div class="dish-img img-3" data-page-node-id="GYKxC3YvUhgPHFcSafapiG"><svg viewBox="0 0 24 24" fill="none" stroke="#F57F17" stroke-width="1.5" data-page-node-id="wHDINit3xagEWux9doVkJ5"><path d="M6 8h12l-1 12H7zM8 8V5a4 4 0 018 0v3" data-page-node-id="eqDYoHts2Jq9dWKZKbaEFD"/></svg></div>
+              <div class="dish-info" data-page-node-id="kb1K1N0EsUcmMHSiNKP2b0">
+                <div class="dish-name" data-page-node-id="hOyNEy3ekaddIpwfQYTMvf">紫菜蛋花汤</div>
+                <div class="dish-tags" data-page-node-id="3Fq6bWBBGfvo5Kwy3oDlGK"><span class="dish-tag veg" data-page-node-id="Nv4ExEMwQFhSjmo0aAj8KH">汤品</span></div>
+                <div class="dish-price" data-page-node-id="4wnHWvR1y3T1rku3mtv0k8"><span class="yen" data-page-node-id="NVBH0K70VmJLGTUqK25Fr1">¥</span>3.00</div>
+              </div>
+              <div class="qty-selector" data-dish="紫菜蛋花汤" data-price="3" data-page-node-id="rHF0zZKm5f4iQWM0fpjTlC">
+                <button class="qty-btn minus disabled" data-action="minus" data-page-node-id="IXNqLAzCA8G0vrVhCC1hA4">−</button>
+                <span class="qty-num" data-page-node-id="xl5A4VGnbTC6km1caXQKnY">0</span>
+                <button class="qty-btn plus" data-action="plus" data-page-node-id="SahhP3tGB7h8FWMZxZRKK7">+</button>
+              </div>
+            </div>
+            <div class="dish-card" data-page-node-id="Pe0QOCFeTTFRb4KIlAx5Fk">
+              <div class="dish-img img-4" data-page-node-id="9tQFBuElwxyMXA8x8VssIZ"><svg viewBox="0 0 24 24" fill="none" stroke="#1565C0" stroke-width="1.5" data-page-node-id="GHOhyGeDuqq7ECZnM73ciF"><circle cx="12" cy="12" r="8" data-page-node-id="x0KiEuRRhvJ9CYSHawBuRF"/><circle cx="12" cy="12" r="4" fill="none" data-page-node-id="2lLx5yHRWYTdBBWOrJ0t7d"/></svg></div>
+              <div class="dish-info" data-page-node-id="ueL7iWv8UPm4GHxcGfMLLx">
+                <div class="dish-name" data-page-node-id="fpg2w2VP5IHVZujJqPU0zJ">米饭</div>
+                <div class="dish-tags" data-page-node-id="cIPNK1nPOL2WwC8IUoOrvl"><span class="dish-tag" data-page-node-id="JnBnXGZzmA4nqpqWkq3d6j">主食</span></div>
+                <div class="dish-price" data-page-node-id="vCDsOFAZjWYuBNxef6szeJ"><span class="yen" data-page-node-id="0MV8Vi8za2M7kTPPsE4wlA">¥</span>1.00</div>
+              </div>
+              <div class="qty-selector" data-dish="米饭" data-price="1" data-page-node-id="vRNQ1Gq40j9XBu9ut6EE7D">
+                <button class="qty-btn minus disabled" data-action="minus" data-page-node-id="ywWlGJkK8lEZL94jIzFFhO">−</button>
+                <span class="qty-num" data-page-node-id="f7x8EQZvH5Fi7VxZVyuc7v">0</span>
+                <button class="qty-btn plus" data-action="plus" data-page-node-id="dsraJpW6Ls9wNjzFhi7pQA">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 面点卤味 -->
+        <div class="cat-panel" data-panel="miandian" data-page-node-id="5UirLD8jthjmDjAFfKIfQj">
+          <div class="notice-bar notice-bar-inline" style="margin-top:12px;" data-page-node-id="WBXAYytohhAVSE2o9Bi6Mm">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="D9pcsNYU1UBu78C31aRxCd"><circle cx="12" cy="12" r="10" data-page-node-id="kAlIhM9o6OlZ9MLGlwsmEB"/><path d="M12 8v4M12 16h.01" stroke-linecap="round" data-page-node-id="aYIubu6305ZsnJ4qhnXqF4"/></svg>
+            <span class="notice-text" data-page-node-id="SUekN73fzVslGdlgBd6pA4">面点卤味每日限量供应，先到先得</span>
+          </div>
+          <div class="dish-list" data-page-node-id="rlGZEEPr9aIsUMUPeFwwYs">
+            <div class="dish-card" data-page-node-id="wGq6stPjWY6aN6SynBDBot">
+              <div class="dish-img img-5" data-page-node-id="GTHZPcdZtZXfUsKNScRV1f"><svg viewBox="0 0 24 24" fill="none" stroke="#880E4F" stroke-width="1.5" data-page-node-id="q1HJd9wGpFLHAM944xRq7w"><path d="M12 2C8 6 6 10 6 14a6 6 0 0012 0c0-4-2-8-6-12z" data-page-node-id="BgrjiZS6Ir9ZolRq0MPNSb"/></svg></div>
+              <div class="dish-info" data-page-node-id="kYcuxzfTmYkoFZwwPv55c4">
+                <div class="dish-name" data-page-node-id="qQZC6zGYMxTeAxpLvZ47Zx">卤鸡腿</div>
+                <div class="dish-tags" data-page-node-id="yItNGZuoQaRg3QgSwmGCrk"><span class="dish-tag hot" data-page-node-id="C1Ck4dLCu5gkgUfEtmN9eT">热销</span><span class="dish-tag" data-page-node-id="FuZ1NoRBX3cMRy86YweecA">卤味</span></div>
+                <div class="dish-price" data-page-node-id="7UlaLoZPQ0yYkrraIGdLai"><span class="yen" data-page-node-id="LBLA58gt1F05GI8cITQT14">¥</span>6.00</div>
+              </div>
+              <div class="qty-selector" data-dish="卤鸡腿" data-price="6" data-page-node-id="ZmjPh8oDFAz6S4oMJuwKt1">
+                <button class="qty-btn minus disabled" data-action="minus" data-page-node-id="6F147z7XCqySymnArbUhVG">−</button>
+                <span class="qty-num" data-page-node-id="HeDv25bGDiS51YBRpaHaSl">0</span>
+                <button class="qty-btn plus" data-action="plus" data-page-node-id="wlxTqXVoQCZSrODRQ2YsEZ">+</button>
+              </div>
+            </div>
+            <div class="dish-card" data-page-node-id="s3X67xcK7hOFsx6neLnGUh">
+              <div class="dish-img img-1" data-page-node-id="o6ONSAFAGHVgvoQROY58y3"><svg viewBox="0 0 24 24" fill="none" stroke="#5D4037" stroke-width="1.5" data-page-node-id="fUjG8esQFrYhHuBa67KciD"><rect x="4" y="6" width="16" height="12" rx="2" data-page-node-id="xALEQJaoNtp2KAFRCu8kZE"/><path d="M8 6V4M16 6V4M4 10h16" data-page-node-id="0yGfSaKBHtiZCF3rzJC3fw"/></svg></div>
+              <div class="dish-info" data-page-node-id="OaTMBOHjaWHVC6h13EikSC">
+                <div class="dish-name" data-page-node-id="LYaze9p91sO1x5DMdGT0Cm">卤牛肉</div>
+                <div class="dish-tags" data-page-node-id="6xMaUxoLT7Uz3CBhkGrJlp"><span class="dish-tag hot" data-page-node-id="4O3VfsDd9PjTjhYqf92WmN">招牌</span><span class="dish-tag" data-page-node-id="cG3GfGC0LzbxjouK2ttMT2">限量</span></div>
+                <div class="dish-price" data-page-node-id="ueYjpImlREMeo3R2YA0JR5"><span class="yen" data-page-node-id="wj8qDnUXRU4aT2yiMxDZwL">¥</span>12.00</div>
+              </div>
+              <div class="qty-selector" data-dish="卤牛肉" data-price="12" data-page-node-id="6RLvrW9oUYnrI3PjkQ2pSx">
+                <button class="qty-btn minus disabled" data-action="minus" data-page-node-id="a49AasNMQLCNDKGpATelPK">−</button>
+                <span class="qty-num" data-page-node-id="Dnx1b4NdFFqmTexCdNVYNx">0</span>
+                <button class="qty-btn plus" data-action="plus" data-page-node-id="FCmYv2UAwxFsMBYjiGf1FU">+</button>
+              </div>
+            </div>
+            <div class="dish-card" data-page-node-id="Hmn3U3LxDqKpZuUxaqq4Ex">
+              <div class="dish-img img-3" data-page-node-id="OT9Lo2m2V0cDYNVCt9CAdm"><svg viewBox="0 0 24 24" fill="none" stroke="#F57F17" stroke-width="1.5" data-page-node-id="9vdaOYumGpM5ezV1zR60Ny"><circle cx="12" cy="12" r="8" data-page-node-id="W3FcyX9ITGDzIEgRm0ip6C"/><path d="M8 10c2 2 6 2 8 0" data-page-node-id="bgg4HMy7mKagwv0CbdOBcv"/></svg></div>
+              <div class="dish-info" data-page-node-id="pTl3gxmBUZP7C2BS57bN9M">
+                <div class="dish-name" data-page-node-id="OBZEkhn9kvOZrxMqTfcxzC">葱油饼</div>
+                <div class="dish-tags" data-page-node-id="qAV7GRNzl73Da9X9xgqb9y"><span class="dish-tag" data-page-node-id="Yzw965EEKYW3mHtSoqZ6kI">面点</span></div>
+                <div class="dish-price" data-page-node-id="U5CUD03Ufa5HOLcbn46bGv"><span class="yen" data-page-node-id="JShq6TDbx83H9DwnFpGH3M">¥</span>3.00</div>
+              </div>
+              <div class="qty-selector" data-dish="葱油饼" data-price="3" data-page-node-id="3WgXRii3FVngXnYhbqBEu9">
+                <button class="qty-btn minus disabled" data-action="minus" data-page-node-id="llUUGXVO0Q2FuqhiN0GXGh">−</button>
+                <span class="qty-num" data-page-node-id="1MA4N3q3RKTYJLjepKt5vT">0</span>
+                <button class="qty-btn plus" data-action="plus" data-page-node-id="6NzrO3AuHqvAvykxE6ReNh">+</button>
+              </div>
+            </div>
+            <div class="dish-card" data-page-node-id="efaTqcwAKQGBmQGN85oVzi">
+              <div class="dish-img img-6" data-page-node-id="bRQdiInYKAca0tk0IvF03P"><svg viewBox="0 0 24 24" fill="none" stroke="#4A148C" stroke-width="1.5" data-page-node-id="EGzi5xvkiDE9FEYxQR1dPc"><circle cx="12" cy="12" r="7" data-page-node-id="fOclPYG0jjvjlBbVTW39eu"/><circle cx="12" cy="12" r="3" data-page-node-id="dAzNWnaBW3H7yIHjXUue2P"/></svg></div>
+              <div class="dish-info" data-page-node-id="UHKyyyw6P7Fq78SYH121gC">
+                <div class="dish-name" data-page-node-id="JLSe7cO2DuNTTudozGlvl7">卤蛋</div>
+                <div class="dish-tags" data-page-node-id="Yv2lLl8dx6cPOSubmdfon2"><span class="dish-tag" data-page-node-id="3iMFiVgZMlP02Dfx5CpXvk">卤味</span></div>
+                <div class="dish-price" data-page-node-id="RYuhaqtiBmRaoH3CmUQdVY"><span class="yen" data-page-node-id="JbOjEuMYhXYxfI10VMzaF5">¥</span>2.00</div>
+              </div>
+              <div class="qty-selector" data-dish="卤蛋" data-price="2" data-page-node-id="1XrrcHRh2RynrKLGxgwN4f">
+                <button class="qty-btn minus disabled" data-action="minus" data-page-node-id="vvXCJJCFcPg25VWS8XSxtd">−</button>
+                <span class="qty-num" data-page-node-id="X7QKG9Pg5Hmc6ra6k0EksE">0</span>
+                <button class="qty-btn plus" data-action="plus" data-page-node-id="hJGelYekNVwTV4WWRt1rlK">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 晚餐接龙 -->
+        <div class="cat-panel" data-panel="jielong" data-page-node-id="kYOi9eF8Nw4dW4etUpW7QC">
+          <div class="relay-section" data-page-node-id="fIchGsvCYG6CwmBC5zWsY0">
+            <div class="relay-info-card" data-page-node-id="wsxdCMoDAKDGjvLZ909B64">
+              <div class="relay-info-title" data-page-node-id="AZ4iQlCQGB0li5pafenhuy">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="q3iorkJdGeGRlB2sShIneX"><path d="M17 8h2a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2v-8a2 2 0 012-2h2M9 8V5a2 2 0 012-2h2a2 2 0 012 2v3" data-page-node-id="Dc3R6jF2I7wYZ724nQIHAX"/></svg>
+                晚餐接龙
+              </div>
+              <div class="relay-info-desc" data-page-node-id="ETpk0rR9sCIkA7Hm0DKNvg">工作日晚餐需提前接龙报名，食堂将根据接龙人数准备食材。请选择用餐日期并提交。</div>
+            </div>
+            <div class="relay-date-grid" id="relayGrid" data-page-node-id="puenJrt8Yh9uBAn65BRu5D">
+              <div class="relay-date-item selected" data-relay-date="2026-07-22" data-page-node-id="YnKqiJr8z8BXEyLSwjgJGY">
+                <div class="relay-date-left" data-page-node-id="q8fRiZUrvn4hicjATW6rRa">
+                  <span class="relay-date-day" data-page-node-id="pHDqprt3fNsT4hnT5tdEHf">今天（周三）</span>
+                  <span class="relay-date-meta" data-page-node-id="RTHHqAXWGOza9PAWC5wdOF">2026-07-22 · 已接龙18人</span>
+                </div>
+                <div class="relay-date-right" data-page-node-id="sMZe4Edtf1PgpSByxSpL8h">
+                  <div class="relay-radio" data-page-node-id="IH95MMFdxFeTeZ2ygcqA6Y"></div>
+                </div>
+              </div>
+              <div class="relay-date-item" data-relay-date="2026-07-23" data-page-node-id="JLDl8CimQzNMf7byGWlbGB">
+                <div class="relay-date-left" data-page-node-id="xkSwb2ZNa5I6XAiljKVUX1">
+                  <span class="relay-date-day" data-page-node-id="4GPeJ16HmE0czM7vJqTl40">明天（周四）</span>
+                  <span class="relay-date-meta" data-page-node-id="pgUb84Bocq4UtdUNZUxp13">2026-07-23 · 已接龙12人</span>
+                </div>
+                <div class="relay-date-right" data-page-node-id="TIT81cKowiiGvsYOzfskME">
+                  <div class="relay-radio" data-page-node-id="sdVi7FPHJBvQkPcz1il8px"></div>
+                </div>
+              </div>
+              <div class="relay-date-item" data-relay-date="2026-07-24" data-page-node-id="SHsGgSR6jsOspDocQxBVHV">
+                <div class="relay-date-left" data-page-node-id="Ia2dAfl8A3dLZqJSi0P18h">
+                  <span class="relay-date-day" data-page-node-id="NUytXpp9WoB8RUFdl4bWIo">周五</span>
+                  <span class="relay-date-meta" data-page-node-id="a9P7qxkraIXWHYNX7CV0fI">2026-07-24 · 已接龙9人</span>
+                </div>
+                <div class="relay-date-right" data-page-node-id="GfifqDjNeRZqjjyRfP60fS">
+                  <div class="relay-radio" data-page-node-id="j5pGxzNePI583VixxOWwD2"></div>
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-primary btn-block relay-submit" id="relaySubmit" data-page-node-id="8x0DH82Dx3mVq5r2SgJ7sf">提交接龙</button>
+          </div>
+        </div>
+
+        <!-- 节假日用餐 -->
+        <div class="cat-panel" data-panel="holiday" data-page-node-id="ydccfcBsI2w204rkMLFfFr">
+          <div class="holiday-section" data-page-node-id="nMDqYNSBOOHgw8Et6dWTXb">
+            <div class="holiday-card" data-page-node-id="GYGmCpRfojN1lul4qgQc4c">
+              <div class="holiday-label" data-page-node-id="2PzZJGgn3jKM8celmCTxjR">选择用餐日期</div>
+              <div class="holiday-date-picker" id="holidayDatePicker" data-page-node-id="8C5GfuhCzmzfTUEXc6MFHB">
+                <span class="holiday-dp-text" data-page-node-id="XY6sCILRiVOOpxY5ju44GM">请选择日期</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="QAwSBAsf5E5K4uF8sfR70U"><rect x="3" y="4" width="18" height="18" rx="2" data-page-node-id="hijWRKpno2oHlCOi6fSUNt"/><path d="M16 2v4M8 2v4M3 10h18" data-page-node-id="EJumv9mNJooQPMmkAMogpQ"/></svg>
+              </div>
+              <div class="holiday-label" data-page-node-id="uFPEDbzBOFzMGVC9Naj7Zq">选择用餐时段</div>
+              <div class="holiday-slot-row" id="holidaySlots" data-page-node-id="ygLWy03rPNx6FYNp2JBYz5">
+                <div class="holiday-slot-opt" data-slot="早" data-page-node-id="9JS1oNjlEEZ05lm9rSXZAk">早餐 06:30-08:30</div>
+                <div class="holiday-slot-opt active" data-slot="午" data-page-node-id="aUJiypF91tGHVSfzr1gyqT">午餐 11:00-13:00</div>
+                <div class="holiday-slot-opt" data-slot="晚" data-page-node-id="Qd5jql61FfePjRopCvzAO0">晚餐 17:00-19:00</div>
+              </div>
+              <div class="holiday-price-row" data-page-node-id="RoQmE37JR4nvHlGuNhaXAb">
+                <span class="holiday-price-label" data-page-node-id="xMDb1POsZ7TPFIP3Ki2nx0">节假日用餐费用</span>
+                <span class="holiday-price-val" data-page-node-id="JhuH3rxQ5ayCrugTkiwIUf"><span class="yen" data-page-node-id="M8MCrt6q0cp2vGCaTWxs4j">¥</span>10.00</span>
+              </div>
+              <button class="btn btn-primary btn-block" id="holidaySubmit" data-page-node-id="B3caMRBhtkTq6kZogrbqok">提交预订</button>
+            </div>
+            <div class="notice-bar" style="border-radius:var(--radius-md);" data-page-node-id="IhSHPptvM01CoF4xQeH2wr">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="oTKHAuUKLpUrVPmTAaHXSs"><circle cx="12" cy="12" r="10" data-page-node-id="NHCQTiSjUJ9Ecwy2ep5jXf"/><path d="M12 8v4M12 16h.01" stroke-linecap="round" data-page-node-id="F5lmvbHXriI1dEDC0JCABz"/></svg>
+              <span class="notice-text" data-page-node-id="4RTlkRaOqpEShfDf0E3VV9">节假日用餐需提前3天预订，取消请提前1天</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 特殊用餐申请 -->
+        <div class="cat-panel" data-panel="special" data-page-node-id="4Nvq01Fd9uRlEOw7JxYTyD">
+          <div class="special-section" data-page-node-id="BvFrV9JdGkFJuUnxA9Jz2G">
+            <div class="special-info-card" data-page-node-id="HIArzOgUiWZ1Ftc72JTqBk">
+              <div class="relay-info-title" style="margin-bottom:6px;" data-page-node-id="vKZwu6RYYUJLEqIiNWTkTW">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="nL9tX5KP1qYnhO4onR0LQF"><circle cx="12" cy="12" r="10" data-page-node-id="6PFmvkgZeZBCtGXHv4r3x3"/><path d="M12 8v4M12 16h.01" stroke-linecap="round" data-page-node-id="pb0CGxEissP6Olk1kOpn24"/></svg>
+                特殊用餐申请
+              </div>
+              <div class="special-info-desc" data-page-node-id="2KxrHAVWEOb27bjv8iM4ij">如有团餐、商务等集体用餐，请提交申请，并关注审核结果，避免耽误用餐。</div>
+            </div>
+            <div class="special-form-card" data-page-node-id="2nlbcadJZLqEezBHJ6wmk2">
+              <div class="special-form-group" data-page-node-id="uo8kdX1xFlOyWcfEquJxBk">
+                <div class="special-form-label" data-page-node-id="PlW0Doq8ulpw19Lf13I7WS">选择用餐时间</div>
+                <div class="holiday-date-picker" id="specialDatePicker" data-page-node-id="pTpKk2pmXNrvzuAHxlfAkM">
+                  <span class="holiday-dp-text" data-page-node-id="RdO3ImDAeYs1qCDFmuKRTK">请选择日期</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="V8P9nRx1gf0zC4NeeH2sQJ"><rect x="3" y="4" width="18" height="18" rx="2" data-page-node-id="ct8AVuRzBGjLdXuCmfKUMK"/><path d="M16 2v4M8 2v4M3 10h18" data-page-node-id="WZiP92uwm5baUW1m7mlMWX"/></svg>
+                </div>
+              </div>
+              <div class="special-form-group" data-page-node-id="56JDWFHdZaVGD2F1kmMqVU">
+                <div class="special-form-label" data-page-node-id="OtBxLIs1Di50wgfIr8yyov">选择用餐时段</div>
+                <div class="special-slot-row" id="specialSlots" data-page-node-id="MqnHLqSHojhJXOcevoKTjf">
+                  <div class="special-slot-opt" data-slot="早" data-page-node-id="0xmjsnflPeqkbsm2nnNQ26">早餐</div>
+                  <div class="special-slot-opt active" data-slot="午" data-page-node-id="G4v4TRRHVeDk59OBxTRq4c">午餐</div>
+                  <div class="special-slot-opt" data-slot="晚" data-page-node-id="XZQIIIHBRZosPDgrrGqeO5">晚餐</div>
+                </div>
+              </div>
+              <div class="special-form-group" data-page-node-id="3RB5wwstItaH8sY6rpgLrb">
+                <div class="special-form-label" data-page-node-id="zfT9tDbewmQgmjnlpFuDeR">用餐人数</div>
+                <input type="number" class="special-form-input" placeholder="请输入用餐人数" min="1" data-page-node-id="GUpQ7yDn78nY1Tlpg2ci2z">
+              </div>
+              <div class="special-form-group" data-page-node-id="0FHIBGS36AC2VLcFaJEjuG">
+                <div class="special-form-label" data-page-node-id="nhK4d9eYUksYYrssxfvklc">餐标</div>
+                <input type="text" class="special-form-input" placeholder="请输入餐标，如50元/人" data-page-node-id="hkLUWNDkEXRef6Kfv9rde5">
+              </div>
+              <div class="special-form-group" data-page-node-id="0zODRdGge7hbyDcfPMdIqy">
+                <div class="special-form-label" data-page-node-id="f3z3mLZEfIJMsWD7eFrOiy">申请原因</div>
+                <textarea class="special-form-input special-form-textarea" placeholder="请输入申请原因"></textarea>
+              </div>
+              <button class="btn btn-primary btn-block" id="specialSubmit" data-page-node-id="gutA0gsQogfJGPS5aYedO4">提交申请</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Bar -->
+  <div class="cart-bar" id="cartBar" data-page-node-id="1qxWG0XWdujrWD08aAi43M">
+    <div class="cart-icon-wrap" data-page-node-id="MVvwg6uw1GMqdZCCkglHIz">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="Nd6xEqZlSE5RFTCTeWll7b"><circle cx="9" cy="21" r="1" data-page-node-id="wmUM4fOSDUBI9hI2KvsG1W"/><circle cx="20" cy="21" r="1" data-page-node-id="SbFGM1Shiel9vAnu2UBnJL"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" data-page-node-id="7Lac8UX37QBV2919ssHMFT"/></svg>
+      <span class="cart-badge hidden" id="cartBadge" data-page-node-id="bmmmkSxQaVEcnmjxxEQcEp">0</span>
+    </div>
+    <div class="cart-info" data-page-node-id="qwaCyPl0dpZ1vLjVC49eFd">
+      <div class="cart-total" data-page-node-id="zJPvBt7irU9k5GfWzDlA0V"><span id="cartTotal" data-page-node-id="zgHRU3yvcMBEC37d1G71Vo">¥0.00</span></div>
+      <div class="cart-desc" id="cartDesc" data-page-node-id="FA0TJX9RIU3sqnxf3YYZqn">未选购商品</div>
+    </div>
+    <button class="cart-btn disabled" id="checkoutBtn" data-page-node-id="QSQFIHubGzjJX4AfnnjQ6G">去结算</button>
+  </div>
+
+  <!-- 购物车明细弹窗 -->
+  <div class="bottom-sheet-mask cart-sheet-mask" id="cartSheet">
+    <div class="bottom-sheet">
+      <div class="bottom-sheet-handle"></div>
+      <div class="cs-header">
+        <span class="cs-title">已选菜品</span>
+        <span class="cs-close" id="cartSheetClose">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </span>
+      </div>
+      <div class="cs-list" id="cartSheetList"></div>
+      <div class="ps-total-row">
+        <span class="ps-total-label">合计</span>
+        <span class="ps-total-val" id="cartSheetTotal"><span class="yen">¥</span>0.00</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 支付确认弹窗 -->
+  <div class="bottom-sheet-mask pay-sheet-mask" id="paySheet">
+    <div class="bottom-sheet">
+      <div class="bottom-sheet-handle"></div>
+      <div class="cs-header">
+        <span class="cs-title">确认订单</span>
+        <span class="cs-close" id="paySheetClose">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </span>
+      </div>
+      <div class="cs-list" id="paySheetList"></div>
+      <div class="ps-total-row">
+        <span class="ps-total-label">合计金额</span>
+        <span class="ps-total-val" id="paySheetTotal"><span class="yen">¥</span>0.00</span>
+      </div>
+      <button class="btn btn-primary btn-block" id="payConfirmBtn">确认支付</button>
+    </div>
+  </div>
+
+  <!-- 密码支付弹窗 -->
+  <div class="bottom-sheet-mask pwd-sheet-mask" id="pwdSheet">
+    <div class="bottom-sheet">
+      <div class="pwd-title">请输入支付密码</div>
+      <div class="pwd-amount"><span class="yen">¥</span><span id="pwdAmount">0.00</span></div>
+      <div class="pwd-method">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h2M11 15h6"/></svg>
+        <span>扣款方式：后勤钱包</span>
+      </div>
+      <div class="pwd-boxes" id="pwdBoxes">
+        <div class="pwd-box"></div>
+        <div class="pwd-box"></div>
+        <div class="pwd-box"></div>
+        <div class="pwd-box"></div>
+        <div class="pwd-box"></div>
+        <div class="pwd-box"></div>
+      </div>
+      <div class="pwd-keyboard" id="pwdKeyboard">
+        <div class="pwd-key" data-key="1">1</div>
+        <div class="pwd-key" data-key="2">2</div>
+        <div class="pwd-key" data-key="3">3</div>
+        <div class="pwd-key" data-key="4">4</div>
+        <div class="pwd-key" data-key="5">5</div>
+        <div class="pwd-key" data-key="6">6</div>
+        <div class="pwd-key" data-key="7">7</div>
+        <div class="pwd-key" data-key="8">8</div>
+        <div class="pwd-key" data-key="9">9</div>
+        <div class="pwd-key fn"></div>
+        <div class="pwd-key" data-key="0">0</div>
+        <div class="pwd-key fn" data-key="del">删除</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 预订成功弹窗 -->
+  <div class="modal-mask" id="bookingSuccessModal" data-page-node-id="sSVGTSBNdYfhBuA0qooBhJ">
+    <div class="modal-content" data-page-node-id="V2hc4iBVCQTrtSMGRNLiBR">
+      <div class="success-icon-wrap" data-page-node-id="7MBbnsUzf0EW6DIL8lOzzo">
+        <div class="success-icon-circle" data-page-node-id="aPpFx197BekGGw3aMMXJbA">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="aFny2GAY6XAFik2TXTxVqh"><polyline points="20 6 9 17 4 12" data-page-node-id="LYxYU18i5d4jYiy0tfME6R"/></svg>
+        </div>
+      </div>
+      <div class="success-msg" data-page-node-id="yxDzwhQBibgHOP8FXEJj4F">您已预定成功！</div>
+      <div class="modal-btn-row" data-page-node-id="phBjqvAnGScwp4pc4k3BkZ">
+        <button class="btn btn-outline-gray" id="bsCloseBtn" data-page-node-id="SRYTUgIgVOHErIcc8eBWHA">关闭</button>
+        <button class="btn btn-primary" id="bsViewBtn" data-page-node-id="MSU1TUlHdaC0hGUcBH1NlW">查看预定记录</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // 预订记录按钮
+  document.getElementById('recordsBtn').addEventListener('click', function() {
+    window.location.href = 'P04-booking-records.html';
+  });
+
+  // ==================== Sidebar 分类切换 ====================
+  var sidebarItems = document.querySelectorAll('.sidebar-item');
+  var panels = document.querySelectorAll('.cat-panel');
+  sidebarItems.forEach(function(item) {
+    item.addEventListener('click', function() {
+      var cat = this.getAttribute('data-cat');
+      sidebarItems.forEach(function(s) { s.classList.remove('active'); });
+      this.classList.add('active');
+      panels.forEach(function(p) {
+        p.classList.toggle('active', p.getAttribute('data-panel') === cat);
+      });
+    });
+  });
+
+  // ==================== 日期筛选 ====================
+  var datePills = document.querySelectorAll('.meal-date-pill');
+  datePills.forEach(function(pill) {
+    pill.addEventListener('click', function() {
+      datePills.forEach(function(p) { p.classList.remove('active'); });
+      this.classList.add('active');
+      var day = this.getAttribute('data-day');
+      var date = this.getAttribute('data-date');
+      MS.showToast('已切换至 ' + day + ' ' + date + ' 菜单', 'info');
+    });
+  });
+
+  // ==================== 数量加减 & 购物车 ====================
+  var cart = {}; // { dishName: { qty, price } }
+  var cartTotalEl = document.getElementById('cartTotal');
+  var cartDescEl = document.getElementById('cartDesc');
+  var cartBadgeEl = document.getElementById('cartBadge');
+  var checkoutBtn = document.getElementById('checkoutBtn');
+
+  function updateCart() {
+    var totalCount = 0;
+    var totalAmount = 0;
+    for (var name in cart) {
+      totalCount += cart[name].qty;
+      totalAmount += cart[name].qty * cart[name].price;
+    }
+    cartTotalEl.textContent = '¥' + totalAmount.toFixed(2);
+    if (totalCount > 0) {
+      cartDescEl.textContent = '已选 ' + totalCount + ' 件商品';
+      cartBadgeEl.textContent = totalCount;
+      cartBadgeEl.classList.remove('hidden');
+      checkoutBtn.classList.remove('disabled');
+    } else {
+      cartDescEl.textContent = '未选购商品';
+      cartBadgeEl.classList.add('hidden');
+      checkoutBtn.classList.add('disabled');
+    }
+  }
+
+  document.querySelectorAll('.qty-selector').forEach(function(qs) {
+    var dishName = qs.getAttribute('data-dish');
+    var price = parseFloat(qs.getAttribute('data-price'));
+    var minusBtn = qs.querySelector('.minus');
+    var plusBtn = qs.querySelector('.plus');
+    var numEl = qs.querySelector('.qty-num');
+
+    plusBtn.addEventListener('click', function() {
+      if (!cart[dishName]) cart[dishName] = { qty: 0, price: price };
+      cart[dishName].qty++;
+      numEl.textContent = cart[dishName].qty;
+      minusBtn.classList.remove('disabled');
+      updateCart();
+    });
+
+    minusBtn.addEventListener('click', function() {
+      if (!cart[dishName] || cart[dishName].qty <= 0) return;
+      cart[dishName].qty--;
+      numEl.textContent = cart[dishName].qty;
+      if (cart[dishName].qty <= 0) {
+        minusBtn.classList.add('disabled');
+        delete cart[dishName];
+      }
+      updateCart();
+    });
+  });
+
+  // ==================== 去结算 → 支付确认 ====================
+  function cartAmount() {
+    var total = 0;
+    for (var name in cart) total += cart[name].qty * cart[name].price;
+    return total;
+  }
+
+  function clearCart() {
+    cart = {};
+    document.querySelectorAll('.qty-selector').forEach(function(qs) {
+      qs.querySelector('.qty-num').textContent = '0';
+      qs.querySelector('.minus').classList.add('disabled');
+    });
+    updateCart();
+  }
+
+  function renderDishList(listEl, totalEl) {
+    var names = Object.keys(cart);
+    if (!names.length) {
+      listEl.innerHTML = '<div class="cs-empty">购物车还是空的，请先选购菜品</div>';
+      totalEl.innerHTML = '<span class="yen">¥</span>0.00';
+      return;
+    }
+    var html = '';
+    names.forEach(function(name) {
+      var item = cart[name];
+      var subtotal = item.qty * item.price;
+      html += '<div class="cs-item">'
+            +   '<div class="cs-item-left">'
+            +     '<span class="cs-item-name">' + name + '</span>'
+            +     '<span class="cs-item-meta">¥' + item.price.toFixed(2) + ' × ' + item.qty + '</span>'
+            +   '</div>'
+            +   '<span class="cs-item-price">¥' + subtotal.toFixed(2) + '</span>'
+            + '</div>';
+    });
+    listEl.innerHTML = html;
+    totalEl.innerHTML = '<span class="yen">¥</span>' + cartAmount().toFixed(2);
+  }
+
+  // 点击购物车 icon → 已选菜品弹窗
+  document.querySelector('.cart-icon-wrap').addEventListener('click', function() {
+    renderDishList(document.getElementById('cartSheetList'), document.getElementById('cartSheetTotal'));
+    MS.showModal('cartSheet');
+  });
+  document.getElementById('cartSheetClose').addEventListener('click', function() {
+    MS.hideModal('cartSheet');
+  });
+
+  // 去结算 → 支付确认弹窗
+  checkoutBtn.addEventListener('click', function() {
+    if (this.classList.contains('disabled')) return;
+    renderDishList(document.getElementById('paySheetList'), document.getElementById('paySheetTotal'));
+    MS.showModal('paySheet');
+  });
+  document.getElementById('paySheetClose').addEventListener('click', function() {
+    MS.hideModal('paySheet');
+  });
+
+  // 确认支付 → 密码支付弹窗
+  document.getElementById('payConfirmBtn').addEventListener('click', function() {
+    document.getElementById('pwdAmount').textContent = cartAmount().toFixed(2);
+    resetPwd();
+    MS.showModal('pwdSheet');
+  });
+
+  // ==================== 支付密码键盘 ====================
+  var pwdCode = '';
+
+  function resetPwd() {
+    pwdCode = '';
+    document.querySelectorAll('#pwdBoxes .pwd-box').forEach(function(box) {
+      box.classList.remove('filled');
+    });
+  }
+
+  function updatePwdBoxes() {
+    document.querySelectorAll('#pwdBoxes .pwd-box').forEach(function(box, i) {
+      box.classList.toggle('filled', i < pwdCode.length);
+    });
+  }
+
+  document.querySelectorAll('#pwdKeyboard .pwd-key').forEach(function(key) {
+    key.addEventListener('click', function() {
+      var val = this.getAttribute('data-key');
+      if (!val) return;
+      if (val === 'del') {
+        pwdCode = pwdCode.slice(0, -1);
+        updatePwdBoxes();
+        return;
+      }
+      if (pwdCode.length >= 6) return;
+      pwdCode += val;
+      updatePwdBoxes();
+      if (pwdCode.length === 6) {
+        setTimeout(function() {
+          MS.hideModal('pwdSheet');
+          MS.hideModal('paySheet');
+          clearCart();
+          MS.showModal('bookingSuccessModal');
+        }, 260);
+      }
+    });
+  });
+
+  // ==================== 晚餐接龙 ====================
+  var relayItems = document.querySelectorAll('.relay-date-item');
+  relayItems.forEach(function(item) {
+    item.addEventListener('click', function() {
+      relayItems.forEach(function(i) { i.classList.remove('selected'); });
+      this.classList.add('selected');
+    });
+  });
+  document.getElementById('relaySubmit').addEventListener('click', function() {
+    var selected = document.querySelector('.relay-date-item.selected');
+    if (!selected) {
+      MS.showToast('请选择用餐日期', 'info');
+      return;
+    }
+    MS.showModal('bookingSuccessModal');
+  });
+
+  // ==================== 节假日用餐 ====================
+  var hdOpts = document.querySelectorAll('.holiday-date-opt');
+  hdOpts.forEach(function(opt) {
+    opt.addEventListener('click', function() {
+      hdOpts.forEach(function(o) { o.classList.remove('active'); });
+      this.classList.add('active');
+    });
+  });
+  var slotOpts = document.querySelectorAll('.holiday-slot-opt');
+  slotOpts.forEach(function(opt) {
+    opt.addEventListener('click', function() {
+      slotOpts.forEach(function(o) { o.classList.remove('active'); });
+      this.classList.add('active');
+    });
+  });
+  document.getElementById('holidaySubmit').addEventListener('click', function() {
+    MS.showModal('bookingSuccessModal');
+  });
+  document.getElementById('holidayDatePicker').addEventListener('click', function() {
+    MS.showToast('请选择日期', 'info');
+  });
+
+  // ==================== 预订成功弹窗 ====================
+  document.getElementById('bsCloseBtn').addEventListener('click', function() {
+    MS.hideModal('bookingSuccessModal');
+  });
+  document.getElementById('bsViewBtn').addEventListener('click', function() {
+    MS.hideModal('bookingSuccessModal');
+    window.location.href = 'P04-booking-records.html';
+  });
+
+  // ==================== 特殊用餐申请 ====================
+  var specialSlots = document.querySelectorAll('.special-slot-opt');
+  specialSlots.forEach(function(opt) {
+    opt.addEventListener('click', function() {
+      specialSlots.forEach(function(o) { o.classList.remove('active'); });
+      this.classList.add('active');
+    });
+  });
+  document.getElementById('specialDatePicker').addEventListener('click', function() {
+    MS.showToast('请选择日期', 'info');
+  });
+  document.getElementById('specialSubmit').addEventListener('click', function() {
+    MS.showToast('申请已提交，请关注审核结果', 'success');
+  });
+
+})();
+</script>
+</body>
+</html>
