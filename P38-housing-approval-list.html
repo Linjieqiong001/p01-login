@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="Fp1BFSczcVLy4BPxPdn4Ts">
+<head data-page-node-id="VHXY46NCAIL1mtBhhCJ4qc">
+<meta charset="UTF-8" data-page-node-id="2X67b2iNHoDrCLKlkhvPWM">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="t4Y8K97MC1xvSDNDYHWn0f">
+<title>P38 - 住房审批列表</title>
+<link rel="stylesheet" href="common.css" data-page-node-id="iz729Q5wGk43e3GriiFwTj">
+<style>
+/* ==================== Status Tags ==================== */
+.tag-pass { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; background: var(--success-light); color: var(--success); }
+.tag-reject { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; background: var(--danger-light); color: var(--danger); }
+.tag-pending { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; background: var(--warning-light); color: var(--warning); }
+
+/* ==================== Tabs ==================== */
+.tabs {
+  display: flex;
+  background: var(--card-bg);
+  border-bottom: 0.5px solid var(--divider);
+  flex-shrink: 0;
+}
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 12px 0;
+  font-size: 14px;
+  color: var(--text-2);
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+}
+.tab.active { color: var(--primary); font-weight: 600; }
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 3px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+.tab .tab-badge {
+  display: inline-block;
+  min-width: 16px;
+  height: 16px;
+  background: var(--badge);
+  color: #FFFFFF;
+  font-size: 10px;
+  border-radius: 8px;
+  line-height: 16px;
+  margin-left: 2px;
+  padding: 0 4px;
+  vertical-align: top;
+}
+
+/* ==================== Approval Card ==================== */
+.approval-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  margin: 10px 16px 0;
+  padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.approval-card:active { transform: scale(0.99); }
+.approval-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.approval-card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+  flex: 1;
+  min-width: 0;
+}
+.approval-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.approval-card-meta .time-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+.approval-card-summary {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-bottom: 12px;
+  padding: 8px 10px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  line-height: 1.5;
+}
+.approval-card-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.approval-card.hidden { display: none; }
+
+/* ==================== Empty State ==================== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  gap: 12px;
+}
+.empty-state svg { width: 64px; height: 64px; color: var(--divider); }
+.empty-state .empty-text { font-size: 14px; color: var(--text-3); }
+.empty-state.hidden { display: none; }
+
+/* ==================== Modal Content Override ==================== */
+.modal-content { width: 340px; }
+.modal-form { padding: 0; }
+.modal-form .form-item { border-bottom: 0.5px solid var(--border); }
+.modal-form .form-item:last-child { border-bottom: none; }
+.modal-confirm-text {
+  font-size: 14px;
+  color: var(--text-1);
+  line-height: 1.6;
+  text-align: center;
+  padding: 8px 0;
+}
+
+/* Modal close X */
+.modal-header-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 0.5px solid var(--divider);
+}
+.modal-title { font-size: 16px; font-weight: 600; color: var(--text-1); }
+.modal-close-btn {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; border-radius: 50%;
+  transition: background 0.2s;
+}
+.modal-close-btn:active { background: rgba(0,0,0,0.06); }
+.modal-close-btn svg { width: 18px; height: 18px; color: var(--text-3); }
+
+.spacer { height: 20px; }
+</style>
+</head>
+<body data-page-node-id="oXg1w5I7268gAAPMxZSmqt">
+
+<div class="miniprogram" id="app" data-page-node-id="o9YgdFfo5BgdX9PjhqVG9D">
+
+  <!-- Status Bar -->
+  <div class="status-bar light" data-page-node-id="QrAXrrSUzFF9Szs6H4pHfA">
+    <span class="time" data-page-node-id="X6Zt1LcHhgZDCtnES0D7pZ">09:42</span>
+    <div class="icons" data-page-node-id="pwLAsvhLYqdLh8LHKdh8PK">
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="4n2eVXUBlljBWjeA1ktAdX"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" data-page-node-id="eiRPPJLZdIXA9Bn4vhIucE"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="lR3yc5nUHJmN8QyQ5Mt13q"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" data-page-node-id="IhBpN4SQLQ7KkdiU2pxoAV"/></svg>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar white" data-page-node-id="5GIgBFHONx0DnOoQF4VPtF">
+    <div class="nav-back" data-page-node-id="xWmrbjIo8oBPyVZT4nS22E">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="Py0ydadVLCc1iGAkRZUkTo">
+        <polyline points="15 18 9 12 15 6" data-page-node-id="b3EhbDprE0mDX7sGguYFzK"/>
+      </svg>
+    </div>
+    <span class="nav-title" data-page-node-id="85rbyHKSxuDDhF09kgQefj">住房审批列表</span>
+    <span class="nav-placeholder" data-page-node-id="59ZHUDbNNEBL83basrQS54"></span>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs" id="tabBar" data-page-node-id="sEsYAIel6Ty0HSjvQqL6Q2">
+    <div class="tab active" data-tab="pending" data-page-node-id="92wrCFT8ffS8wDPLXmfSHZ">
+      待审批<span class="tab-badge" data-page-node-id="PDKNcxybQ9Ky2OoJzWG8GR">3</span>
+    </div>
+    <div class="tab" data-tab="done" data-page-node-id="0KGnCYqlpSYHUKoSds40Az">
+      已处理
+    </div>
+    <div class="tab" data-tab="all" data-page-node-id="uYLcCwdy4QxglljCFDFDZe">
+      全部
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content fade-in" id="contentArea" data-page-node-id="l0PNFmueP5s6sU9MJIXwlw">
+
+    <!-- Card 1: 入住申请 - 待处理 -->
+    <div class="approval-card" data-status="pending" data-type="checkin" id="card-1" data-page-node-id="M2h8iFIDEB852rl5j15YPU">
+      <div class="approval-card-header" data-page-node-id="Ecw6D2oVXvSbFkiSFibLj9">
+        <span class="approval-card-title" data-page-node-id="a4IEPeuHHbq6CZbJDxG4gN">张三提交的住房申请</span>
+        <span class="tag-pending" data-page-node-id="gmByXJN43p2HgR07ubHMK8">待处理</span>
+      </div>
+      <div class="approval-card-meta" data-page-node-id="Dz9lp8PefAMCiQXBVZ8CyO">
+        <svg class="time-icon" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" data-page-node-id="lW8qJ4ZhlJKy5aXixdkxvF">
+          <circle cx="12" cy="12" r="10" data-page-node-id="qKp8jI90kGvclYIYnvXA8G"/><path d="M12 6v6l4 2" data-page-node-id="gYQVu9rynCFaJ6HJLNkpno"/>
+        </svg>
+        <span data-page-node-id="ORRRjpTkHKSuAmzrsQmPz2">发起时间：2026-07-20 09:12</span>
+      </div>
+      <div class="approval-card-summary" data-page-node-id="Rd094nzDJPP9jRr6WBGUup">
+        期望房型：一室一厅；申请人部门：海事处
+      </div>
+      <div class="approval-card-actions" data-page-node-id="AdFIEIf0HzQChkMXsivDme">
+        <button class="btn btn-sm btn-outline-gray" data-action="reject" data-page-node-id="4EJFTPznpECzFpPn4cGoWF">驳回</button>
+        <button class="btn btn-sm btn-primary" data-action="approve" data-page-node-id="WqOuuLN9qriLCfqeU7F8yj">通过</button>
+      </div>
+    </div>
+
+    <!-- Card 2: 退宿申请 - 已通过 -->
+    <div class="approval-card" data-status="done" data-type="checkout" id="card-2" data-page-node-id="6ItxGus9qC42oXv5fr9AFb">
+      <div class="approval-card-header" data-page-node-id="mtzk3MY0j88W187LmkEoh5">
+        <span class="approval-card-title" data-page-node-id="G3n6mlMZBz2wZwHvA8scqu">张三提交的住房申请</span>
+        <span class="tag-pass" data-page-node-id="BWKhlldL5kaxRs2uHNGq0W">已通过</span>
+      </div>
+      <div class="approval-card-meta" data-page-node-id="Xs16Tp5AbkGY5Vtymsn1y2">
+        <svg class="time-icon" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" data-page-node-id="LlHdbsqtMks0QFJ3BDIeNW">
+          <circle cx="12" cy="12" r="10" data-page-node-id="gmk4hOVJMpLJNDCEMdPqqa"/><path d="M12 6v6l4 2" data-page-node-id="8LRXIq1TcpRx1qlFP7m4yp"/>
+        </svg>
+        <span data-page-node-id="NofGwCoCuu0XCdl90et4co">发起时间：2026-07-18 14:30</span>
+      </div>
+      <div class="approval-card-summary" data-page-node-id="Ye1lOOCLcSyqQggICfaMzn">
+        退宿日期：2026-07-31；退宿原因：工作调动
+      </div>
+      <div class="approval-card-actions" data-page-node-id="p7QP8WBVU0GQ8PoRBmisul">
+        <button class="btn btn-sm btn-outline-gray" data-action="view" data-page-node-id="GCKyyAAZOehe0HBf0CU3cA">查看</button>
+      </div>
+    </div>
+
+    <!-- Card 3: 住房维修申请 - 待处理 -->
+    <div class="approval-card" data-status="pending" data-type="repair" id="card-3" data-page-node-id="2H1TdvkE4yUovgnTjO492p">
+      <div class="approval-card-header" data-page-node-id="2zREX1YWsD8XHHapz32e8K">
+        <span class="approval-card-title" data-page-node-id="gjZHaBjdQa9St8Lq40IaOK">张三提交的住房申请</span>
+        <span class="tag-pending" data-page-node-id="lY4byZfp7WAUCuoSqVLLqq">待处理</span>
+      </div>
+      <div class="approval-card-meta" data-page-node-id="WYPN4PwecLXydK3OirgZLH">
+        <svg class="time-icon" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" data-page-node-id="yp623LSH0RgyrFK06RfoG1">
+          <circle cx="12" cy="12" r="10" data-page-node-id="lpevcmChVs4FjJjSuESxwL"/><path d="M12 6v6l4 2" data-page-node-id="1myDVcuKphiDaoQLUwS5ta"/>
+        </svg>
+        <span data-page-node-id="4GbsLLdbyoOBpIS7RRQQ9o">发起时间：2026-07-22 11:05</span>
+      </div>
+      <div class="approval-card-summary" data-page-node-id="Fku5Eobxl1It9RuhKnoFmn">
+        报修标题：空调不制冷；房间：滨海小区3栋502；报修类型：家电
+      </div>
+      <div class="approval-card-actions" data-page-node-id="w4REtk8DE262gYLLEq8hzz">
+        <button class="btn btn-sm btn-outline-gray" data-action="reject" data-page-node-id="rzEoE0V2dtgunLVQbH0mVc">驳回</button>
+        <button class="btn btn-sm btn-primary" data-action="approve" data-page-node-id="bcnAzdenBxmJB7X0FmmL9s">通过</button>
+      </div>
+    </div>
+
+    <!-- Card 4: 入住申请 - 已通过 -->
+    <div class="approval-card" data-status="done" data-type="checkin" id="card-4" data-page-node-id="g53I13L5EUcHLCoylFz6W2">
+      <div class="approval-card-header" data-page-node-id="oL5gSfi9bStazdlUfP4tPx">
+        <span class="approval-card-title" data-page-node-id="MT1prkNtXQNkxoRwN62JhD">张三提交的住房申请</span>
+        <span class="tag-pass" data-page-node-id="MagksFlQxchEOcYKpF461V">已通过</span>
+      </div>
+      <div class="approval-card-meta" data-page-node-id="kVFZo8W3HGAHzob9V3MN8w">
+        <svg class="time-icon" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" data-page-node-id="iXuyNG2zKNnATuayDsWhrW">
+          <circle cx="12" cy="12" r="10" data-page-node-id="6yFsxl3zKQ9B2kifMD2IPf"/><path d="M12 6v6l4 2" data-page-node-id="JoSbXK29lxBvVjTaegkzVt"/>
+        </svg>
+        <span data-page-node-id="wlu0SIjQElj8bC3h8yCvT2">发起时间：2026-07-15 10:00</span>
+      </div>
+      <div class="approval-card-summary" data-page-node-id="pG9uSy3OEYCCgdoI6YPU43">
+        期望房型：两室一厅；申请人部门：办公室
+      </div>
+      <div class="approval-card-actions" data-page-node-id="AFl733U4goZEMWCA6AqyAu">
+        <button class="btn btn-sm btn-outline-gray" data-action="view" data-page-node-id="PzqXboSAZOw7MEIqOb7gtE">查看</button>
+      </div>
+    </div>
+
+    <!-- Card 5: 住房维修申请 - 已驳回 -->
+    <div class="approval-card" data-status="done" data-type="repair" id="card-5" data-page-node-id="KoiI7UTgnTgbGyjgfol1hq">
+      <div class="approval-card-header" data-page-node-id="zBTOXW3JBy0THnJo4GkKag">
+        <span class="approval-card-title" data-page-node-id="uYmUgrvBG3D1vfGzNeReED">张三提交的住房申请</span>
+        <span class="tag-reject" data-page-node-id="FBw9s6RTawhBNWFANVYysj">已驳回</span>
+      </div>
+      <div class="approval-card-meta" data-page-node-id="60HdQ5qavvBgJhVkmncaVp">
+        <svg class="time-icon" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" data-page-node-id="q2UtPBMhVBTlBMUC23SLH7">
+          <circle cx="12" cy="12" r="10" data-page-node-id="zLn3ZxZRfGM0lgA6Ij0W7R"/><path d="M12 6v6l4 2" data-page-node-id="jfhN06drWZhO7Zg02xeSdS"/>
+        </svg>
+        <span data-page-node-id="4w190stibPerEFQyUJ3pKG">发起时间：2026-07-10 09:30</span>
+      </div>
+      <div class="approval-card-summary" data-page-node-id="N2M45qX8qGUnVFK0UZDRvb">
+        报修标题：水龙头漏水；房间：滨海小区2栋301；报修类型：水电
+      </div>
+      <div class="approval-card-actions" data-page-node-id="pq0PEK6rWQRlKJBLg0yNaR">
+        <button class="btn btn-sm btn-outline-gray" data-action="view" data-page-node-id="8KMsXtSGoEduDY1trt5L9O">查看</button>
+      </div>
+    </div>
+
+    <!-- Card 6: 退宿申请 - 待处理 -->
+    <div class="approval-card" data-status="pending" data-type="checkout" id="card-6" data-page-node-id="VtewNF5nVLCLo4ozGYGvYD">
+      <div class="approval-card-header" data-page-node-id="qbbIhD7sGCQH6SODbdnZhN">
+        <span class="approval-card-title" data-page-node-id="XEmz3RUbZl8C9QflFbpVU8">张三提交的住房申请</span>
+        <span class="tag-pending" data-page-node-id="gttW7oBNskMZ5AWH7bz2qq">待处理</span>
+      </div>
+      <div class="approval-card-meta" data-page-node-id="yrBaiPp0mrprbZsCm6Vugj">
+        <svg class="time-icon" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" data-page-node-id="0KTD2nkVHGM764gAdMVbuX">
+          <circle cx="12" cy="12" r="10" data-page-node-id="i3htFfZ5LIn6Hn0eKxgpNA"/><path d="M12 6v6l4 2" data-page-node-id="GKpYOOaihM5UHg88K6O7sg"/>
+        </svg>
+        <span data-page-node-id="Jl36b8ja08LpMG3uoSAxIv">发起时间：2026-07-22 08:00</span>
+      </div>
+      <div class="approval-card-summary" data-page-node-id="bZMImupHC8mvltpbrOhxEF">
+        退宿日期：2026-08-15；退宿原因：调离本单位
+      </div>
+      <div class="approval-card-actions" data-page-node-id="cmdx3ugjtY3tJ5T2au5GYf">
+        <button class="btn btn-sm btn-outline-gray" data-action="reject" data-page-node-id="dYpwU5szvLreV1BFXCVWRH">驳回</button>
+        <button class="btn btn-sm btn-primary" data-action="approve" data-page-node-id="bwHSncXxhDkW65JtZSgB1l">通过</button>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state hidden" id="emptyState" data-page-node-id="advCY2QXHHQHPPl4SiXboR">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="lFt1lAIw4YCQWiHuxgCtn3">
+        <path d="M9 11H5a2 2 0 00-2 2v7a2 2 0 002 2h14a2 2 0 002-2v-7a2 2 0 00-2-2h-4" data-page-node-id="Jg2Wyj000MajMjesJcCVlj"/>
+        <path d="M9 11V5a2 2 0 014 0v6" data-page-node-id="SPGpzn70pbr6AzvAI8swJb"/>
+      </svg>
+      <span class="empty-text" data-page-node-id="uVhM2HaUSD9EALRTA1qRri">暂无审批数据</span>
+    </div>
+
+    <div class="spacer" data-page-node-id="9OrwR0sAOc3GpbwjtKWtmb"></div>
+
+  </div>
+
+  <!-- Action Modal -->
+  <div class="modal-mask" id="actionModal" data-page-node-id="Dy36OdQ38CAGUEzuELdMaB">
+    <div class="modal-content" data-page-node-id="bKz7R9URxm6HYGRV4kfEBA">
+      <div class="modal-header-wrap" data-page-node-id="A5KCXXdesL592WovLa8hW7">
+        <span class="modal-title" id="modalTitle" data-page-node-id="40Eani9nEzQwmHj4DDOivv">标题</span>
+        <div class="modal-close-btn" id="modalClose" data-page-node-id="xzYwurtgBTdakeq638GmdK">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="TB5tS0auyBQYw5LoAnMgUr">
+            <path d="M18 6L6 18M6 6l12 12" data-page-node-id="UyCAeHLuFJVEIasyze09Od"/>
+          </svg>
+        </div>
+      </div>
+      <div class="modal-body" id="modalBody" data-page-node-id="VKxDX1AeGbCSmIoHSKSV8J"></div>
+      <div class="modal-footer" data-page-node-id="wy6Nv2CeBbenchIibBr36l">
+        <button class="btn btn-primary btn-block" id="modalConfirm" data-page-node-id="RyHGdLJlD4CTaFlHTaWwfH">确认</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" data-page-node-id="UNaDjVrjKRej9uU4jxVUu3">
+    <div class="toast-icon" data-page-node-id="k9oUz8p0nVtbMhTBCCEfwR"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="n6qbFpa6G6xxBxpQfdHwcV"><circle cx="12" cy="12" r="10" data-page-node-id="qvs5MTk5C7Rn0M6PrLCzmg"/><path d="M12 16v-4M12 8h.01" data-page-node-id="ErzJA56BL3m7x3sB4DptX7"/></svg></div>
+    <span id="toastText" data-page-node-id="X0Dyb7lJ89M3xiJjZzcSJE"></span>
+  </div>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  /* ==================== Toast ==================== */
+  var toastTimer = null;
+  function showToast(text, iconType) {
+    var toast = document.getElementById('toast');
+    var toastText = document.getElementById('toastText');
+    var toastIcon = toast.querySelector('.toast-icon');
+
+    toastText.textContent = text;
+    var iconHtml = '';
+    if (iconType === 'success') {
+      iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+    } else if (iconType === 'error') {
+      iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>';
+    } else {
+      iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>';
+    }
+    toastIcon.innerHTML = iconHtml;
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() {
+      toast.classList.remove('show');
+    }, 2000);
+  }
+
+  /* ==================== Modal ==================== */
+  var modalConfirmHandler = null;
+
+  function showActionModal() {
+    document.getElementById('actionModal').classList.add('show');
+  }
+
+  function hideActionModal() {
+    document.getElementById('actionModal').classList.remove('show');
+  }
+
+  /* ==================== Tab Switching ==================== */
+  var tabs = document.querySelectorAll('#tabBar .tab');
+  var cards = document.querySelectorAll('.approval-card');
+  var emptyState = document.getElementById('emptyState');
+
+  function filterCards(status) {
+    var visibleCount = 0;
+    cards.forEach(function(card) {
+      if (status === 'all' || card.getAttribute('data-status') === status) {
+        card.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    if (visibleCount === 0) {
+      emptyState.classList.remove('hidden');
+    } else {
+      emptyState.classList.add('hidden');
+    }
+  }
+
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      if (this.classList.contains('active')) return;
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      this.classList.add('active');
+      filterCards(this.getAttribute('data-tab'));
+    });
+  });
+
+  /* ==================== Modal - Approve ==================== */
+  function showApproveModal(cardType) {
+    var title, bodyHTML;
+
+    switch(cardType) {
+      case 'checkin':
+        title = '分配房源';
+        bodyHTML = '' +
+          '<div class="form-group modal-form">' +
+          '  <div class="form-item">' +
+          '    <span class="form-label">小区</span>' +
+          '    <div class="form-value"><input class="form-input" id="modalCommunity" placeholder="请输入小区名称"></div>' +
+          '  </div>' +
+          '  <div class="form-item">' +
+          '    <span class="form-label">楼栋</span>' +
+          '    <div class="form-value"><input class="form-input" id="modalBuilding" placeholder="请输入楼栋号"></div>' +
+          '  </div>' +
+          '  <div class="form-item">' +
+          '    <span class="form-label">房号</span>' +
+          '    <div class="form-value"><input class="form-input" id="modalRoom" placeholder="请输入房号"></div>' +
+          '  </div>' +
+          '  <div class="form-item">' +
+          '    <span class="form-label">房型</span>' +
+          '    <div class="form-value"><select class="form-select" id="modalRoomType"><option value="">请选择房型（非必填）</option><option value="一室一厅">一室一厅</option><option value="两室一厅">两室一厅</option><option value="三室两厅">三室两厅</option></select></div>' +
+          '  </div>' +
+          '</div>';
+        break;
+      case 'checkout':
+        title = '确认通过';
+        bodyHTML = '<div class="modal-confirm-text">确认通过退宿申请？通过后系统将自动释放房间。</div>';
+        break;
+      case 'repair':
+        title = '指派维修人员';
+        bodyHTML = '' +
+          '<div class="form-group modal-form">' +
+          '  <div class="form-item">' +
+          '    <span class="form-label">姓名</span>' +
+          '    <div class="form-value"><input class="form-input" id="modalWorkerName" placeholder="请输入维修人员姓名"></div>' +
+          '  </div>' +
+          '  <div class="form-item">' +
+          '    <span class="form-label">联系电话</span>' +
+          '    <div class="form-value"><input class="form-input" id="modalWorkerPhone" type="tel" placeholder="请输入联系电话"></div>' +
+          '  </div>' +
+          '</div>';
+        break;
+    }
+
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalBody').innerHTML = bodyHTML;
+
+    modalConfirmHandler = function() {
+      var toastMsg = '';
+      var valid = true;
+
+      switch(cardType) {
+        case 'checkin':
+          var community = document.getElementById('modalCommunity');
+          var building = document.getElementById('modalBuilding');
+          var room = document.getElementById('modalRoom');
+          if (!community.value.trim()) { valid = false; community.focus(); }
+          else if (!building.value.trim()) { valid = false; building.focus(); }
+          else if (!room.value.trim()) { valid = false; room.focus(); }
+          toastMsg = '审批通过，已分配房源';
+          break;
+        case 'checkout':
+          toastMsg = '审批通过，房间状态已释放';
+          break;
+        case 'repair':
+          var workerName = document.getElementById('modalWorkerName');
+          var workerPhone = document.getElementById('modalWorkerPhone');
+          if (!workerName.value.trim()) { valid = false; workerName.focus(); }
+          else if (!workerPhone.value.trim()) { valid = false; workerPhone.focus(); }
+          toastMsg = '审批通过，已指派维修人员';
+          break;
+      }
+
+      if (!valid) {
+        showToast('请填写必填信息', 'error');
+        return;
+      }
+
+      hideActionModal();
+      showToast(toastMsg, 'success');
+    };
+
+    showActionModal();
+  }
+
+  /* ==================== Modal - Reject ==================== */
+  function showRejectModal() {
+    document.getElementById('modalTitle').textContent = '驳回申请';
+    document.getElementById('modalBody').innerHTML = '' +
+      '<div class="form-group modal-form">' +
+      '  <div class="form-item">' +
+      '    <div class="form-value" style="flex:1;">' +
+      '      <textarea class="form-textarea" id="modalRejectReason" placeholder="请输入驳回理由（必填）" style="min-height:120px;"></textarea>' +
+      '    </div>' +
+      '  </div>' +
+      '</div>';
+
+    modalConfirmHandler = function() {
+      var reason = document.getElementById('modalRejectReason').value.trim();
+      if (!reason) {
+        showToast('请输入驳回理由', 'error');
+        return;
+      }
+      hideActionModal();
+      showToast('已驳回', 'success');
+    };
+
+    showActionModal();
+  }
+
+  /* ==================== Modal Events ==================== */
+  document.getElementById('modalConfirm').addEventListener('click', function() {
+    if (modalConfirmHandler) modalConfirmHandler();
+  });
+
+  document.getElementById('modalClose').addEventListener('click', hideActionModal);
+
+  document.getElementById('actionModal').addEventListener('click', function(e) {
+    if (e.target === this) hideActionModal();
+  });
+
+  /* ==================== Card Action Buttons ==================== */
+  document.querySelectorAll('.approval-card .btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var action = this.getAttribute('data-action');
+      var card = this.closest('.approval-card');
+      var cardType = card.getAttribute('data-type');
+
+      if (action === 'approve') {
+        showApproveModal(cardType);
+      } else if (action === 'reject') {
+        showRejectModal();
+      } else if (action === 'view') {
+        window.location.href = 'P47-housing-approval-detail-done.html';
+      }
+    });
+  });
+
+  /* ==================== Card Body Click (pending→P39, done→P47) ==================== */
+  document.querySelectorAll('.approval-card').forEach(function(card) {
+    card.addEventListener('click', function(e) {
+      if (e.target.tagName === 'BUTTON') return;
+      var status = this.getAttribute('data-status');
+      if (status === 'pending') {
+        window.location.href = 'P39-housing-approval-detail.html';
+      } else {
+        window.location.href = 'P47-housing-approval-detail-done.html';
+      }
+    });
+  });
+
+  /* ==================== Status Bar Time ==================== */
+  function updateStatusTime() {
+    var now = new Date();
+    var h = String(now.getHours()).padStart(2, '0');
+    var m = String(now.getMinutes()).padStart(2, '0');
+    var el = document.querySelector('.status-bar .time');
+    if (el) el.textContent = h + ':' + m;
+  }
+  updateStatusTime();
+  setInterval(updateStatusTime, 60000);
+
+})();
+</script>
+
+</body>
+</html>
