@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="GXMlcyog0eSTEkX9SFe3dn">
+<head data-page-node-id="kUhNbiHijS1srraSJeUdif">
+<meta charset="UTF-8" data-page-node-id="3SEHujAYVfphiATl7ypfDp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="6S2cwdecAhBmoW1jBCMtjF">
+<title>P09 - 行程详情</title>
+<link rel="stylesheet" href="common.css" data-page-node-id="LcUBnjD56bA4pTZXWolBeW">
+<style>
+/* Step current line color */
+.step.current::before { background: var(--primary); }
+
+/* Status banner */
+.status-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  margin: 12px 16px 0;
+  border-radius: var(--radius-lg);
+  background: var(--primary-light);
+}
+.status-banner .status-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--primary-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.status-banner .status-icon svg { width: 22px; height: 22px; color: #FFFFFF; }
+.status-banner .status-text { font-size: 16px; font-weight: 600; color: var(--primary); }
+.status-banner .status-desc { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+
+/* Steps section */
+.steps-section {
+  background: var(--card-bg);
+  margin: 12px 16px 0;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.steps-section .steps { margin: 0; padding: 20px 16px; }
+
+/* Phone link */
+.phone-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--primary);
+  font-weight: 600;
+  cursor: pointer;
+}
+.phone-link svg { width: 14px; height: 14px; }
+.phone-link:active { opacity: 0.7; }
+
+/* Approval result tag */
+.result-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--success-light);
+  color: var(--success);
+}
+.result-tag svg { width: 12px; height: 12px; }
+
+/* Call driver button */
+.call-btn-wrap {
+  padding: 0 16px 14px;
+}
+.call-btn-wrap .btn {
+  gap: 6px;
+}
+
+/* Section with no top margin (after banner) */
+.section.first { margin-top: 12px; }
+
+/* Flow timeline (reference: approval process screenshot) */
+.flow-timeline {
+  padding: 8px 16px 16px;
+}
+.flow-node {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  padding: 12px 0;
+}
+.flow-node:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 52px;
+  bottom: -4px;
+  width: 2px;
+  background: var(--border);
+}
+.flow-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--primary-gradient);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.flow-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.flow-status {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--success);
+  border: 2px solid #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flow-status svg {
+  width: 10px;
+  height: 10px;
+  color: #FFFFFF;
+}
+.flow-status.pending {
+  background: var(--warning);
+}
+.flow-body {
+  flex: 1;
+  margin-left: 12px;
+  min-width: 0;
+}
+.flow-meta {
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.4;
+}
+.flow-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-1);
+  line-height: 1.5;
+  margin-top: 2px;
+}
+.flow-time {
+  font-size: 12px;
+  color: var(--text-3);
+  flex-shrink: 0;
+  margin-left: 8px;
+  line-height: 1.4;
+}
+
+/* Content bottom padding */
+.content { padding-bottom: 20px; }
+</style>
+</head>
+<body data-page-node-id="FgGGxNZubPmrzv3haGRcgw">
+<div class="miniprogram" data-page-node-id="RQc69GdJNdBdsyyqQatFuL">
+  <!-- Status Bar -->
+  <div class="status-bar light" data-page-node-id="CI7KKz78IjZmrJDDmhdjrW">
+    <span class="time" data-page-node-id="P8b62KBoBBaSX5gBAdRajU">09:38</span>
+    <div class="icons" data-page-node-id="1TWwUGVDgBYaI4I6xuR43k">
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="xyvKvWutFFlnXBUERKaMBk"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" data-page-node-id="E3tWOUvbdMGIP6EAuNyuFu"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="LugKqOWrVPyV7bEi1tjQnd"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" data-page-node-id="rby2GDKgRWAmEW42QdrbuW"/></svg>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar white" data-page-node-id="aqHaHNRNOgmAR2NJ2i4GvT">
+    <div class="nav-back" data-page-node-id="nSnWStMN8WtkL695FFEqzw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="pY4Bn4cGQgy4rkYZnR8cms"><polyline points="15 18 9 12 15 6" data-page-node-id="ue9tKopisx1egXQhQGns5w"/></svg></div>
+    <span class="nav-title" data-page-node-id="qE7Y9rdHB1e1wnAEP6eaAV">行程详情</span>
+    <span class="nav-placeholder" data-page-node-id="7Tolbn1gvfpHZU04z1COF7"></span>
+  </div>
+
+  <!-- Content -->
+  <div class="content" data-page-node-id="P8d9XTpJv6yPYz8w6T3GVT">
+
+    <!-- Status Banner -->
+    <div class="status-banner" data-page-node-id="zAAVMZvrKJ0AtumsayEfzk">
+      <div class="status-icon" data-page-node-id="gowMewaJKY4ZbBEY4dHVi4">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="XcjCEy9JP57CmtiBo1fNm0">
+          <path d="M5 17h14M3 17V11l3-5h12l3 5v6M7 17v2M17 17v2" data-page-node-id="7ApINSy0kqIIkMBUDf3D6D"/>
+          <circle cx="7.5" cy="14.5" r="1.5" fill="currentColor" stroke="none" data-page-node-id="BmlZCG7w0kEOOU1Lazi8rY"/>
+          <circle cx="16.5" cy="14.5" r="1.5" fill="currentColor" stroke="none" data-page-node-id="vrMCAucCM8bsv1w0PwDTcF"/>
+        </svg>
+      </div>
+      <div data-page-node-id="iSjlfdJaZCi6tqHy51RLWN">
+        <div class="status-text" data-page-node-id="p1Ck25AHscELEok9I2zvwM">已派车</div>
+        <div class="status-desc" data-page-node-id="62IB8q0u0ITiomxuCwmp8C">车辆已安排，请按时乘车</div>
+      </div>
+    </div>
+
+    <!-- Progress Steps -->
+    <div class="steps-section" data-page-node-id="9RAucZMmcbK0hE7r8GxbAQ">
+      <div class="steps" data-page-node-id="atGLniZMFFCXlcVMyad9Hs">
+        <div class="step done" data-page-node-id="CrvIqtwX62Br4MuN3NwNUT">
+          <div class="step-circle" data-page-node-id="Dv1Lni3CZljoLK8XMYiwYF">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;" data-page-node-id="Oq8hUjkzskZ4GetAeM5vVU"><polyline points="20 6 9 17 4 12" data-page-node-id="XrS0LOUh75GGg4MjjqkZxJ"/></svg>
+          </div>
+          <span class="step-label" data-page-node-id="xZwvo54GswaPiPlI0zWuok">待审批</span>
+        </div>
+        <div class="step current" data-page-node-id="j7wM0WQFGuKKikKsywGAo9">
+          <div class="step-circle" data-page-node-id="wZcAIGCFNtogXFNpASY0ua">2</div>
+          <span class="step-label" data-page-node-id="iCB7dUwCTZcRoHNbAkt0Ea">已派车</span>
+        </div>
+        <div class="step" data-page-node-id="4AKzW2KOPIdgiRmfpCwyIG">
+          <div class="step-circle" data-page-node-id="unxG3ZNcLcdiPatx4sPo80">3</div>
+          <span class="step-label" data-page-node-id="fotInCiq810iQ3KjC1rk1d">已完成</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 申请信息 -->
+    <div class="section" data-page-node-id="1srimb2lHwn8HAvxBUbQew">
+      <div class="section-title" data-page-node-id="hs3Z0NCBFg8OKfY4KcAraE"><span class="dot" data-page-node-id="O9MlQpCBhBrMxbXzREd98L"></span>申请信息</div>
+      <div class="info-block" data-page-node-id="zHixssFPrgMDQiaSlHtfHW">
+        <div class="info-row" data-page-node-id="pK7h9R5a26IVfpsluKh0P7">
+          <span class="label" data-page-node-id="OlDRtCBdfTGcdNMM5BYEl8">用车事由</span>
+          <span class="value" data-page-node-id="qGHw2TKnCQgHsDIimRIxX8">前往洋浦海事局调研</span>
+        </div>
+        <div class="info-row" data-page-node-id="zvxsQFHDxzHXtVn0xoK2at">
+          <span class="label" data-page-node-id="3YMlN0zEC6AMpzXiAV3j3q">用车开始时间</span>
+          <span class="value" data-page-node-id="jJlcG7pWU6SLwGq0Uiu9Dp">2026-07-22 09:00</span>
+        </div>
+        <div class="info-row" data-page-node-id="Yq5tBGp7eHBbjiGtmiDMV4">
+          <span class="label" data-page-node-id="Hcag3IZR7eaiz8Q8vfEHMm">用车结束时间</span>
+          <span class="value" data-page-node-id="aaXAA0ukrCDFZvXcyIzMbr">2026-07-22 17:00</span>
+        </div>
+        <div class="info-row" data-page-node-id="HFwm4BBCU2QCu3OPihl8oR">
+          <span class="label" data-page-node-id="dRK6yb9VEEbjezCcfCvpBa">出发地</span>
+          <span class="value" data-page-node-id="QttAP0OvteraRVSmiwX2Ax">海口海事局</span>
+        </div>
+        <div class="info-row" data-page-node-id="3tyLHLHhFHl5qOPBCemBtI">
+          <span class="label" data-page-node-id="oMZi1VTjScvQ55Lt6RQ0NY">目的地</span>
+          <span class="value" data-page-node-id="ZoGOwgb2OKl8rrbya6PdQv">洋浦海事局</span>
+        </div>
+        <div class="info-row" data-page-node-id="NHc7qwMhXEUYG2THhmvARx">
+          <span class="label" data-page-node-id="4xdTFIRX1lflxpRccjCnVE">乘车人数</span>
+          <span class="value" data-page-node-id="HubyuZvJUURDtSlFMesxrW">3人</span>
+        </div>
+        <div class="info-row" data-page-node-id="a6nigyQTqho9zL5HjkA6EB">
+          <span class="label" data-page-node-id="Qeyvn7aKEkn8hyoxvutFd4">随行人员</span>
+          <span class="value" data-page-node-id="TDr8AyEIQ0MVOAUWODpKxX">李四、王五</span>
+        </div>
+        <div class="info-row" data-page-node-id="dBSljIb5AxgjfZJ8JLd0ph">
+          <span class="label" data-page-node-id="PhFULGOUCkPoLzBqj97gxQ">是否需要司机</span>
+          <span class="value" data-page-node-id="f3uE7snr39Dja7TQUCGCMO">是</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 审批流程 -->
+    <div class="section" data-page-node-id="XZvYseg7kN1mSro9YeRfF5">
+      <div class="section-title" data-page-node-id="Vf6kxyoBz1PRxQKjkcg3aT"><span class="dot" data-page-node-id="TMoWpykWW6jZdTNLzMvFSF"></span>审批流程</div>
+      <div class="flow-timeline" data-page-node-id="wBcZed6NBCgrtBQD3ACKis">
+
+        <!-- Node 1: submit -->
+        <div class="flow-node" data-page-node-id="lBf6sPPZahHTPMENwkQznk">
+          <div class="flow-avatar" data-page-node-id="f7P5Nwfv3AIaOa9UDE8FnN">
+            张三
+            <span class="flow-status done" data-page-node-id="6nuoCC4vNigsR7LnvKp5xz">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="NScp6q44xIBsEsByNjUnQJ"><polyline points="20 6 9 17 4 12" data-page-node-id="dEmIgge6bRIXeZPNTxPqFH"/></svg>
+            </span>
+          </div>
+          <div class="flow-body" data-page-node-id="wjNlHpCru8jclcqfM0pcDT">
+            <div class="flow-meta" data-page-node-id="Z8It929XCNeQqWoEREfvhy">发起申请</div>
+            <div class="flow-name" data-page-node-id="BxfQEFM0YmFsie07ck0gdg">我</div>
+          </div>
+          <div class="flow-time" data-page-node-id="UTgaXe2gDHBhFwEyHdm07l">07.21 14:30</div>
+        </div>
+
+        <!-- Node 2: approve -->
+        <div class="flow-node" data-page-node-id="nyWiiPMXMDAk2w1wlwlwAN">
+          <div class="flow-avatar" data-page-node-id="n7MhVbJ4RJqru3BCfYu5Fy">
+            赵
+            <span class="flow-status done" data-page-node-id="mfTey6gOHdQLNqAeMXGyHA">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="k9mfaSIMqzWKhVd9i7KA8g"><polyline points="20 6 9 17 4 12" data-page-node-id="8r8Q9rirNt3SXJsfHbCkJz"/></svg>
+            </span>
+          </div>
+          <div class="flow-body" data-page-node-id="zanwxuheNDTU12EIAGn6ev">
+            <div class="flow-meta" data-page-node-id="DAtFpXYFiFkItDxB69dXYC">主管审批</div>
+            <div class="flow-name" data-page-node-id="ILgHN7Vd8dog8ovwbw34eF">赵主任（已同意）</div>
+          </div>
+          <div class="flow-time" data-page-node-id="XxJXZG5SHTXh9nv3G3X7fL">07.21 16:00</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 派车信息 -->
+    <div class="section" data-page-node-id="DGwpXBKo3FmSRlTVhUmWcQ">
+      <div class="section-title" data-page-node-id="KapfBBXQwANSb35ZFAP9oK"><span class="dot" data-page-node-id="E9RmzoAThawtAU9zjhMPDJ"></span>派车信息</div>
+      <div class="info-block" data-page-node-id="BnjfuhoNyYyjFaHbeHP5BH">
+        <div class="info-row" data-page-node-id="kqG5vrDeVEPMlA0HiGpOtk">
+          <span class="label" data-page-node-id="iQoRsVpFyKO1rRjHSCyIqA">车牌号</span>
+          <span class="value highlight" data-page-node-id="FMUJrimmt1Ew8X7O0O3mZ1">琼A12345</span>
+        </div>
+        <div class="info-row" data-page-node-id="DiDSiQPueQA9YiZFL3ZO3a">
+          <span class="label" data-page-node-id="wHDERlsSwFYxj5eOv6yYCh">车型</span>
+          <span class="value" data-page-node-id="1zRvFSSqI0t9ResCJqKv0y">别克GL8</span>
+        </div>
+        <div class="info-row" data-page-node-id="6vxGnGw4nYYbAQY8XVamP7">
+          <span class="label" data-page-node-id="hg3Zj0tC25i3M3N8EFgjlY">司机姓名</span>
+          <span class="value" data-page-node-id="b9u4yyzT4gb8x7NYikoueY">陈师傅</span>
+        </div>
+        <div class="info-row" data-page-node-id="WOx0rnfvE6TH3cQr9sthXB">
+          <span class="label" data-page-node-id="kvAPsP7LHAN0qgNdFSpBTG">联系电话</span>
+          <span class="value" data-page-node-id="Q17BpiZ7ftJM3lrkrlwGIx">
+            <span class="phone-link" id="callLink" data-page-node-id="LMgikAtx6XI4wlhwN4E8PH">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="U4kYNWUptoUoBecaTsbBjC"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" data-page-node-id="YFH0PkPBE9TpJLDUGmJVff"/></svg>
+              13800138000
+            </span>
+          </span>
+        </div>
+      </div>
+      <div class="call-btn-wrap" data-page-node-id="T5iG0TBGpuyhAQzm83gi6Z">
+        <button class="btn btn-outline btn-block" id="callBtn" data-page-node-id="EzR8yg4OQvoDgtfIcUT1Ef">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;" data-page-node-id="bwsfDjqCAEGGUnUTgy1Diy"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" data-page-node-id="K7ZhB7tnRFCvcdxgYDmCep"/></svg>
+          拨打司机电话
+        </button>
+      </div>
+    </div>
+
+    <div style="height: 20px;" data-page-node-id="ESCO0bIAflFFJpj6tKDYvw"></div>
+  </div>
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // Phone link click
+  document.getElementById('callLink').addEventListener('click', function() {
+    MS.showToast('正在拨打 13800138000', 'info');
+  });
+
+  // Call button click
+  document.getElementById('callBtn').addEventListener('click', function() {
+    MS.showToast('正在拨打司机电话', 'info');
+  });
+})();
+</script>
+</body>
+</html>
