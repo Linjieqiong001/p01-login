@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>P49 - 拜访审批详情（已通过）</title>
+<link rel="stylesheet" href="common.css">
+<style>
+/* ==================== Detail Info Row ==================== */
+.detail-block {
+  padding: 4px 16px 14px;
+}
+.detail-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 8px 0;
+  gap: 12px;
+}
+.detail-row .d-label {
+  font-size: 13px;
+  color: var(--text-3);
+  width: 80px;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+.detail-row .d-value {
+  font-size: 14px;
+  color: var(--text-1);
+  flex: 1;
+  line-height: 1.5;
+}
+
+/* ==================== Approval Number ==================== */
+.approval-no-block {
+  padding: 16px;
+  text-align: center;
+}
+.approval-no {
+  font-size: 14px;
+  color: var(--text-2);
+  font-weight: 500;
+}
+.approval-no span {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+}
+
+/* ==================== Approval Flow Timeline ==================== */
+.flow-timeline { padding: 4px 16px 16px; }
+.flow-node {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  padding: 0 0 20px 0;
+}
+.flow-node:last-child { padding-bottom: 0; }
+.flow-node:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 44px;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+.flow-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--primary-gradient);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.flow-status {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--success);
+  border: 2px solid #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.flow-status svg { width: 10px; height: 10px; color: #FFFFFF; }
+.flow-status.pending { background: var(--warning); }
+.flow-body {
+  flex: 1;
+  margin-left: 12px;
+  min-width: 0;
+  padding-top: 2px;
+}
+.flow-meta {
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.4;
+}
+.flow-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-1);
+  line-height: 1.5;
+  margin-top: 2px;
+}
+.flow-detail {
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.5;
+  margin-top: 4px;
+}
+.flow-time {
+  font-size: 12px;
+  color: var(--text-3);
+  flex-shrink: 0;
+  margin-left: 8px;
+  line-height: 1.4;
+  padding-top: 2px;
+}
+
+/* ==================== Spacer ==================== */
+.spacer { height: 20px; }
+</style>
+</head>
+<body>
+
+<div class="miniprogram" id="app">
+
+  <!-- Status Bar -->
+  <div class="status-bar light">
+    <span class="time">09:42</span>
+    <div class="icons">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar white">
+    <div class="nav-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </div>
+    <span class="nav-title">拜访审批详情</span>
+    <span class="nav-placeholder"></span>
+  </div>
+
+  <!-- Content -->
+  <div class="content fade-in">
+
+    <!-- 审批编号区 -->
+    <div class="section" style="margin-top:16px;">
+      <div class="approval-no-block">
+        <span class="approval-no">审批编号：<span>BF-2026-000321</span></span>
+      </div>
+    </div>
+
+    <!-- 申请信息区 -->
+    <div class="section">
+      <div class="section-title">
+        <div class="dot"></div>
+        申请信息
+      </div>
+      <div class="detail-block">
+        <div class="detail-row">
+          <span class="d-label">访客姓名</span>
+          <span class="d-value">李明</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">手机号</span>
+          <span class="d-value">138****8888</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">来访时间</span>
+          <span class="d-value">2026-07-22 14:00</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">事由</span>
+          <span class="d-value">业务洽谈</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">随行人员</span>
+          <span class="d-value">2人（王芳、陈强）</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">是否预留车位</span>
+          <span class="d-value">是</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">被访人</span>
+          <span class="d-value">张三</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">申请人</span>
+          <span class="d-value" style="font-weight:600;color:var(--text-1);">张三</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">申请部门</span>
+          <span class="d-value">后勤管理科</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">提交时间</span>
+          <span class="d-value">2026-07-22 09:00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 审批流程 -->
+    <div class="section">
+      <div class="section-title">
+        <div class="dot"></div>
+        审批流程
+      </div>
+      <div class="flow-timeline">
+
+        <!-- 发起申请 -->
+        <div class="flow-node">
+          <div class="flow-avatar">
+            张三
+            <span class="flow-status done">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+          </div>
+          <div class="flow-body">
+            <div class="flow-meta">发起申请</div>
+            <div class="flow-name">我</div>
+          </div>
+          <div class="flow-time">07.22 09:00</div>
+        </div>
+
+        <!-- 主管审批（已通过） -->
+        <div class="flow-node">
+          <div class="flow-avatar">
+            赵
+            <span class="flow-status done">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+          </div>
+          <div class="flow-body">
+            <div class="flow-meta">主管审批</div>
+            <div class="flow-name">赵主任（已同意）</div>
+            <div class="flow-detail">审批意见：同意来访，请安保放行</div>
+          </div>
+          <div class="flow-time">07.22 10:30</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <div class="toast-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></div>
+    <span id="toastText"></span>
+  </div>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  /* ==================== Status Bar Time ==================== */
+  function updateStatusTime() {
+    var now = new Date();
+    var h = String(now.getHours()).padStart(2, '0');
+    var m = String(now.getMinutes()).padStart(2, '0');
+    var el = document.querySelector('.status-bar .time');
+    if (el) el.textContent = h + ':' + m;
+  }
+  updateStatusTime();
+  setInterval(updateStatusTime, 60000);
+
+})();
+</script>
+
+</body>
+</html>
