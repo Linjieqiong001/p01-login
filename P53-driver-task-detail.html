@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="t4khJQq1c1VH7GTGrfsMWU">
+<head data-page-node-id="eoXZeFG1Bm0nLUD9k4wRrv">
+<meta charset="UTF-8" data-page-node-id="UK5ICkdsnwf9u8gjQa7mw5">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="jTC8otw8R6lwyfVGBnNIM2">
+<title>P53 - 司机作业详情</title>
+<link rel="stylesheet" href="common.css" data-page-node-id="qVfVruaAH9WO4XfvQyvEuc">
+<style>
+/* ==================== Page Specific Styles ==================== */
+
+/* ==================== Task Number (P27 审批编号口径) ==================== */
+.approval-no-block {
+  padding: 16px;
+  text-align: center;
+}
+.approval-no {
+  font-size: 14px;
+  color: var(--text-2);
+  font-weight: 500;
+}
+.approval-no span {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+}
+
+/* ==================== Detail Info Row (P27 信息模块) ==================== */
+.detail-block {
+  padding: 4px 16px 14px;
+}
+.detail-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 8px 0;
+  gap: 12px;
+}
+.detail-row .d-label {
+  font-size: 13px;
+  color: var(--text-3);
+  width: 70px;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+.detail-row .d-value {
+  font-size: 14px;
+  color: var(--text-1);
+  flex: 1;
+  line-height: 1.5;
+}
+
+/* Bottom action button */
+.btn-fixed-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px calc(12px + var(--safe-bottom));
+  background: var(--card-bg);
+  border-top: 0.5px solid var(--divider);
+}
+.btn-fixed-bottom .btn { flex: 1; }
+
+.spacer { height: 80px; }
+
+/* ==================== End-task Modal Options ==================== */
+.end-options {
+  padding: 2px 0;
+}
+.end-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 4px;
+  border-bottom: 0.5px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+  border-radius: var(--radius-sm);
+}
+.end-option:last-child { border-bottom: none; }
+.end-option:active { background: var(--bg); }
+.end-option .end-info { flex: 1; min-width: 0; }
+.end-option .end-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+  line-height: 1.4;
+}
+.end-option .end-desc {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+.end-radio {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--divider);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.end-option.selected .end-radio {
+  border-color: var(--primary);
+}
+.end-option.selected .end-radio::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+
+/* ==================== Not-out Reason Textarea ==================== */
+.reason-block {
+  margin-top: 4px;
+  padding-top: 4px;
+}
+.reason-label {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-bottom: 8px;
+}
+.reason-textarea {
+  width: 100%;
+  min-height: 88px;
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  font-size: 14px;
+  color: var(--text-1);
+  background: var(--bg);
+  resize: none;
+  outline: none;
+  font-family: inherit;
+  line-height: 1.5;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+.reason-textarea::placeholder { color: var(--text-4); }
+.reason-textarea:focus { border-color: var(--primary); }
+</style>
+</head>
+<body data-page-node-id="HUfB4cwBK9veJdlLQz7qNL">
+
+<div class="miniprogram" id="app" data-page-node-id="kx54QCJACDSrtQB08azmsZ">
+
+  <!-- Status Bar (light) -->
+  <div class="status-bar light" data-page-node-id="4S1uYQCUvm05lEAglj1kJU">
+    <span class="time" id="statusTime" data-page-node-id="Mwv23Q49CleFBJRXSYFXmG">09:38</span>
+    <div class="icons" data-page-node-id="FEGrHOS76zBzU8UNTzGO4q">
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="Gx1x19lwXp04EQ0IukUE12"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" data-page-node-id="CntkmMMim4arDFrKh4Itgs"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="37OlVwBeRCXHnEswUIrwLJ"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" data-page-node-id="rgJNW6PujY9acNJZzde7Pc"/></svg>
+    </div>
+  </div>
+
+  <!-- Navigation Bar (white, with back) -->
+  <div class="nav-bar white" data-page-node-id="ODs161jQCXZsgpAbSuz6wL">
+    <div class="nav-back" data-page-node-id="HdXY5z6xkwHNBii72iJWPV">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="QCwwZ9aOb1M6W540IyH4PZ">
+        <polyline points="15 18 9 12 15 6" data-page-node-id="bavwhUJEvSmEvBi5LsamTD"/>
+      </svg>
+    </div>
+    <span class="nav-title" data-page-node-id="AjuryPVhoW25hPfkkMuNVU">司机作业详情</span>
+    <div class="nav-placeholder" data-page-node-id="wBUXb2irD5UPylWAa2qtXV"></div>
+  </div>
+
+  <!-- Content -->
+  <div class="content fade-in" data-page-node-id="wXAzOTD73Z5qyFx56smmV0">
+
+    <!-- 任务编号区 -->
+    <div class="section" style="margin-top:16px;" data-page-node-id="jcDSrp5mU8NMqKLAt3zR7U">
+      <div class="approval-no-block" data-page-node-id="L6dubyAZzP44tYsENFj7Vy">
+        <span class="approval-no" data-page-node-id="OYqd8CNlUipPNaVztfQ94n">任务编号：<span data-page-node-id="kLVHA5VNf9XCgZM6nIJVHc">GC-2026-000456</span></span>
+      </div>
+    </div>
+
+    <!-- 申请信息 -->
+    <div class="section" data-page-node-id="lN3hQAy2R2TzcwOzzT6ZEM">
+      <div class="section-title" data-page-node-id="aEa40vjeWewtBIoqF6EH8G">
+        <div class="dot" data-page-node-id="co9ZczTP96iVEKOmFepxxv"></div>
+        申请信息
+      </div>
+      <div class="detail-block" data-page-node-id="mERKQxDceQbYTTE4pbq6nl">
+        <div class="detail-row" data-page-node-id="1xxDtwurD27YBnDpif0Pbv">
+          <span class="d-label" data-page-node-id="uxQqQMG0YNxKKOrV7s774b">申请类型</span>
+          <span class="d-value" style="font-weight:600;color:var(--primary);" data-page-node-id="2QwZA1WChz9INPwGKXADDW">公车用车申请</span>
+        </div>
+        <div class="detail-row" data-page-node-id="U5tVZS2TsusPd0tweTLevA">
+          <span class="d-label" data-page-node-id="BuDdS0kb1G5NcpcL9xADM0">用车事由</span>
+          <span class="d-value" data-page-node-id="GqdKgn55XM3dRiWr6nQhzm">前往洋浦海事局调研</span>
+        </div>
+        <div class="detail-row" data-page-node-id="pqxnIVg1zBz6mJCfCOfIGS">
+          <span class="d-label" data-page-node-id="H4xmjWPFNZch8e0ysDPeuS">用车时间</span>
+          <span class="d-value" data-page-node-id="H9xhoUl89cqI0v16AKE8XM">2026-07-22 09:00 至 17:00</span>
+        </div>
+        <div class="detail-row" data-page-node-id="o3hONifs9wo3mRsa6Nrkeh">
+          <span class="d-label" data-page-node-id="uiJEoEGcce3Y3VFwSzyEYH">出发地</span>
+          <span class="d-value" data-page-node-id="CeVvfAn7X7U9jJLDTabG0r">海口海事局</span>
+        </div>
+        <div class="detail-row" data-page-node-id="W0xQ67LYIXoXOGnKNz6vIy">
+          <span class="d-label" data-page-node-id="Ef0xh0djfYHcEgJtki2FYX">目的地</span>
+          <span class="d-value" data-page-node-id="9IdSnjkIqtF3Gf8J85bCRD">洋浦海事局</span>
+        </div>
+        <div class="detail-row" data-page-node-id="VTcZ9ExPk3cUHcbaxNab4Q">
+          <span class="d-label" data-page-node-id="nPUtIvarAWQDHggIr5flpr">乘车人数</span>
+          <span class="d-value" data-page-node-id="1VDE0ke5IXEpN2UieCHNwj">3人</span>
+        </div>
+        <div class="detail-row" data-page-node-id="VgBJmmeM3xHx7Zg41jA0Ia">
+          <span class="d-label" data-page-node-id="IIvf1bsF3NXMq4WuAHbIAg">随行人员</span>
+          <span class="d-value" data-page-node-id="GmVy0OqKnKr4jRHLam72Hx">李四、王五</span>
+        </div>
+        <div class="detail-row" data-page-node-id="jXDRMgfQtNwHOXKUjUwPjC">
+          <span class="d-label" data-page-node-id="1JLdU88V8M9s8d950J6Meo">申请人</span>
+          <span class="d-value" data-page-node-id="9tRYpb6slEmE13fsA8TCgk">张三</span>
+        </div>
+        <div class="detail-row" data-page-node-id="2tfTKSujRZSaYeHQnxVXAQ">
+          <span class="d-label" data-page-node-id="fSjKEQZtDcRVNgmnewcxK5">申请部门</span>
+          <span class="d-value" data-page-node-id="fe3bu2weVhziCIC69FBptx">后勤管理科</span>
+        </div>
+        <div class="detail-row" data-page-node-id="eYbSvWRo1YfBLPsnsKYQbp">
+          <span class="d-label" data-page-node-id="CuvXy3nokvyd6WuAl3x58r">提交时间</span>
+          <span class="d-value" data-page-node-id="amuXqq83VMEeN0SkcXwQI7">2026-07-21 14:30</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 派车信息 -->
+    <div class="section" data-page-node-id="Czm9K7GPlYL0f6H0xFHaUK">
+      <div class="section-title" data-page-node-id="mq8IRTw6T3QEM19k8Dxszg">
+        <div class="dot" data-page-node-id="aKmXzwtSB2uYImJbStgP7h"></div>
+        派车信息
+      </div>
+      <div class="detail-block" data-page-node-id="MocvjLgfMIDZLvSOtVdgHK">
+        <div class="detail-row" data-page-node-id="WPBDqaRrUHl0xLVOfjeI5B">
+          <span class="d-label" data-page-node-id="zJNlssnujOhgMwM3tOPUj9">车牌号</span>
+          <span class="d-value" style="font-weight:700;color:var(--primary);font-size:16px;" data-page-node-id="tje9TptirZ3oVsusrvOGYY">琼A12345</span>
+        </div>
+        <div class="detail-row" data-page-node-id="DadJDXTD2dwxX5adtPFW3Z">
+          <span class="d-label" data-page-node-id="q31mM04azSrgKoKFBeFuH8">车辆型号</span>
+          <span class="d-value" data-page-node-id="eDuWQNtXLrSzXRkNc5GjrH">别克GL8 · 商务车</span>
+        </div>
+        <div class="detail-row" data-page-node-id="w0m0dEwSvxJPKm0fOOfz80">
+          <span class="d-label" data-page-node-id="kAk2YEvWrWFgKt77AKSr3G">出车状态</span>
+          <span class="d-value" style="color:var(--warning);font-weight:500;" data-page-node-id="R49Fy4rfosS6VppmdO0FdL">待出行</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="spacer" data-page-node-id="dUCW7UhlJp5QhUS8xpvVnH"></div>
+
+  </div>
+
+  <!-- Bottom Action Button -->
+  <div class="btn-fixed-bottom" data-page-node-id="qyhTwspEjECfpyDstG9XHt">
+    <button class="btn btn-primary" id="btnEndTask" data-page-node-id="ejzTgo7heZiz4mOShWCoio">结束任务</button>
+  </div>
+
+  <!-- 结束任务弹窗 -->
+  <div class="modal-mask" id="endTaskModal" data-page-node-id="XBUQ7mj1aXQiYKwKevugEi">
+    <div class="modal-content" data-page-node-id="MKTBiHFLmIbZFZYCoJWnK5">
+      <div class="modal-header" data-page-node-id="x6HoJwlykEC5N6DQnPYCIB">
+        <div class="modal-title" data-page-node-id="YXUrwbeJF20INIimHpAolN">结束任务</div>
+      </div>
+      <div class="modal-body" data-page-node-id="1WkawpQRfOBppGUjC3cjML">
+        <div class="end-options" id="endOptions" data-page-node-id="U4coIiimk0xNqQ8p7KGpxW">
+          <div class="end-option selected" data-choice="out" data-page-node-id="koeMTHZe6MIYfRuLzqMk66">
+            <div class="end-info" data-page-node-id="UQjfiBnoilEywYbiFfIfXl">
+              <div class="end-title" data-page-node-id="Q8oM90GJyhiqA8e727wHpw">已出车</div>
+              <div class="end-desc" data-page-node-id="m852zNCu8heuBVGGXRzOGX">本次任务已正常出车并完成行程</div>
+            </div>
+            <div class="end-radio" data-page-node-id="wVREQgxEZH3y7A4hA1kJNa"></div>
+          </div>
+          <div class="end-option" data-choice="notout" data-page-node-id="HXUpQwvFq7DDanVOlOdOXu">
+            <div class="end-info" data-page-node-id="VdHLqGrs9z5mI2zfyRAuaV">
+              <div class="end-title" data-page-node-id="ICyCLrK9ilvAYee73BiqjR">未出车</div>
+              <div class="end-desc" data-page-node-id="glLMemSb2PtmFWpHX8KeiM">本次任务因故未能出车</div>
+            </div>
+            <div class="end-radio" data-page-node-id="smP2FJM17bLtWOChmICm9P"></div>
+          </div>
+        </div>
+        <div class="reason-block" id="reasonBlock" style="display:none;" data-page-node-id="GWALipIuC5fa8QWdJXbP2Z">
+          <div class="reason-label" data-page-node-id="y9VTdKAlGifgS83srB6k0A">未出车原因</div>
+          <textarea class="reason-textarea" id="notOutReason" placeholder="请填写未出车原因"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer" data-page-node-id="0oQlkOT3QszHwEvD3l3OFK">
+        <button class="btn btn-primary btn-block" id="endConfirmBtn" data-page-node-id="rlIjjo6l73xaNyIvFuO8hD">确认结束</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" data-page-node-id="DXndp17lUcCf2KkiD7qFXr">
+    <div class="toast-icon" data-page-node-id="bCK5gWKCiwpQTL3kUYTe4H"></div>
+    <span id="toastText" data-page-node-id="MvN3KsfvkJ3iL4dGDwolHh"></span>
+  </div>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  var endTaskModal = document.getElementById('endTaskModal');
+  var reasonBlock = document.getElementById('reasonBlock');
+  var notOutReason = document.getElementById('notOutReason');
+  var currentChoice = 'out';
+
+  // Open end-task modal
+  document.getElementById('btnEndTask').addEventListener('click', function() {
+    // 每次打开重置为「已出车」并收起原因输入
+    currentChoice = 'out';
+    notOutReason.value = '';
+    document.querySelectorAll('#endOptions .end-option').forEach(function(o) {
+      o.classList.toggle('selected', o.getAttribute('data-choice') === 'out');
+    });
+    reasonBlock.style.display = 'none';
+    endTaskModal.classList.add('show');
+  });
+
+  // Choice radio switch
+  document.querySelectorAll('#endOptions .end-option').forEach(function(opt) {
+    opt.addEventListener('click', function() {
+      document.querySelectorAll('#endOptions .end-option').forEach(function(o) {
+        o.classList.remove('selected');
+      });
+      this.classList.add('selected');
+      currentChoice = this.getAttribute('data-choice');
+      if (currentChoice === 'notout') {
+        reasonBlock.style.display = 'block';
+        notOutReason.focus();
+      } else {
+        reasonBlock.style.display = 'none';
+        notOutReason.value = '';
+      }
+    });
+  });
+
+  // Confirm end
+  document.getElementById('endConfirmBtn').addEventListener('click', function() {
+    if (currentChoice === 'notout') {
+      var reason = notOutReason.value.trim();
+      if (!reason) {
+        MS.showToast('请填写未出车原因', 'error');
+        notOutReason.focus();
+        return;
+      }
+      endTaskModal.classList.remove('show');
+      MS.showToast('已记录未出车，任务关闭', 'info');
+    } else {
+      endTaskModal.classList.remove('show');
+      MS.showToast('任务已完成', 'success');
+    }
+  });
+
+  // Modal mask close
+  endTaskModal.addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('show');
+  });
+
+})();
+</script>
+
+</body>
+</html>
