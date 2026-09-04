@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>P13 - 我的报修</title>
+<link rel="stylesheet" href="common.css">
+<style>
+/* ==================== Card Custom Styles ==================== */
+.card {
+  padding: 14px 16px 12px;
+}
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.card-title-area {
+  flex: 1;
+  min-width: 0;
+}
+.card-order-no {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-bottom: 2px;
+}
+.card-fault-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+  line-height: 1.4;
+}
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.card-info-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.card-info-row svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 0.5px solid var(--border);
+}
+.card-time {
+  font-size: 11px;
+  color: var(--text-4);
+}
+.card-arrow {
+  width: 16px;
+  height: 16px;
+  color: var(--text-4);
+}
+
+/* Empty state inside tab */
+.tab-empty {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: 12px;
+}
+.tab-empty.show { display: flex; }
+.tab-empty svg { width: 64px; height: 64px; color: var(--divider); }
+.tab-empty .empty-text { font-size: 14px; color: var(--text-3); }
+</style>
+</head>
+<body>
+<div class="miniprogram">
+
+  <!-- Status Bar -->
+  <div class="status-bar light">
+    <span class="time">09:38</span>
+    <div class="icons">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar white">
+    <div class="nav-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </div>
+    <span class="nav-title">我的报修</span>
+    <span class="nav-placeholder"></span>
+  </div>
+
+  <!-- 状态筛选 Tab -->
+  <div class="tabs">
+    <div class="tab active" data-tab="全部">全部</div>
+    <div class="tab" data-tab="待处理">待处理</div>
+    <div class="tab" data-tab="维修中">维修中</div>
+    <div class="tab" data-tab="完工">完工</div>
+  </div>
+
+  <!-- Content -->
+  <div class="content" id="content">
+
+    <!-- 工单卡片列表 -->
+    <!-- 卡片1 - 待处理 -->
+    <div class="card" data-status="待处理">
+      <div class="card-header">
+        <div class="card-title-area">
+          <div class="card-order-no">工单号：BX20260722001</div>
+          <div class="card-fault-title">3楼东侧卫生间水管漏水</div>
+        </div>
+        <span class="status-tag pending">待处理</span>
+      </div>
+      <div class="card-body">
+        <div class="card-info-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>行政楼3楼东侧</span>
+        </div>
+        <div class="card-info-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          <span>水电维修</span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="card-time">2026-07-22 09:15</span>
+        <svg class="card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+
+    <!-- 卡片2 - 维修中 -->
+    <div class="card" data-status="维修中">
+      <div class="card-header">
+        <div class="card-title-area">
+          <div class="card-order-no">工单号：BX20260721003</div>
+          <div class="card-fault-title">2号办公楼空调不制冷</div>
+        </div>
+        <span class="status-tag processing">维修中</span>
+      </div>
+      <div class="card-body">
+        <div class="card-info-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>2号办公楼3层302室</span>
+        </div>
+        <div class="card-info-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          <span>空调维修</span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="card-time">2026-07-21 14:30</span>
+        <svg class="card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+
+    <!-- 卡片3 - 完工 -->
+    <div class="card" data-status="完工">
+      <div class="card-header">
+        <div class="card-title-area">
+          <div class="card-order-no">工单号：BX20260718005</div>
+          <div class="card-fault-title">食堂大门合页损坏</div>
+        </div>
+        <span class="status-tag done">已完工</span>
+      </div>
+      <div class="card-body">
+        <div class="card-info-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>食堂一楼正门</span>
+        </div>
+        <div class="card-info-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          <span>门窗维修</span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="card-time">2026-07-18 10:05</span>
+        <svg class="card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+
+    <!-- 卡片4 - 待处理 -->
+    <div class="card" data-status="待处理">
+      <div class="card-header">
+        <div class="card-title-area">
+          <div class="card-order-no">工单号：BX20260722002</div>
+          <div class="card-fault-title">会议室桌椅螺丝松动</div>
+        </div>
+        <span class="status-tag pending">待处理</span>
+      </div>
+      <div class="card-body">
+        <div class="card-info-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>行政楼2层会议室</span>
+        </div>
+        <div class="card-info-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          <span>家具维修</span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="card-time">2026-07-22 08:45</span>
+        <svg class="card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+
+    <!-- 卡片5 - 完工 -->
+    <div class="card" data-status="完工">
+      <div class="card-header">
+        <div class="card-title-area">
+          <div class="card-order-no">工单号：BX20260715008</div>
+          <div class="card-fault-title">档案室照明灯损坏</div>
+        </div>
+        <span class="status-tag done">已完工</span>
+      </div>
+      <div class="card-body">
+        <div class="card-info-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>行政楼B1档案室</span>
+        </div>
+        <div class="card-info-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          <span>水电维修</span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="card-time">2026-07-15 16:20</span>
+        <svg class="card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+
+    <div class="spacer-12"></div>
+
+    <!-- 空状态提示 -->
+    <div class="tab-empty" id="tabEmpty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      <span class="empty-text">暂无相关工单</span>
+    </div>
+  </div>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // Tab 筛选
+  var cards = document.querySelectorAll('.card[data-status]');
+  var empty = document.getElementById('tabEmpty');
+
+  function filterCards(status) {
+    var hasVisible = false;
+    cards.forEach(function(card) {
+      if (status === '全部' || card.getAttribute('data-status') === status) {
+        card.style.display = '';
+        hasVisible = true;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+    if (!hasVisible) {
+      empty.classList.add('show');
+    } else {
+      empty.classList.remove('show');
+    }
+  }
+
+  // 使用 MS.initTabs 初始化 Tab 并绑定回调
+  var tabs = document.querySelectorAll('.tab');
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      this.classList.add('active');
+      var status = this.getAttribute('data-tab');
+      filterCards(status);
+    });
+  });
+
+  // 卡片点击
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      window.location.href = 'P14-workorder-detail.html';
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
