@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>P14 - 工单详情</title>
+<link rel="stylesheet" href="common.css">
+<style>
+/* ==================== Order No Display ==================== */
+.order-no-banner {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.order-no-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.order-no-icon svg {
+  width: 18px;
+  height: 18px;
+  color: var(--primary);
+}
+.order-no-info {
+  flex: 1;
+}
+.order-no-label {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-bottom: 2px;
+}
+.order-no-value {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 0.5px;
+}
+.order-no-status {
+  flex-shrink: 0;
+}
+
+/* ==================== Steps in Section ==================== */
+.steps-section {
+  padding: 0;
+  overflow: hidden;
+}
+
+/* ==================== Info Row Extended ==================== */
+.info-row-extended {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 8px 0;
+  font-size: 14px;
+  gap: 12px;
+}
+.info-row-extended .label {
+  color: var(--text-3);
+  white-space: nowrap;
+  min-width: 64px;
+  flex-shrink: 0;
+}
+.info-row-extended .value {
+  color: var(--text-1);
+  text-align: right;
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+/* ==================== Photo Preview in Detail ==================== */
+.photo-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 0;
+}
+.photo-preview .photo-item {
+  width: 84px;
+  height: 84px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  position: relative;
+}
+.photo-preview .photo-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.photo-1 { background: linear-gradient(135deg, #B3D4FF, #1677FF); }
+.photo-2 { background: linear-gradient(135deg, #FFD5B3, #ED7B2F); }
+.photo-3 { background: linear-gradient(135deg, #B3ECD5, #00A870); }
+</style>
+</head>
+<body>
+<div class="miniprogram">
+
+  <!-- Status Bar -->
+  <div class="status-bar light">
+    <span class="time">09:38</span>
+    <div class="icons">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar white">
+    <div class="nav-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </div>
+    <span class="nav-title">工单详情</span>
+    <span class="nav-placeholder"></span>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- 工单号展示 -->
+    <div class="section">
+      <div class="order-no-banner">
+        <div class="order-no-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+        <div class="order-no-info">
+          <div class="order-no-label">工单号</div>
+          <div class="order-no-value">BX20260722001</div>
+        </div>
+        <div class="order-no-status">
+          <span class="status-tag processing">维修中</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 进度步骤条 -->
+    <div class="section steps-section">
+      <div class="steps">
+        <div class="step done">
+          <div class="step-circle">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span class="step-label">已提交</span>
+        </div>
+        <div class="step done">
+          <div class="step-circle">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span class="step-label">待处理</span>
+        </div>
+        <div class="step current">
+          <div class="step-circle">3</div>
+          <span class="step-label">维修中</span>
+        </div>
+        <div class="step">
+          <div class="step-circle">4</div>
+          <span class="step-label">完工</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 报修信息 -->
+    <div class="section">
+      <div class="section-title">
+        <span class="dot"></span>报修信息
+      </div>
+      <div class="info-block">
+        <div class="info-row-extended">
+          <span class="label">故障标题</span>
+          <span class="value">3楼东侧卫生间水管漏水</span>
+        </div>
+        <div class="info-row-extended">
+          <span class="label">故障描述</span>
+          <span class="value">水管接口处持续滴水，地面有积水，需尽快处理</span>
+        </div>
+        <div class="info-row-extended">
+          <span class="label">地点</span>
+          <span class="value">行政楼3楼东侧卫生间</span>
+        </div>
+        <div class="info-row-extended">
+          <span class="label">报修类型</span>
+          <span class="value">水电维修</span>
+        </div>
+        <div class="info-row-extended">
+          <span class="label">提交时间</span>
+          <span class="value">2026-07-22 09:15</span>
+        </div>
+      </div>
+      <!-- 现场照片 -->
+      <div style="padding: 0 16px 14px;">
+        <div style="font-size:13px;color:var(--text-3);margin-bottom:6px;">现场照片</div>
+        <div class="photo-preview">
+          <div class="photo-item">
+            <div class="photo-placeholder photo-1">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#FFFFFF" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <path d="M21 15l-5-5L5 21"/>
+              </svg>
+            </div>
+          </div>
+          <div class="photo-item">
+            <div class="photo-placeholder photo-2">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#FFFFFF" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <path d="M21 15l-5-5L5 21"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 维修信息 -->
+    <div class="section">
+      <div class="section-title">
+        <span class="dot"></span>维修信息
+      </div>
+      <div class="info-block">
+        <div class="info-row-extended">
+          <span class="label">维修员</span>
+          <span class="value">刘师傅</span>
+        </div>
+        <div class="info-row-extended">
+          <span class="label">接单时间</span>
+          <span class="value">2026-07-22 10:00</span>
+        </div>
+        <div class="info-row-extended">
+          <span class="label">维修状态</span>
+          <span class="value" style="color:var(--primary);font-weight:600;">维修中</span>
+        </div>
+      </div>
+      <!-- 维修图片 -->
+      <div style="padding: 0 16px 14px;">
+        <div style="font-size:13px;color:var(--text-3);margin-bottom:6px;">维修图片</div>
+        <div class="photo-preview">
+          <div class="photo-item">
+            <div class="photo-placeholder photo-3">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#FFFFFF" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <path d="M21 15l-5-5L5 21"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="spacer-12"></div>
+  </div>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+  // 页面初始化，无需额外交互
+})();
+</script>
+</body>
+</html>
