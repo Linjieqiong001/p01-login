@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="aYs4ahGwXZgNdx8nPOkNDx">
+<head data-page-node-id="P20PDEDMTI4vNh3xcIiAOP">
+<meta charset="UTF-8" data-page-node-id="ng9lHQF8pQz0WiVsD4K3Ea">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="wNmmHf75QCBkJRuwntzX5W">
+<title>海口海事局智慧后勤 - 首页</title>
+<style>
+/* ==================== Reset & Base ==================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  /* 主色系 - 海事蓝 */
+  --primary: #1677FF;
+  --primary-dark: #0052D9;
+  --primary-light: #E6F0FF;
+  --primary-gradient: linear-gradient(135deg, #1677FF 0%, #0052D9 100%);
+  --primary-gradient-light: linear-gradient(135deg, #4D9FFF 0%, #1677FF 100%);
+
+  /* 功能色 */
+  --success: #00A870;
+  --warning: #ED7B2F;
+  --danger: #E34D59;
+  --badge: #FF4D4F;
+
+  /* 中性色 */
+  --bg: #F5F6FA;
+  --card-bg: #FFFFFF;
+  --text-1: #1A1A1A;
+  --text-2: #666666;
+  --text-3: #999999;
+  --text-4: #BBBBBB;
+  --divider: #ECECEC;
+  --border: #F0F0F0;
+
+  /* 宫格图标背景色 */
+  --icon-bg-1: #FF6B6B;
+  --icon-bg-2: #FF9F43;
+  --icon-bg-3: #FECA57;
+  --icon-bg-4: #48DBFB;
+  --icon-bg-5: #A29BFE;
+  --icon-bg-6: #54A0FF;
+  --icon-bg-7: #5F27CD;
+  --icon-bg-8: #1DD1A1;
+  --icon-bg-9: #FF9FF3;
+  --icon-bg-10: #54A0FF;
+
+  /* 阴影 */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-md: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.08);
+
+  /* 圆角 */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+
+  /* 尺寸 */
+  --page-w: 438px;
+  --page-h: 944px;
+  --nav-h: 44px;
+  --status-h: 20px;
+  --tabbar-h: 56px;
+  --safe-bottom: 20px;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: #E8E8E8;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+  font-size: 14px;
+  color: var(--text-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ==================== Page Container ==================== */
+.miniprogram {
+  width: var(--page-w);
+  height: var(--page-h);
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
+  border-radius: 0;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==================== Status Bar ==================== */
+.status-bar {
+  height: var(--status-h);
+  background: var(--primary-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  flex-shrink: 0;
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 600;
+}
+.status-bar .time { font-size: 13px; }
+.status-bar .icons { display: flex; align-items: center; gap: 5px; }
+.status-bar .icons svg { width: 14px; height: 14px; }
+
+/* ==================== Navigation Bar ==================== */
+.nav-bar {
+  height: var(--nav-h);
+  background: var(--primary-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  flex-shrink: 0;
+  position: relative;
+}
+.nav-bar .nav-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav-bar .logo {
+  width: 28px;
+  height: 28px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.nav-bar .logo svg { width: 18px; height: 18px; }
+.nav-bar .title {
+  color: #FFFFFF;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.nav-bar .nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.nav-bar .bell-wrap {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+.nav-bar .bell-wrap:active { background: rgba(255,255,255,0.15); }
+.nav-bar .bell-wrap svg { width: 20px; height: 20px; }
+.nav-bar .badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 16px;
+  height: 16px;
+  background: var(--badge);
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 1.5px solid var(--primary-dark);
+  line-height: 1;
+}
+
+/* ==================== Scrollable Content ==================== */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+}
+.content::-webkit-scrollbar { display: none; }
+
+/* ==================== Header Section (gradient bg) ==================== */
+.header-section {
+  background: var(--primary-gradient);
+  padding: 0 0 28px;
+  position: relative;
+}
+.header-section::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  background: var(--bg);
+  border-radius: 18px 18px 0 0;
+}
+
+/* ==================== Banner ==================== */
+.banner {
+  margin: 0 16px;
+  height: 120px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+  box-shadow: var(--shadow-md);
+}
+.banner-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.banner-slide {
+  min-width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  cursor: pointer;
+  position: relative;
+}
+.banner-slide:nth-child(1) { background: linear-gradient(135deg, #1677FF 0%, #0052D9 100%); }
+.banner-slide:nth-child(2) { background: linear-gradient(135deg, #00A870 0%, #00875A 100%); }
+.banner-slide:nth-child(3) { background: linear-gradient(135deg, #ED7B2F 0%, #D6651A 100%); }
+.banner-slide .banner-content { z-index: 2; }
+.banner-slide .banner-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 4px;
+  font-size: 10px;
+  color: #FFFFFF;
+  margin-bottom: 6px;
+  backdrop-filter: blur(4px);
+}
+.banner-slide .banner-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+.banner-slide .banner-desc {
+  font-size: 12px;
+  color: rgba(255,255,255,0.8);
+}
+.banner-slide .banner-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.15;
+}
+.banner-slide .banner-icon svg { width: 72px; height: 72px; }
+
+.banner-dots {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 5px;
+  z-index: 3;
+}
+.banner-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.4);
+  transition: all 0.3s;
+}
+.banner-dot.active {
+  width: 18px;
+  background: #FFFFFF;
+}
+
+/* ==================== Function Grid ==================== */
+.grid-section {
+  background: var(--card-bg);
+  margin: 0 16px;
+  border-radius: var(--radius-lg);
+  padding: 16px 8px 12px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  z-index: 2;
+}
+.grid-row {
+  display: flex;
+  justify-content: space-around;
+}
+.grid-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 0;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.grid-item:active { transform: scale(0.92); }
+.grid-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+.grid-icon svg { width: 24px; height: 24px; }
+.grid-label {
+  font-size: 11px;
+  color: var(--text-2);
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Icon backgrounds */
+.ic-1 { background: linear-gradient(135deg, #FF7676, #FF5252); }
+.ic-2 { background: linear-gradient(135deg, #FFB443, #FF9800); }
+.ic-3 { background: linear-gradient(135deg, #FFD93D, #FFC107); }
+.ic-4 { background: linear-gradient(135deg, #5DADE2, #3498DB); }
+.ic-5 { background: linear-gradient(135deg, #A569BD, #8E44AD); }
+.ic-6 { background: linear-gradient(135deg, #48C9B0, #1ABC9C); }
+.ic-7 { background: linear-gradient(135deg, #5DADE2, #2980B9); }
+.ic-8 { background: linear-gradient(135deg, #58D68D, #27AE60); }
+.ic-9 { background: linear-gradient(135deg, #F1948A, #E74C3C); }
+.ic-10 { background: linear-gradient(135deg, #85C1E9, #5499C7); }
+
+/* ==================== Menu Section ==================== */
+.menu-section {
+  background: var(--card-bg);
+  margin: 12px 16px 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 10px;
+}
+.menu-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.menu-title .icon-food {
+  width: 18px; height: 18px;
+  color: var(--primary);
+}
+.menu-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.menu-week-text {
+  font-size: 12px;
+  color: var(--text-3);
+  min-width: 120px;
+  text-align: center;
+}
+.nav-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+.nav-btn:active {
+  transform: scale(0.9);
+  background: var(--primary);
+}
+.nav-btn:active svg { color: #FFFFFF; }
+.nav-btn svg {
+  width: 14px;
+  height: 14px;
+  color: var(--primary);
+}
+
+.menu-image-area {
+  margin: 0 16px 12px;
+  height: 130px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  background: linear-gradient(135deg, #FFF8E1, #FFE0B2);
+  transition: transform 0.2s;
+}
+.menu-image-area:active { transform: scale(0.98); }
+.menu-illustration {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.menu-illustration svg { width: 120px; height: 120px; }
+.menu-image-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.05));
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.menu-image-overlay .tag {
+  font-size: 10px;
+  background: rgba(255,255,255,0.9);
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: var(--text-2);
+}
+.menu-image-overlay .enlarge-hint {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  color: var(--text-3);
+}
+.menu-image-overlay .enlarge-hint svg { width: 12px; height: 12px; }
+
+.menu-desc {
+  padding: 0 16px 14px;
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+.menu-desc .day-label {
+  display: inline-block;
+  color: var(--primary);
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+/* ==================== Bottom Tab Bar ==================== */
+.tabbar {
+  height: calc(var(--tabbar-h) + var(--safe-bottom));
+  background: var(--card-bg);
+  display: flex;
+  border-top: 0.5px solid var(--divider);
+  flex-shrink: 0;
+  padding-bottom: var(--safe-bottom);
+  box-shadow: 0 -1px 8px rgba(0,0,0,0.04);
+}
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+.tab-item svg {
+  width: 24px;
+  height: 24px;
+  color: var(--text-4);
+  transition: color 0.2s;
+}
+.tab-item .tab-label {
+  font-size: 10px;
+  color: var(--text-4);
+  transition: color 0.2s;
+}
+.tab-item.active svg { color: var(--primary); }
+.tab-item.active .tab-label { color: var(--primary); font-weight: 600; }
+.tab-item:active svg { transform: scale(0.9); }
+
+/* Tab badge */
+.tab-item .tab-badge {
+  position: absolute;
+  top: 4px;
+  right: calc(50% - 18px);
+  min-width: 14px;
+  height: 14px;
+  background: var(--badge);
+  color: #FFFFFF;
+  font-size: 9px;
+  font-weight: 600;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  line-height: 1;
+}
+
+/* ==================== Modal / Popup ==================== */
+.modal-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s;
+}
+.modal-mask.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  width: 340px;
+  background: var(--card-bg);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  transform: scale(0.85);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.modal-mask.show .modal-content { transform: scale(1); }
+
+.modal-header {
+  padding: 16px 20px 12px;
+  text-align: center;
+  border-bottom: 0.5px solid var(--divider);
+}
+.modal-header .modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+.modal-header .modal-date {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: 4px;
+}
+.modal-body {
+  padding: 16px 20px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+.modal-body .menu-img-large {
+  width: 100%;
+  height: 200px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #FFF8E1, #FFE0B2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+.modal-body .menu-img-large svg { width: 100px; height: 100px; }
+.modal-body .menu-detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.modal-body .menu-detail-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+}
+.modal-body .menu-detail-item .day {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+.modal-body .menu-detail-item .dishes {
+  font-size: 12px;
+  color: var(--text-2);
+}
+.modal-close {
+  padding: 12px 20px 16px;
+  text-align: center;
+}
+.modal-close-btn {
+  width: 100%;
+  height: 40px;
+  background: var(--primary-gradient);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.modal-close-btn:active { opacity: 0.8; }
+
+/* ==================== Toast ==================== */
+.toast {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  background: rgba(0,0,0,0.75);
+  color: #FFFFFF;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  z-index: 200;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s;
+  white-space: nowrap;
+  max-width: 320px;
+  text-align: center;
+  line-height: 1.5;
+}
+.toast.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
+}
+.toast .toast-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+.toast .toast-icon svg { width: 32px; height: 32px; }
+
+/* ==================== Ripple animation ==================== */
+@keyframes ripple {
+  0% { transform: scale(0); opacity: 0.4; }
+  100% { transform: scale(2); opacity: 0; }
+}
+
+/* ==================== Skeleton loading shimmer ==================== */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ==================== Fade in animation ==================== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+/* ==================== Announcement Detail Modal ==================== */
+.announce-modal {
+  width: 320px;
+  background: var(--card-bg);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  transform: scale(0.85);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.modal-mask.show .announce-modal { transform: scale(1); }
+.announce-modal .am-banner {
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 6px;
+  color: #FFFFFF;
+}
+.announce-modal .am-banner svg { width: 36px; height: 36px; }
+.announce-modal .am-banner .am-type { font-size: 14px; font-weight: 600; }
+.announce-modal .am-body { padding: 16px 20px; }
+.announce-modal .am-body .am-title { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+.announce-modal .am-body .am-text { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+.announce-modal .am-footer { padding: 0 20px 16px; }
+</style>
+</head>
+<body data-page-node-id="0GdIjitbLatoxwkuyE1OeX">
+
+<div class="miniprogram" id="app" data-page-node-id="Abp4cDeFX25bQTi34s9Sim">
+
+  <!-- ==================== Status Bar ==================== -->
+  <div class="status-bar" data-page-node-id="8AQi9sZADt07BG4KvIG9xQ">
+    <span class="time" id="statusTime" data-page-node-id="T3aQadENv9BcPD5vQALuFn">09:38</span>
+    <div class="icons" data-page-node-id="iTChtZlwWEWNpc6riw9adt">
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="xTQQHEF69PJz5eyF5XFfqO"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" data-page-node-id="HJrzaRtx7rFUJzBdwcdvyh"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="PT42nv9sKMkLYRRr5nJlTq"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" data-page-node-id="7c3OclrMd9VokZFAEnv9pA"/></svg>
+    </div>
+  </div>
+
+  <!-- ==================== Navigation Bar ==================== -->
+  <div class="nav-bar" data-page-node-id="bt2aE65Rbhu0AEErNf2PFq">
+    <div class="nav-left" data-page-node-id="Ytj4J2ea1lzvLqhLHhhbZ1">
+      <div class="logo" data-page-node-id="BCnBH4ZFmD6qTzqmNXBGww">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" data-page-node-id="RPemkoZhC6GQ1IhiEncST7">
+          <path d="M12 2L2 7l10 5 10-5-10-5z" data-page-node-id="itAsjZ5aEeWUtqmNaFXeHp"/>
+          <path d="M2 17l10 5 10-5" data-page-node-id="lURgOIfekvhztuz5BO08Mm"/>
+          <path d="M2 12l10 5 10-5" data-page-node-id="hx0rROdvaspwa6GvenTUxK"/>
+        </svg>
+      </div>
+      <span class="title" data-page-node-id="xkCadkuvwffuTHgXITr4yg">海事局智慧后勤</span>
+    </div>
+    <div class="nav-right" data-page-node-id="3eNKh1KFSzTcgZ9moCpFJN">
+      <div class="bell-wrap" id="bellBtn" data-page-node-id="MZwnf2DAhXUm8tjMJD4kAK">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="iGqfL9QYlBAAp7KEHY3ewO">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" data-page-node-id="eV0CNxkmXgAckrsSgpBFAu"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0" data-page-node-id="NKItC5BB7c4oLqzPSdbg3q"/>
+        </svg>
+        <span class="badge" data-page-node-id="j332kJiv8E6HDr7K890QBH">3</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== Scrollable Content ==================== -->
+  <div class="content" id="content" data-page-node-id="1FmizICFhpQ4bMyE9z14iP">
+
+    <!-- Header Section with gradient bg -->
+    <div class="header-section" data-page-node-id="P6uAbpsdHTioo0qCQapM79">
+
+      <!-- Banner -->
+      <div class="banner" id="banner" data-page-node-id="cVKRAxSOCVJUgOw9RqE1xp">
+        <div class="banner-track" id="bannerTrack" data-page-node-id="0Hg5rXZDf3DwOjpZ8CCdCM">
+
+          <div class="banner-slide" data-idx="0" data-page-node-id="wFcwq0xiEoDGh7aADBkWVh">
+            <div class="banner-content" data-page-node-id="X6X6ziH5MJtHKznyCQcFaN">
+              <div class="banner-tag" data-page-node-id="wTKVe4DU0k95EpFCcxhI8L">系统公告</div>
+              <div class="banner-title" data-page-node-id="4tAySo9UyDpETCznLaaerr">智慧后勤平台正式上线</div>
+              <div class="banner-desc" data-page-node-id="aomyHpYHYxHWEOSyInkF7d">一站式后勤服务，便捷高效</div>
+            </div>
+            <div class="banner-icon" data-page-node-id="3rUY4sCl7uyWATWAAxNkJk">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.5" data-page-node-id="IYy9GDdONabndjss6iKKj2">
+                <path d="M3 21h18M3 7l1-4h16l1 4M4 7v14M20 7v14M8 11h8M8 15h8" data-page-node-id="azmO2Ft1BQpFDDzsRSOMA9"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="banner-slide" data-idx="1" data-page-node-id="jM7K994gzfGnf6rblA3R1F">
+            <div class="banner-content" data-page-node-id="5X0xMUIdDWgp2bWU7d2tNj">
+              <div class="banner-tag" data-page-node-id="00aaci5yFEEEmDhCfFZhP8">食堂通知</div>
+              <div class="banner-title" data-page-node-id="b6IulgJZDQGOvX6Yf4PTbO">本周食堂菜单已更新</div>
+              <div class="banner-desc" data-page-node-id="IAaOzGcczCrd9kvCF8PLfR">点击查看本周详细菜谱</div>
+            </div>
+            <div class="banner-icon" data-page-node-id="KF7G07xXhtu8Pf5izeK4ws">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.5" data-page-node-id="EJHFN2H9RoTBiEfJ6TCV3T">
+                <path d="M3 11h18M5 11V7a2 2 0 012-2h10a2 2 0 012 2v4M6 11v6a2 2 0 002 2h8a2 2 0 002-2v-6M9 3v2M15 3v2" data-page-node-id="CdegAdCLee6Ectvkfsy1Dh"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="banner-slide" data-idx="2" data-page-node-id="03CuP98jCZBsLQpiq9uVvZ">
+            <div class="banner-content" data-page-node-id="drXSbmtywAhS3bVMlxlefw">
+              <div class="banner-tag" data-page-node-id="WmAMrChAbSU8Zf1dxwajMS">维护通知</div>
+              <div class="banner-title" data-page-node-id="AKQgn13EJB169hhvkzVuGG">后勤报修在线受理</div>
+              <div class="banner-desc" data-page-node-id="Km76E4HOUutU0jclv4JXqR">一键报修，快速响应</div>
+            </div>
+            <div class="banner-icon" data-page-node-id="bVjhjmuof1Yjjui9jiQrJV">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.5" data-page-node-id="555C23ltR4tfEUpmCGgSEV">
+                <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" data-page-node-id="PJRyYgAh3nBGJHUXzA9E1g"/>
+              </svg>
+            </div>
+          </div>
+
+        </div>
+        <div class="banner-dots" id="bannerDots" data-page-node-id="NQeix8yO2ZBH6r9LaBguP7">
+          <div class="banner-dot active" data-page-node-id="Ujtgn34BhIB6aqLgF6e8mp"></div>
+          <div class="banner-dot" data-page-node-id="UzSNq8hbDCKfGVPsjcBHXZ"></div>
+          <div class="banner-dot" data-page-node-id="mT9oQTE1JdooIpfuUIB5OZ"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== Function Grid ==================== -->
+    <div class="grid-section fade-in" data-page-node-id="pA6CCc4TEnzL6Zoaq3oGi0">
+      <div class="grid-row" data-page-node-id="AS2mkRjCsLuponv97J4rOr">
+        <!-- 电子支付 -->
+        <div class="grid-item" data-module="电子支付" data-page="P6钱包管理页" data-page-node-id="C6ccLuiyzhKV2jg13uLp9z">
+          <div class="grid-icon ic-1" data-page-node-id="ErgWoQmPzeACHwnQOaSoOh">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="y3ZD67koB68tmR2rsHGRXl">
+              <rect x="2" y="5" width="20" height="14" rx="2" data-page-node-id="zHMzwei9g3bDyg69gY91BZ"/>
+              <path d="M2 10h20M6 15h2M11 15h6" data-page-node-id="csioG674qpqIHFiupDp8jK"/>
+            </svg>
+          </div>
+          <span class="grid-label" data-page-node-id="LQS6nySXfWz6bdmqr62Bol">电子支付</span>
+        </div>
+        <!-- 食堂预订 -->
+        <div class="grid-item" data-module="食堂预订" data-page="P3餐次预订页" data-page-node-id="X8lFUBfuQtxti1Pv5Buayo">
+          <div class="grid-icon ic-2" data-page-node-id="7OzlCzluLhZFQHzekA052T">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="02hJCglJK1F7XnwABZVY06">
+              <path d="M3 2v7c0 1.1.9 2 2 2h0a2 2 0 002-2V2M7 2v20M21 15V2a5 5 0 00-3 9v4c0 1.1.9 2 2 2h1a2 2 0 002-2z" data-page-node-id="8KDX6xsFgVYmHXiMARPLBA"/>
+            </svg>
+          </div>
+          <span class="grid-label" data-page-node-id="IXr40daZheTeZiOgAmhTDf">食堂预订</span>
+        </div>
+        <!-- 理发预约 -->
+        <div class="grid-item" data-module="理发预约" data-page="理发预约页" data-page-node-id="GlXi3OtmHxU3ZDkk0WGOG8">
+          <div class="grid-icon ic-3" data-page-node-id="KUHHdISS5ukZxlntvwpwlD">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="a90UR0DAwBYp5keTJIJEft">
+              <circle cx="6" cy="6" r="3" data-page-node-id="Uo2fWESo5tpKFksZupk4eD"/>
+              <path d="M8.12 8.12L20 20M14 4l6 6M6 9v12M3 12h6" data-page-node-id="iLOO0FRor0l8mfsg8g7XBc"/>
+            </svg>
+          </div>
+          <span class="grid-label" data-page-node-id="qci33k9iZ2ESqrNKHVOYtJ">理发预约</span>
+        </div>
+        <!-- 意见反馈 -->
+        <div class="grid-item" data-module="意见反馈" data-page="意见反馈页" data-page-node-id="wxP7oQeBwPBZNuQNYSjvJt">
+          <div class="grid-icon ic-4" data-page-node-id="v9uhuCw6q0cryojXESw1u6">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="TQ1shh7aXVuEADmGGGmi8i">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" data-page-node-id="Q81bMSzkcrQoBauDTinhhH"/>
+              <path d="M8 9h8M8 13h5" data-page-node-id="ZctnwANheZznnynceSavuP"/>
+            </svg>
+          </div>
+          <span class="grid-label" data-page-node-id="yfyFbR0pya7LPCP2s0h8ql">意见反馈</span>
+        </div>
+        <!-- 管理入口 -->
+        <div class="grid-item" data-module="管理入口" data-page="管理入口页" data-page-node-id="LL7oMO3Pn891l7bAyT0poh">
+          <div class="grid-icon ic-5" data-page-node-id="nBRZg3LoHoSFUEFwjAREVq">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="GqlbaFRb0O4GEJ2gWeNGkY">
+              <circle cx="12" cy="12" r="3" data-page-node-id="6pUCOg34zqZlzehAXxNtSe"/>
+              <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 008 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 8a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 008 4.6a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 8c.36.16.64.46.79.82" data-page-node-id="Ydm756rNMmA8BxbG0b9fhr"/>
+            </svg>
+          </div>
+          <span class="grid-label" data-page-node-id="mQmufNQf75b5hziTgfgXmv">管理入口</span>
+        </div>
+      </div>
+      <div class="grid-row" style="margin-top:4px;" data-page-node-id="v67kpvQk4WiXmzRLL4cwyJ">
+        <!-- 公车预约 -->
+        <div class="grid-item" data-module="公车预约" data-page="P7用车申请页" data-page-node-id="obkJg8S8QO531hUtu3Xljk">
+          <div class="grid-icon ic-6" data-page-node-id="2ZPONz3Mu3mcqxLabDFUcf">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="ebiSNDUDj6GYuKQfby2F1U">
+              <path d="M5 17h14M3 17V11l3-5h12l3 5v6M7 17v2M17 17v2" data-page-node-id="xp7SM1xNSW5kUI7A33Ba2A"/>
+              <circle cx="7.5" cy="14.5" r="1.5" fill="#FFFFFF" data-page-node-id="HaBgBOi3GKk250XDZDeCDV"/>
+              <circle cx="16.5" cy="14.5" r="1.5" fill="#FFFFFF" data-page-node-id="BH6LWqUNUnoq7HwROJBV5z"/>
+            </svg>
+          </div>
+          <span class="grid-label" data-page-node-id="YcbzP0tVkgufomI3gR0NzA">公车预约</span>
+        </div>
+        <!-- 住房预约 -->
+        <div class="grid-item" data-module="住房预约" data-page="P17住房首页" data-page-node-id="FRpiqaljJoogMgFzj3FSW6">
+          <div class="grid-icon ic-7" data-page-node-id="PzdUdiuKc8RxnRbJRACOX4">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="woXQFThIhphgFZN0zk3ZaQ">
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" data-page-node-id="BrERlTPcCJFtSfKFf1CDx9"/>
+              <path d="M9 22V12h6v10" data-page-node-id="NvWEIpv8ZRSCr1g2aEsGgO"/>
+            </svg>
+          </div>
+          <span class="grid-label" data-page-node-id="wYeVBUUSv58Fn8ywxFcMV0">住房预约</span>
+        </div>
+        <!-- 维护报修 -->
+        <div class="grid-item" data-module="维护报修" data-page="P12报修申请页" data-page-node-id="MHQV85qT6Tp7gsYvOdUvEc">
+          <div class="grid-icon ic-8" data-page-node-id="3tKQRgyrXaF7x3R7VEfc1p">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="ccEGSynJBSuwVdlylkCfUj">
+              <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" data-page-node-id="XO69SEjAX5P4Pn1ovJqNKT"/>
+            </svg>
+          </div>
+          <span class="grid-label" data-page-node-id="hqFLV5CFPPYOkCLL2mXXgA">维护报修</span>
+        </div>
+        <!-- 白沙门预约 -->
+        <div class="grid-item" data-module="白沙门预约" data-page="P20白沙门首页" data-page-node-id="wHXt5YJVMK2Xy6QGvSqQfT">
+          <div class="grid-icon ic-9" data-page-node-id="66TAF0avVu5kySo2seP296">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="h0Gz6MlCpxCgTHw6il6YV5">
+              <path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-5h6v5M9 11h.01M15 11h.01" data-page-node-id="SRrdDauKrr9RkuPWyBUzlG"/>
+            </svg>
+          </div>
+          <span class="grid-label" data-page-node-id="JnH1Cym8r0vqdFroGrq0s5">白沙门预约</span>
+        </div>
+        <!-- 拜访预约 -->
+        <div class="grid-item" data-module="拜访预约" data-page="P23拜访预约首页" data-page-node-id="Z3sNJqrvgA327HBrIh189r">
+          <div class="grid-icon ic-10" data-page-node-id="3MJtHlyljGxtnsZytx627C">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="06bktEdoaFEWlPNG3JnIkP">
+              <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" data-page-node-id="jUljX0ESMS9AyND7g2jDFV"/>
+              <circle cx="9" cy="7" r="4" data-page-node-id="FPM74t0q7AZf613byzlS49"/>
+              <path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" data-page-node-id="8SJsYvIYBFHbpXOKNaBQ9j"/>
+            </svg>
+          </div>
+          <span class="grid-label" data-page-node-id="DvyaoK0zN99Wt56SPROmC3">拜访预约</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== Menu Section ==================== -->
+    <div class="menu-section fade-in" id="menuSection" data-page-node-id="hHhGqERubpUxtA4Q5yqb7x">
+      <div class="menu-header" data-page-node-id="HHISGemGo4nHA5Trhxi3hQ">
+        <div class="menu-title" data-page-node-id="rBpoN28VjAQDQ7mGMjTfYr">
+          <svg class="icon-food" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="726MuHv5o6SdZUhM477uHu">
+            <path d="M3 2v7c0 1.1.9 2 2 2h0a2 2 0 002-2V2M7 2v20M21 15V2a5 5 0 00-3 9v4c0 1.1.9 2 2 2h1a2 2 0 002-2z" data-page-node-id="LPhoURdo0lmTUKAG13XeLi"/>
+          </svg>
+          本周菜谱
+        </div>
+        <div class="menu-nav" data-page-node-id="ip5wVR0CcwCmOV68ZRTImC">
+          <button class="nav-btn" id="prevWeek" data-page-node-id="c5bfznQTCRq5qlY00OAPqF">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="gdSIWmQU3paiWAPiDSGxzK">
+              <polyline points="15 18 9 12 15 6" data-page-node-id="4SlkQkYEVGy35hhyUEk8Sk"/>
+            </svg>
+          </button>
+          <span class="menu-week-text" id="weekText" data-page-node-id="TE3wBp5jVbFUbleHjsByfJ">2026.07.20 - 07.26</span>
+          <button class="nav-btn" id="nextWeek" data-page-node-id="m451qO8QnRErv0xEBtvaUx">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="JckgNefk9aUqbZJh6uiQiR">
+              <polyline points="9 18 15 12 9 6" data-page-node-id="1DLRgNAx3iRVFdBPnSRLzX"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="menu-image-area" id="menuImage" data-page-node-id="E5tuDwqPERFh5Ctfi1iWAZ">
+        <div class="menu-illustration" data-page-node-id="BaNTH9xfkXvhbQFJpVXPaR">
+          <svg viewBox="0 0 120 120" fill="none" data-page-node-id="tHcCS5K8pQl9aV4GbGTR93">
+            <!-- Plate -->
+            <ellipse cx="60" cy="65" rx="42" ry="40" fill="#FFFFFF" stroke="#FFE0B2" stroke-width="2" data-page-node-id="CSluaraHwUbskuVwaVY8if"/>
+            <ellipse cx="60" cy="63" rx="36" ry="34" fill="#FAFAFA" data-page-node-id="Ds418mpKMAQ6btmZC6YPMi"/>
+            <!-- Food items -->
+            <!-- Rice -->
+            <ellipse cx="60" cy="55" rx="20" ry="14" fill="#FFF8E1" data-page-node-id="2S2rQN3FCQ9KUkhejukk2U"/>
+            <ellipse cx="60" cy="52" rx="16" ry="10" fill="#FFEB3B" opacity="0.6" data-page-node-id="lZzBdc5No2JRBtKWAuJt0U"/>
+            <!-- Meat -->
+            <ellipse cx="45" cy="68" rx="10" ry="7" fill="#FF8A65" data-page-node-id="FHDPQxIuuBjQYO4FEDpjPC"/>
+            <path d="M40 68 Q45 64 50 68" stroke="#FF5722" stroke-width="1.5" fill="none" data-page-node-id="3HGuF4nEsphI1KgbAd28A7"/>
+            <!-- Veggie -->
+            <ellipse cx="72" cy="68" rx="8" ry="6" fill="#81C784" data-page-node-id="uEF19RtLZFteaaKpMLt3J5"/>
+            <circle cx="72" cy="67" r="3" fill="#66BB6A" data-page-node-id="3KvLG5Yn4Q4zvQVpnj9iM2"/>
+            <!-- Soup bowl -->
+            <path d="M50 78 Q60 82 70 78" stroke="#FFB74D" stroke-width="2" fill="none" data-page-node-id="lgPo31BEBJEzfhO0IcqEPk"/>
+            <!-- Steam -->
+            <path d="M52 35 Q54 30 52 25 Q50 20 52 15" stroke="#E0E0E0" stroke-width="1.5" fill="none" opacity="0.6" data-page-node-id="EHYr4DLHCrSstfz8fiNMA3"/>
+            <path d="M60 35 Q62 30 60 25 Q58 20 60 15" stroke="#E0E0E0" stroke-width="1.5" fill="none" opacity="0.6" data-page-node-id="dDWI9Fcbk9esWxTI63DFoY"/>
+            <path d="M68 35 Q70 30 68 25 Q66 20 68 15" stroke="#E0E0E0" stroke-width="1.5" fill="none" opacity="0.6" data-page-node-id="jK7gJfiR5WbJb3NkLmJNrO"/>
+          </svg>
+        </div>
+        <div class="menu-image-overlay" data-page-node-id="chc5xuhJ10optzhxHiRWMe">
+          <span class="tag" data-page-node-id="urmYBCjIzqkW8Quu6Bl8Eb">第30周 · 菜谱预览</span>
+          <span class="enlarge-hint" data-page-node-id="i2U80FgVNVkzH5IC1k9d2Q">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="5pqB6H2LvPr2XI4Tgf6GwC"><circle cx="11" cy="11" r="8" data-page-node-id="nKeMScMlEzBkhUq6CYf2C8"/><path d="M21 21l-4.35-4.35M11 8v6M8 11h6" data-page-node-id="ACpaCHTiGFJpG5AjA9fmiK"/></svg>
+            点击查看大图
+          </span>
+        </div>
+      </div>
+
+      <div class="menu-desc" id="menuDesc" data-page-node-id="wfDDmPfBmTRHFqbZZgi4TZ">
+        <span class="day-label" data-page-node-id="iiYGCTqkH6GC1APQ68JqX7">周一</span>红烧排骨 · 清炒时蔬 · 紫菜蛋花汤<br data-page-node-id="5tQorhHG2u7XO5CttnyoSN">
+        <span class="day-label" data-page-node-id="j2Q2LLidvFtXvGWKcFWTbr">周二</span>糖醋里脊 · 蒜蓉西兰花 · 冬瓜排骨汤<br data-page-node-id="QhBneSg2PFowSVWo7CySUb">
+        <span class="day-label" data-page-node-id="a5KxbITtXOBu9uRcgmSVC5">周三</span>清蒸鲈鱼 · 麻婆豆腐 · 番茄蛋汤
+      </div>
+    </div>
+
+    <!-- spacer -->
+    <div style="height: 12px;" data-page-node-id="41o7acd9yamzac93LtW4ZB"></div>
+
+  </div>
+
+  <!-- ==================== Bottom Tab Bar ==================== -->
+  <div class="tabbar" data-page-node-id="pFaKThkOEoXc0qJ5iC6jkD">
+    <div class="tab-item active" data-tab="首页" data-page-node-id="pu5NMwDe7Ck5JBEA7fkaFo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="mt5wgRFmDHvUwljzgbGUwY">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" data-page-node-id="4Crk16Yiva5CFkQLohQTPc"/>
+        <path d="M9 22V12h6v10" data-page-node-id="GihGwiz3HsPr5q9rNDGv2E"/>
+      </svg>
+      <span class="tab-label" data-page-node-id="Y0iMHhNdwj2G63w6Bn8WWO">首页</span>
+    </div>
+    <div class="tab-item" data-tab="审批" data-page-node-id="BcznHz0RTGbh4qFOpHh7AW">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="ycuRQH7ybPtyBWV8C4QSSY">
+        <path d="M9 11H5a2 2 0 00-2 2v7a2 2 0 002 2h14a2 2 0 002-2v-7a2 2 0 00-2-2h-4" data-page-node-id="v0F5pVBaD8bXiwGdqtY94e"/>
+        <path d="M9 11V5a2 2 0 014 0v6" data-page-node-id="nbimuvz783oBQTlMJSzYUW"/>
+        <path d="M8 17h2M14 17h2" data-page-node-id="FZBCQhRFWu4AJqDgY8qlhz"/>
+      </svg>
+      <span class="tab-badge" data-page-node-id="6nAVCke2fYRYT4ghfYfuwu">1</span>
+      <span class="tab-label" data-page-node-id="UCSVqpNEX42wc8iGjeGT32">审批</span>
+    </div>
+    <div class="tab-item" data-tab="任务" data-page-node-id="sw5egCpZ1hXAuEAOKT31Yk">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="JTFwLAcN3iZx1uQd7Nx2XL">
+        <path d="M9 11l3 3L22 4" data-page-node-id="m6Ig7mVILNwkFXgmrnxPzy"/>
+        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" data-page-node-id="57pUCNLjRdRW6n7g3vGN9l"/>
+      </svg>
+      <span class="tab-badge" data-page-node-id="WbKkdPUi9ST5490XPAD7XO">1</span>
+      <span class="tab-label" data-page-node-id="URwtyFGOfipGmGZg2m5nA4">任务</span>
+    </div>
+    <div class="tab-item" data-tab="我的" data-page-node-id="ACeuH7LllaozRtZ4Jb6AMF">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="LVJaNxRY8q6FHi1xRUDq38">
+        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" data-page-node-id="Lx9aeUvIDmPOsUEKhXfeIh"/>
+        <circle cx="12" cy="7" r="4" data-page-node-id="wE7xoNqJ3tACgbc0YcU8Dl"/>
+      </svg>
+      <span class="tab-label" data-page-node-id="iVJ0W7BSvWRD8TUOKNUSX5">我的</span>
+    </div>
+  </div>
+
+  <!-- ==================== Menu Modal ==================== -->
+  <div class="modal-mask" id="menuModal" data-page-node-id="1bRhG2iQolUDSwLED8tbGk">
+    <div class="modal-content" data-page-node-id="IClnuFatrc6ZhyUGVnNfNi">
+      <div class="modal-header" data-page-node-id="Hf8h8p1Hl984dwiSuxPPMO">
+        <div class="modal-title" data-page-node-id="OsX2Igcvje6oA6gHtm5W27">本周菜谱详情</div>
+        <div class="modal-date" id="modalDate" data-page-node-id="dOtT39oHP6WYox9xMfNUve">2026-07-20 至 2026-07-26</div>
+      </div>
+      <div class="modal-body" data-page-node-id="QKWDXDlCZ77SnoKwTv6Qj3">
+        <div class="menu-img-large" data-page-node-id="7OXmsf2lXFDkiJQGPu2YO5">
+          <svg viewBox="0 0 120 120" fill="none" data-page-node-id="dhJoFew5Zu71mhjdix2a33">
+            <ellipse cx="60" cy="65" rx="42" ry="40" fill="#FFFFFF" stroke="#FFE0B2" stroke-width="2" data-page-node-id="eMKRyBtyGDwQZHq1TVW0eY"/>
+            <ellipse cx="60" cy="63" rx="36" ry="34" fill="#FAFAFA" data-page-node-id="BkI7ep71nhfSw24WREurZc"/>
+            <ellipse cx="60" cy="55" rx="20" ry="14" fill="#FFF8E1" data-page-node-id="2J2n3URZuqnXCKYUKbN57I"/>
+            <ellipse cx="60" cy="52" rx="16" ry="10" fill="#FFEB3B" opacity="0.6" data-page-node-id="JrbdxiGkjbC7AUvlM3KH4e"/>
+            <ellipse cx="45" cy="68" rx="10" ry="7" fill="#FF8A65" data-page-node-id="jBt4Uxy3bipBJL0v9SX1Ny"/>
+            <ellipse cx="72" cy="68" rx="8" ry="6" fill="#81C784" data-page-node-id="otNtN37bK1Yd7UJBaFWS0y"/>
+            <circle cx="72" cy="67" r="3" fill="#66BB6A" data-page-node-id="FXTfUlHuRWOroWsy4h5iv2"/>
+            <path d="M50 78 Q60 82 70 78" stroke="#FFB74D" stroke-width="2" fill="none" data-page-node-id="T8Y8F39c9IajmvT1oQwBjW"/>
+            <path d="M52 35 Q54 30 52 25 Q50 20 52 15" stroke="#E0E0E0" stroke-width="1.5" fill="none" opacity="0.6" data-page-node-id="RKpNFKJJE8Lm6x2qtcXCgy"/>
+            <path d="M60 35 Q62 30 60 25 Q58 20 60 15" stroke="#E0E0E0" stroke-width="1.5" fill="none" opacity="0.6" data-page-node-id="481Phinjg0KyRlLDHP1FS6"/>
+            <path d="M68 35 Q70 30 68 25 Q66 20 68 15" stroke="#E0E0E0" stroke-width="1.5" fill="none" opacity="0.6" data-page-node-id="9MaqTuG2JhpKJ38C92vLeU"/>
+          </svg>
+        </div>
+        <div class="menu-detail-list" id="modalMenuList" data-page-node-id="1fKgxyXipjG3Q23JiBILqB">
+          <div class="menu-detail-item" data-page-node-id="HYWZN0H1cDNj1APLZ2NlYP">
+            <span class="day" data-page-node-id="LjQOZQpmEKzPWz16oUD3jW">周一</span>
+            <span class="dishes" data-page-node-id="HndtT9M0ua8oGU9se4XDHQ">红烧排骨 · 清炒时蔬 · 紫菜蛋花汤</span>
+          </div>
+          <div class="menu-detail-item" data-page-node-id="tMAWx7PnIiHpnyKuFoJhrP">
+            <span class="day" data-page-node-id="nOdI11AgH5zVJVumpYH2zR">周二</span>
+            <span class="dishes" data-page-node-id="Gq9dvcADgKPtpBRVpBujo7">糖醋里脊 · 蒜蓉西兰花 · 冬瓜排骨汤</span>
+          </div>
+          <div class="menu-detail-item" data-page-node-id="nNKN7b6Vn184Y613KXKK49">
+            <span class="day" data-page-node-id="BAd50yHNrxPUuNZ8ZlnyET">周三</span>
+            <span class="dishes" data-page-node-id="1GqD3XdUE2AP5idCrvjzZN">清蒸鲈鱼 · 麻婆豆腐 · 番茄蛋汤</span>
+          </div>
+          <div class="menu-detail-item" data-page-node-id="DpEmQAV66yNZtPoWwE5nkr">
+            <span class="day" data-page-node-id="qQRd5pGzv0padJOVunlKK2">周四</span>
+            <span class="dishes" data-page-node-id="kmoeSrvD0fsVImXFZCp33X">宫保鸡丁 · 凉拌黄瓜 · 莲藕排骨汤</span>
+          </div>
+          <div class="menu-detail-item" data-page-node-id="Kd9KjdBQ6sEEkpubqLHH2E">
+            <span class="day" data-page-node-id="g4x2OiYEVMlEU5jvPl1bpm">周五</span>
+            <span class="dishes" data-page-node-id="9KqwhAPLc39BlaIuLbWIvP">梅菜扣肉 · 炒青菜 · 银耳莲子汤</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-close" data-page-node-id="pLFYqGfRIEjWoru9g4qrnJ">
+        <button class="modal-close-btn" id="closeMenuModal" data-page-node-id="Igx0vTetCbJF5YtHFnomjV">知道了</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== Announcement Modal ==================== -->
+  <div class="modal-mask" id="announceModal" data-page-node-id="4ntTUk6RiKTEO9aRyyCJ7E">
+    <div class="announce-modal" data-page-node-id="ikrmkdbMMLs271QE93L1RS">
+      <div class="am-banner" id="amBanner" data-page-node-id="IwQI745kgstfGkF5XaZGrF">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.5" data-page-node-id="o2jb7cds3C4okMM2sbw7K9">
+          <path d="M3 21h18M3 7l1-4h16l1 4M4 7v14M20 7v14M8 11h8M8 15h8" data-page-node-id="kGxpq5wf8Zyx3HeYbOVjyA"/>
+        </svg>
+        <span class="am-type" id="amType" data-page-node-id="s3HnhPqIdAbxOnKtaWj1lj">系统公告</span>
+      </div>
+      <div class="am-body" data-page-node-id="PZ3HnsqRhg46d0XM1a9tla">
+        <div class="am-title" id="amTitle" data-page-node-id="bnbt5d0o2Gu25NSXomBHhx">智慧后勤平台正式上线</div>
+        <div class="am-text" id="amText" data-page-node-id="YJkTHy89Vx6y3mjeIiCTF5">海口海事局智慧后勤服务平台现已正式上线运营！平台涵盖食堂预约、公车管理、维护报修、公有住房、白沙门预约、拜访预约等七大核心后勤业务场景，为全局职工提供便捷高效的一站式后勤服务。欢迎广大职工使用并反馈宝贵意见。</div>
+      </div>
+      <div class="am-footer" data-page-node-id="22QcVMNJSxp5mYGlt7YQRp">
+        <button class="modal-close-btn" id="closeAnnounceModal" data-page-node-id="8xy4szkwFbbGLOFU09cKOA">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== Toast ==================== -->
+  <div class="toast" id="toast" data-page-node-id="iUYCHWum65lmqBHmzsD7uW">
+    <div class="toast-icon" id="toastIcon" data-page-node-id="QFeefXxDAtCsqWW4jnEGj3"></div>
+    <span id="toastText" data-page-node-id="suwWrH9eEIzsNXOb6tDDrD"></span>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ==================== Toast ====================
+  var toastTimer = null;
+  function showToast(text, iconType) {
+    var toast = document.getElementById('toast');
+    var toastText = document.getElementById('toastText');
+    var toastIcon = document.getElementById('toastIcon');
+
+    toastText.textContent = text;
+
+    var iconHtml = '';
+    if (iconType === 'success') {
+      iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+    } else if (iconType === 'info') {
+      iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>';
+    } else {
+      iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>';
+    }
+    toastIcon.innerHTML = iconHtml;
+
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() {
+      toast.classList.remove('show');
+    }, 1800);
+  }
+
+  // ==================== Status Bar Time ====================
+  function updateStatusTime() {
+    var now = new Date();
+    var h = String(now.getHours()).padStart(2, '0');
+    var m = String(now.getMinutes()).padStart(2, '0');
+    document.getElementById('statusTime').textContent = h + ':' + m;
+  }
+  updateStatusTime();
+  setInterval(updateStatusTime, 60000);
+
+  // ==================== Banner Carousel ====================
+  var bannerTrack = document.getElementById('bannerTrack');
+  var bannerDots = document.querySelectorAll('.banner-dot');
+  var bannerSlides = document.querySelectorAll('.banner-slide');
+  var currentSlide = 0;
+  var bannerTimer = null;
+  var bannerData = [
+    { type: '系统公告', color: 'linear-gradient(135deg, #1677FF 0%, #0052D9 100%)', title: '智慧后勤平台正式上线', text: '海口海事局智慧后勤服务平台现已正式上线运营！平台涵盖食堂预约、公车管理、维护报修、公有住房、白沙门预约、拜访预约等七大核心后勤业务场景，为全局职工提供便捷高效的一站式后勤服务。欢迎广大职工使用并反馈宝贵意见。' },
+    { type: '食堂通知', color: 'linear-gradient(135deg, #00A870 0%, #00875A 100%)', title: '本周食堂菜单已更新', text: '本周（2026年7月20日-7月26日）食堂菜单已更新，新增多道夏季特色菜品。请各位职工通过首页菜谱区域查看本周详细菜单，并按时进行餐次预订。订餐截止时间为每日16:30。' },
+    { type: '维护通知', color: 'linear-gradient(135deg, #ED7B2F 0%, #D6651A 100%)', title: '后勤报修在线受理', text: '智慧后勤平台现已开通在线报修功能！职工可通过首页「维护报修」入口，在线提交故障报修申请（包括故障标题、描述、地点、照片），维修人员将在第一时间受理并处理，全程工单跟踪。' }
+  ];
+
+  function goToSlide(idx) {
+    currentSlide = idx;
+    bannerTrack.style.transform = 'translateX(-' + (idx * 100) + '%)';
+    bannerDots.forEach(function(dot, i) {
+      dot.classList.toggle('active', i === idx);
+    });
+  }
+
+  function nextSlide() {
+    goToSlide((currentSlide + 1) % bannerSlides.length);
+  }
+
+  function startAutoPlay() {
+    if (bannerTimer) clearInterval(bannerTimer);
+    bannerTimer = setInterval(nextSlide, 4000);
+  }
+
+  function stopAutoPlay() {
+    if (bannerTimer) clearInterval(bannerTimer);
+  }
+
+  startAutoPlay();
+
+  // Banner touch swipe
+  var touchStartX = 0;
+  var touchEndX = 0;
+  var banner = document.getElementById('banner');
+
+  banner.addEventListener('touchstart', function(e) {
+    touchStartX = e.touches[0].clientX;
+    stopAutoPlay();
+  }, { passive: true });
+
+  banner.addEventListener('touchend', function(e) {
+    touchEndX = e.changedTouches[0].clientX;
+    var diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) {
+        goToSlide((currentSlide + 1) % bannerSlides.length);
+      } else {
+        goToSlide((currentSlide - 1 + bannerSlides.length) % bannerSlides.length);
+      }
+    }
+    startAutoPlay();
+  }, { passive: true });
+
+  // Banner click → show announcement detail
+  bannerSlides.forEach(function(slide, idx) {
+    slide.addEventListener('click', function() {
+      var data = bannerData[idx];
+      var modal = document.getElementById('announceModal');
+      document.getElementById('amType').textContent = data.type;
+      document.getElementById('amTitle').textContent = data.title;
+      document.getElementById('amText').textContent = data.text;
+      document.getElementById('amBanner').style.background = data.color;
+      modal.classList.add('show');
+      stopAutoPlay();
+    });
+  });
+
+  // Close announcement modal
+  document.getElementById('closeAnnounceModal').addEventListener('click', function() {
+    document.getElementById('announceModal').classList.remove('show');
+    startAutoPlay();
+  });
+  document.getElementById('announceModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      this.classList.remove('show');
+      startAutoPlay();
+    }
+  });
+
+  // ==================== Bell Button ====================
+  document.getElementById('bellBtn').addEventListener('click', function() {
+    window.location.href = 'P28-profile.html';
+  });
+
+  // ==================== Grid Items ====================
+  var gridNavMap = {
+    '电子支付': 'P46-electronic-payment.html',
+    '食堂预订': 'P03-meal-booking.html',
+    '公车预约': 'P07-car-apply.html',
+    '住房预约': 'P17-housing-home.html',
+    '维护报修': 'P12-repair-apply.html',
+    '白沙门预约': 'P20-baishamen-home.html',
+    '拜访预约': 'P23-visit-home.html'
+  };
+  var gridItems = document.querySelectorAll('.grid-item');
+  gridItems.forEach(function(item) {
+    item.addEventListener('click', function() {
+      var moduleName = this.getAttribute('data-module');
+      var url = gridNavMap[moduleName];
+      if (url) {
+        window.location.href = url;
+      } else {
+        showToast('「' + moduleName + '」功能暂未开放', 'info');
+      }
+    });
+  });
+
+  // ==================== Menu Week Navigation ====================
+  var weekOffsets = [
+    { text: '2026.07.13 - 07.19', dateRange: '2026-07-13 至 2026-07-19', weekNum: 29, desc: '<span class="day-label">周一</span>卤肉饭 · 炒青菜 · 冬瓜汤<br><span class="day-label">周二</span>回锅肉 · 拍黄瓜 · 紫菜汤<br><span class="day-label">周三</span>口水鸡 · 蒸南瓜 · 蛋花汤' },
+    { text: '2026.07.20 - 07.26', dateRange: '2026-07-20 至 2026-07-26', weekNum: 30, desc: '<span class="day-label">周一</span>红烧排骨 · 清炒时蔬 · 紫菜蛋花汤<br><span class="day-label">周二</span>糖醋里脊 · 蒜蓉西兰花 · 冬瓜排骨汤<br><span class="day-label">周三</span>清蒸鲈鱼 · 麻婆豆腐 · 番茄蛋汤' },
+    { text: '2026.07.27 - 08.02', dateRange: '2026-07-27 至 2026-08-02', weekNum: 31, desc: '<span class="day-label">周一</span>黄焖鸡 · 炒莲藕 · 海带汤<br><span class="day-label">周二</span>鱼香肉丝 · 凉拌木耳 · 豆腐汤<br><span class="day-label">周三</span>可乐鸡翅 · 炒丝瓜 · 蘑菇汤' }
+  ];
+  var currentWeekIdx = 1;
+
+  function updateWeek(direction) {
+    if (direction === 'prev' && currentWeekIdx > 0) {
+      currentWeekIdx--;
+    } else if (direction === 'next' && currentWeekIdx < weekOffsets.length - 1) {
+      currentWeekIdx++;
+    } else if (direction === 'prev') {
+      showToast('已经是最早的菜谱了', 'info');
+      return;
+    } else if (direction === 'next') {
+      showToast('已经是最新的菜谱了', 'info');
+      return;
+    }
+
+    var data = weekOffsets[currentWeekIdx];
+    document.getElementById('weekText').textContent = data.text;
+    document.getElementById('menuDesc').innerHTML = data.desc;
+    document.getElementById('modalDate').textContent = data.dateRange;
+
+    // Update modal list
+    var allMenus = [
+      [
+        { day: '周一', dishes: '卤肉饭 · 炒青菜 · 冬瓜汤' },
+        { day: '周二', dishes: '回锅肉 · 拍黄瓜 · 紫菜汤' },
+        { day: '周三', dishes: '口水鸡 · 蒸南瓜 · 蛋花汤' },
+        { day: '周四', dishes: '红烧牛肉 · 拌豆芽 · 排骨汤' },
+        { day: '周五', dishes: '酸菜鱼 · 炒苋菜 · 三鲜汤' }
+      ],
+      [
+        { day: '周一', dishes: '红烧排骨 · 清炒时蔬 · 紫菜蛋花汤' },
+        { day: '周二', dishes: '糖醋里脊 · 蒜蓉西兰花 · 冬瓜排骨汤' },
+        { day: '周三', dishes: '清蒸鲈鱼 · 麻婆豆腐 · 番茄蛋汤' },
+        { day: '周四', dishes: '宫保鸡丁 · 凉拌黄瓜 · 莲藕排骨汤' },
+        { day: '周五', dishes: '梅菜扣肉 · 炒青菜 · 银耳莲子汤' }
+      ],
+      [
+        { day: '周一', dishes: '黄焖鸡 · 炒莲藕 · 海带汤' },
+        { day: '周二', dishes: '鱼香肉丝 · 凉拌木耳 · 豆腐汤' },
+        { day: '周三', dishes: '可乐鸡翅 · 炒丝瓜 · 蘑菇汤' },
+        { day: '周四', dishes: '水煮牛肉 · 拌三丝 · 萝卜汤' },
+        { day: '周五', dishes: '红烧肉 · 炒空心菜 · 酸辣汤' }
+      ]
+    ];
+
+    var listHtml = '';
+    allMenus[currentWeekIdx].forEach(function(item) {
+      listHtml += '<div class="menu-detail-item"><span class="day">' + item.day + '</span><span class="dishes">' + item.dishes + '</span></div>';
+    });
+    document.getElementById('modalMenuList').innerHTML = listHtml;
+
+    // Update tag
+    var tagEl = document.querySelector('.menu-image-overlay .tag');
+    if (tagEl) {
+      tagEl.textContent = '第' + data.weekNum + '周 · 菜谱预览';
+    }
+
+    // Animation feedback
+    var menuImage = document.getElementById('menuImage');
+    menuImage.style.opacity = '0';
+    setTimeout(function() {
+      menuImage.style.transition = 'opacity 0.3s';
+      menuImage.style.opacity = '1';
+    }, 50);
+  }
+
+  document.getElementById('prevWeek').addEventListener('click', function() {
+    updateWeek('prev');
+  });
+
+  document.getElementById('nextWeek').addEventListener('click', function() {
+    updateWeek('next');
+  });
+
+  // ==================== Menu Image Click → Modal ====================
+  document.getElementById('menuImage').addEventListener('click', function() {
+    document.getElementById('menuModal').classList.add('show');
+  });
+
+  document.getElementById('closeMenuModal').addEventListener('click', function() {
+    document.getElementById('menuModal').classList.remove('show');
+  });
+
+  document.getElementById('menuModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      this.classList.remove('show');
+    }
+  });
+
+  // ==================== Tab Bar ====================
+  var tabNavMap = {
+    '首页': 'haikou-maritime-home.html',
+    '审批': 'P26-approval-home.html',
+    '任务': 'P30-task-home.html',
+    '我的': 'P28-profile.html'
+  };
+  var tabItems = document.querySelectorAll('.tab-item');
+  tabItems.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      var tabName = this.getAttribute('data-tab');
+      if (this.classList.contains('active')) return;
+      var url = tabNavMap[tabName];
+      if (url) {
+        window.location.href = url;
+      }
+    });
+  });
+
+  // ==================== Scroll fade-in ====================
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('fade-in');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.quick-cards, .menu-section').forEach(function(el) {
+    observer.observe(el);
+  });
+
+})();
+</script>
+
+</body>
+</html>
