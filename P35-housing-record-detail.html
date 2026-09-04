@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="iV7Poe8uFCqlzzGRBxAi3Q">
+<head data-page-node-id="IqHsiTMNg1QCvGsz2C3rW6">
+<meta charset="UTF-8" data-page-node-id="oMP9uRGD5zuR7EXm6PEw1y">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="iiLLLSMYpPosLHp4Uws6H0">
+<title>P35 - 申请详情</title>
+<link rel="stylesheet" href="common.css" data-page-node-id="qB1x8aFvuzgeFuZ6mw2vdM">
+<style>
+/* ==================== 状态标签配色 ==================== */
+.tag-pass { background: var(--success-light); color: var(--success); }   /* 通过=绿 */
+.tag-reject { background: var(--danger-light); color: var(--danger); }    /* 驳回=红 */
+.tag-pending { background: var(--warning-light); color: var(--warning); }  /* 待处理=橙 */
+.status-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* ==================== Detail Info Row（参考 P27） ==================== */
+.detail-block {
+  padding: 4px 16px 14px;
+}
+.detail-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 8px 0;
+  gap: 12px;
+}
+.detail-row .d-label {
+  font-size: 13px;
+  color: var(--text-3);
+  width: 70px;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+.detail-row .d-value {
+  font-size: 14px;
+  color: var(--text-1);
+  flex: 1;
+  line-height: 1.5;
+}
+
+/* ==================== 申请编号区 ==================== */
+.apply-number-section {
+  background: var(--primary-gradient);
+  margin: 16px 16px 0;
+  border-radius: var(--radius-lg);
+  padding: 18px 16px;
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(22,119,255,0.25);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.apply-number-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.apply-number-icon svg { width: 22px; height: 22px; color: #FFFFFF; }
+.apply-number-info { flex: 1; min-width: 0; }
+.apply-number-label { font-size: 12px; opacity: 0.85; margin-bottom: 4px; }
+.apply-number-value { font-size: 20px; font-weight: 700; letter-spacing: 0.5px; }
+
+/* ==================== 佐证材料缩略图 ==================== */
+.evidence-photos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 4px 0 0;
+}
+.evidence-photo {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+}
+.evidence-photo .photo-thumb {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #E6F0FF, #1677FF);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.evidence-photo .photo-thumb svg { width: 28px; height: 28px; color: rgba(255,255,255,0.9); }
+.evidence-photo .photo-num {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  font-size: 10px;
+  color: #FFFFFF;
+  background: rgba(0,0,0,0.4);
+  border-radius: 3px;
+  padding: 1px 4px;
+}
+.evidence-photo:active { opacity: 0.85; }
+
+/* ==================== 图片预览弹窗 ==================== */
+.photo-preview-area {
+  width: 100%;
+  height: 240px;
+  background: linear-gradient(135deg, #E6F0FF, #1677FF);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+}
+.photo-preview-area svg { width: 64px; height: 64px; color: rgba(255,255,255,0.85); }
+.photo-preview-caption {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-3);
+  margin-top: 12px;
+}
+
+.spacer { height: 30px; }
+</style>
+</head>
+<body data-page-node-id="uGwCSKo4UN22Q00QIW596M">
+
+<div class="miniprogram" id="app" data-page-node-id="h5RNwI5vJcDIFy8O34R1Xk">
+
+  <!-- Status Bar -->
+  <div class="status-bar light" data-page-node-id="4BFbjnHBT0UXj2qcXgSs8g">
+    <span class="time" data-page-node-id="xqTM05uYo9TaB5NfrvmRDA">09:42</span>
+    <div class="icons" data-page-node-id="fp91JBFhUiYB8Oynr5knbP">
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="pToMM0da7EqQeChaWv89hz"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" data-page-node-id="xmhlM8glq3VUefJieh3jG3"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="StiyzLaozjjlLKHyJG7iRr"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" data-page-node-id="IpGfHyoC3HePEx11GNVLZr"/></svg>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar white" data-page-node-id="lB9aPUBtAEHEmvBlJtIviY">
+    <div class="nav-back" data-page-node-id="h7KLPkjpPTI5HDF1vx84AI">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="VKEDQTCWnV11FZANFCXt9a">
+        <polyline points="15 18 9 12 15 6" data-page-node-id="W7aFclFkqa4EPOQwmxDxAY"/>
+      </svg>
+    </div>
+    <span class="nav-title" data-page-node-id="OhxoEMClDZY0z5VA0WAIUH">申请详情</span>
+    <span class="nav-placeholder" data-page-node-id="hF7HO5ayEx9mDAYzBYs4Jw"></span>
+  </div>
+
+  <!-- Content -->
+  <div class="content fade-in" data-page-node-id="HP9TxarQCbYYbTOUonk1WN">
+
+    <!-- 进度步骤条 -->
+    <div class="steps" style="margin:16px 16px 0;border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);" data-page-node-id="IoFqShREFEI71XD8e1kCR3">
+      <div class="step done" data-page-node-id="NTEZHh7fsWlNXXSDtLDO0l">
+        <div class="step-circle" data-page-node-id="HqDxiQwBDVS3MZWE83hoad">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;" data-page-node-id="QteXgDRoU38hAsc8rM4wta"><polyline points="20 6 9 17 4 12" data-page-node-id="OlEZbDNZ5YjzwbcxKVCTXN"/></svg>
+        </div>
+        <div class="step-label" data-page-node-id="t41YvHkjVGcqVaqB318BKk">已提交</div>
+      </div>
+      <div class="step done" data-page-node-id="0YCPHAuUCIGWlQmdGhg3fF">
+        <div class="step-circle" data-page-node-id="6DcJd4fJ0ObjsxL3DPEjQW">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;" data-page-node-id="cVQiuvbWDsGLDDZTrjiG79"><polyline points="20 6 9 17 4 12" data-page-node-id="AhHEU1TkfkPU3fESrRaYhM"/></svg>
+        </div>
+        <div class="step-label" data-page-node-id="gaynscCZovfwY95TCsTgif">审批中</div>
+      </div>
+      <div class="step current" data-page-node-id="unLaHdYzHns9IdXB0uy7yW">
+        <div class="step-circle" data-page-node-id="wy5bGyoX3UPQsGkNQ7NONh">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;" data-page-node-id="9MDXHv2wEKMp83IyD7m747"><polyline points="20 6 9 17 4 12" data-page-node-id="eYZhS2TcUqLjkBb2cJ2hyz"/></svg>
+        </div>
+        <div class="step-label" data-page-node-id="Hg8LswbUZ9qH52F2E3zJfM">已通过</div>
+      </div>
+    </div>
+
+    <!-- 申请编号 -->
+    <div class="apply-number-section" data-page-node-id="iUAGMzL6wYSMtAWsOUzNTf">
+      <div class="apply-number-icon" data-page-node-id="YZzb2Xw7mzCAo0aeE3rxa6">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="8PaHt7Jjv4BAfEpiqNBPpF">
+          <rect x="3" y="4" width="18" height="16" rx="2" data-page-node-id="wFVDpYdwq2Ev0NQAOwQxil"/>
+          <path d="M7 8h.01M7 12h.01M7 16h.01M12 8h5M12 12h5M12 16h5" data-page-node-id="KVtguewv9AHxduw2i7mR4A"/>
+        </svg>
+      </div>
+      <div class="apply-number-info" data-page-node-id="i29tJxddSxB9JMpGhdCQQk">
+        <div class="apply-number-label" data-page-node-id="wGK3U2oUH5Qy4F2OnYhwJT">申请编号</div>
+        <div class="apply-number-value" data-page-node-id="Xg8TyxdzLrmbSDgWp2RalD">ZF-2026-000123</div>
+      </div>
+    </div>
+
+    <!-- 申请信息 -->
+    <div class="section" data-page-node-id="AcewRfBrkjGNsRU2alNUKP">
+      <div class="section-title" data-page-node-id="YaFruCnYRdzjZNtbDAALoI">
+        <div class="dot" data-page-node-id="gnBfdwa3Qx1bxWvH2egIYX"></div>
+        申请信息
+      </div>
+      <div class="detail-block" data-page-node-id="dm12YOKRecLXIbRaLMB73e">
+        <div class="detail-row" data-page-node-id="Q3oTDLp1qfcvYbtOLtksYj">
+          <span class="d-label" data-page-node-id="86KrKpGEeMHDNrnAckzaXj">申请类型</span>
+          <span class="d-value" style="font-weight:600;color:var(--primary);" data-page-node-id="v8nNigJAtt2hotFiBwwwnj">入住申请</span>
+        </div>
+        <div class="detail-row" data-page-node-id="C4xq5BBZTJTfEih8ieee8x">
+          <span class="d-label" data-page-node-id="i9J2xjE94klb3FfvDGN8Jw">申请事由</span>
+          <span class="d-value" data-page-node-id="PsdWq1SwabdlUxp7bGR1dY">新入职分配住房</span>
+        </div>
+        <div class="detail-row" data-page-node-id="WHfrqqb9wYKmLpP3m2DLkD">
+          <span class="d-label" data-page-node-id="PwFXrQR6KZ0RRpaYmGdxsh">期望房型</span>
+          <span class="d-value" data-page-node-id="uwWkLDzn5g9j11n2DR8noV">一室一厅</span>
+        </div>
+        <div class="detail-row" data-page-node-id="M4qzNRBHT4n39kJVcWdBBZ">
+          <span class="d-label" data-page-node-id="BwGPNHe21twO8TiUVEsvH8">佐证材料</span>
+          <span class="d-value" data-page-node-id="JXWqQtmim1CNvt9YKGHQ4G">2份</span>
+        </div>
+        <div class="detail-row" style="padding-top:0;align-items:flex-start;" data-page-node-id="q0grrVgrVFz2vAHooumCWc">
+          <span class="d-label" style="width:70px;" data-page-node-id="tQa2gVgplADDc7fjScJvC8"></span>
+          <div class="evidence-photos" data-page-node-id="58m8Tq0DAv2ltmJhgRaP7I">
+            <div class="evidence-photo" data-idx="1" data-page-node-id="EYDC2gBIkxOsDTqEAFRyRU">
+              <div class="photo-thumb" data-page-node-id="6ZrQVfCWFvSe2MovzAAkzj">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="4Wzihj4f3aCH0DhCuhAHHH">
+                  <rect x="3" y="3" width="18" height="18" rx="2" data-page-node-id="IFHP2LCw3ct3EhvGWA6pP9"/>
+                  <circle cx="8.5" cy="8.5" r="1.5" data-page-node-id="wSaTaTEdLEE1S34uK12tcp"/>
+                  <path d="M21 15l-5-5L5 21" data-page-node-id="TGt4HlUBXBXfpvqa9PUa3L"/>
+                </svg>
+              </div>
+              <span class="photo-num" data-page-node-id="91Pal8bpVHXIAto8b4dDOu">1</span>
+            </div>
+            <div class="evidence-photo" data-idx="2" data-page-node-id="NK4aNhSCHSmIoB3OiFzs61">
+              <div class="photo-thumb" data-page-node-id="oz7k0wHmLZh22cPPGMfXW1">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="8QJm8pC2Ch3T7ULIhT7RgG">
+                  <rect x="3" y="3" width="18" height="18" rx="2" data-page-node-id="w09HbFwsmXO8ypwU0KhEEA"/>
+                  <circle cx="8.5" cy="8.5" r="1.5" data-page-node-id="D5Gktz0xuTifFglbciJcid"/>
+                  <path d="M21 15l-5-5L5 21" data-page-node-id="p4UCmhhfovQ5NFKqW6RB3Y"/>
+                </svg>
+              </div>
+              <span class="photo-num" data-page-node-id="vA9GQhDk4vBIqHg5lqpk1o">2</span>
+            </div>
+          </div>
+        </div>
+        <div class="detail-row" data-page-node-id="k1WZKr4EjEE7YDS3upwGKf">
+          <span class="d-label" data-page-node-id="s5jGvwh41AwaWh9flK9fXC">申请人</span>
+          <span class="d-value" data-page-node-id="ReCfEjKKLYW1pwkOUegQgT">张三</span>
+        </div>
+        <div class="detail-row" data-page-node-id="FdxEs0r0Bgp1zlQaRtw6KR">
+          <span class="d-label" data-page-node-id="X6E255JWviXGAXO4gxSFYq">申请部门</span>
+          <span class="d-value" data-page-node-id="QcWStXdQMygyj19vwlBHXb">海事处</span>
+        </div>
+        <div class="detail-row" data-page-node-id="g2TqDgymnutFuDUN5dTPh9">
+          <span class="d-label" data-page-node-id="Gf6nzFm8sWjfiMHKDjqNg4">提交时间</span>
+          <span class="d-value" data-page-node-id="ew8U1yMPflDgJ2trTggT1P">2026-07-20 09:12</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 审批信息 -->
+    <div class="section" data-page-node-id="mUa41irF7HQJECa66rXmVB">
+      <div class="section-title" data-page-node-id="FiZktXKwQUWMsOHPPmNpQu">
+        <div class="dot" data-page-node-id="RwjDzj4eNCmHtWvCCvRKc2"></div>
+        审批信息
+      </div>
+      <div class="detail-block" data-page-node-id="QYf46hsgHrjAiJ6YGDjLCm">
+        <div class="detail-row" data-page-node-id="RBzraEJxiUE6Mcrr8l1IRp">
+          <span class="d-label" data-page-node-id="7xeDCVJz1k7DR8jH3v4QvK">提交人</span>
+          <span class="d-value" data-page-node-id="fs9aWWFUZMQvFwF6MOJFii">张三</span>
+        </div>
+        <div class="detail-row" data-page-node-id="SZ1Ztz6JcaMaJTupc8qHgq">
+          <span class="d-label" data-page-node-id="Ow7GF0nDRYZiSSQbtICAoK">提交时间</span>
+          <span class="d-value" data-page-node-id="vxviXiAQ4VTQT2SH8PABNr">2026-07-20 09:12</span>
+        </div>
+        <div class="detail-row" data-page-node-id="gVeo5HvUtvTCVMXhUhwLNw">
+          <span class="d-label" data-page-node-id="kCdqqrbmD1qsbweAqrsXUa">审批人</span>
+          <span class="d-value" data-page-node-id="iBfEXZmZV0NEgsGWKMeOsX">赵主任</span>
+        </div>
+        <div class="detail-row" data-page-node-id="7awydy1baBc44BNG9CH11n">
+          <span class="d-label" data-page-node-id="K3eZgsM8ETHCQmjeBisCh9">审批时间</span>
+          <span class="d-value" data-page-node-id="VYDmXQAoDlGtcK54eCwOsc">2026-07-20 15:00</span>
+        </div>
+        <div class="detail-row" data-page-node-id="BuAEjaMwwqWBKDjKgESjNK">
+          <span class="d-label" data-page-node-id="NZ0l3yRip95mz5Wd7HDGF9">审批结果</span>
+          <span class="d-value" data-page-node-id="RYzffyyItO138gdZBbb6Jj"><span class="status-tag tag-pass" data-page-node-id="cDN72fNtc6T5cnC19FMfw0">已通过</span></span>
+        </div>
+        <div class="detail-row" data-page-node-id="BgryLGwfoTJU7ohwTu9Ei8">
+          <span class="d-label" data-page-node-id="WF0ZxGCGR0yLxzayNYWdQB">审批意见</span>
+          <span class="d-value" data-page-node-id="TVIayDLDJ2R9eQBGt5g7lA">同意分配住房</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 审批返回信息（仅审批通过后展示） -->
+    <div class="section" data-page-node-id="8olOKJGStA07HWkJDrYbld">
+      <div class="section-title" data-page-node-id="2SlfHqMgZpzsFg7apG8Yrp">
+        <div class="dot" data-page-node-id="cQCYlMEJYnBCht5NrwJqNv"></div>
+        审批返回信息
+      </div>
+      <div class="detail-block" data-page-node-id="6KYtnFGijGLChqiHsbMEEk">
+        <div class="detail-row" data-page-node-id="gCchMiNU61jR5zxUs6oJKq">
+          <span class="d-label" data-page-node-id="KI7W9QC1cMeac8L0DANemd">小区</span>
+          <span class="d-value" style="font-weight:600;" data-page-node-id="fcGZOIEH6Q4dLbQSRQGeHl">滨海小区</span>
+        </div>
+        <div class="detail-row" data-page-node-id="tuihWSlhQAvbueKdRgwFvd">
+          <span class="d-label" data-page-node-id="Owthvs3p0nV0n9GJPUK7Mh">楼栋</span>
+          <span class="d-value" data-page-node-id="ZUwuGmCch2Bn3p6XCTz9ST">2栋</span>
+        </div>
+        <div class="detail-row" data-page-node-id="uTeRTZGFHRdAgzoy79AYgp">
+          <span class="d-label" data-page-node-id="8HFQAYWpiwQYw5eH8Q9XSY">房号</span>
+          <span class="d-value" style="color:var(--primary);font-weight:600;" data-page-node-id="A5UVGGVXtTc7vhJCFR8Qnl">301室</span>
+        </div>
+        <div class="detail-row" data-page-node-id="yu6BS1qA0CQFAww1a5UrDH">
+          <span class="d-label" data-page-node-id="R9JRYAuKRGEXdKLP2UKylU">房型</span>
+          <span class="d-value" data-page-node-id="bD15gxla8obn9RD5PhdXyX">一室一厅</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="spacer" data-page-node-id="mGyr94injeGpKHoERNKpz5"></div>
+
+  </div>
+
+  <!-- 图片预览弹窗 -->
+  <div class="modal-mask" id="photoPreviewModal" data-page-node-id="j0DEi6rsLHyEMqRnNFB6eu">
+    <div class="modal-content" style="width:300px;" data-page-node-id="yWVeqvhbfFQC9wVqxitGGA">
+      <div class="modal-body" style="padding:16px;text-align:center;" data-page-node-id="1fu1975EfI3nVYWcmnd553">
+        <div class="photo-preview-area" id="previewArea" data-page-node-id="in2H6pUnHC9zq4KNihIoBW">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="fZy7JXLejESGaMgmgSVepA">
+            <rect x="3" y="3" width="18" height="18" rx="2" data-page-node-id="LN6teCoLwsEF0g7kTBJs04"/>
+            <circle cx="8.5" cy="8.5" r="1.5" data-page-node-id="CZQLtU7ExvwvRGgoQk5UFN"/>
+            <path d="M21 15l-5-5L5 21" data-page-node-id="vEJv4BlGwugASKMKLXkW2m"/>
+          </svg>
+        </div>
+        <div class="photo-preview-caption" id="previewCaption" data-page-node-id="dQB8YNRHEZ6gGzT57luKMN">佐证材料 1</div>
+      </div>
+      <div class="modal-footer" data-page-node-id="CkUAngC2PpSy9535Vp8ozk">
+        <button class="btn btn-outline-gray btn-block" id="closePreview" data-page-node-id="g0yq1IZLLS5EqwPPMiR4DZ">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" data-page-node-id="krH8wEi5MhCrODpA84kN87">
+    <div class="toast-icon" data-page-node-id="TuWt98aIVdA6RaeUXYD2jm"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="QcEWtOOziuEkZJA13hyKTQ"><circle cx="12" cy="12" r="10" data-page-node-id="MNyXBLylHWitsYBajSw01H"/><path d="M12 16v-4M12 8h.01" data-page-node-id="NkDU96sk7NqFFETMX1OjzJ"/></svg></div>
+    <span id="toastText" data-page-node-id="VbTuWFLGQRIHTAtuZBpCM4"></span>
+  </div>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  var toastTimer = null;
+  function showToast(text, iconType) {
+    var toast = document.getElementById('toast');
+    var toastText = document.getElementById('toastText');
+    var toastIcon = toast.querySelector('.toast-icon');
+
+    toastText.textContent = text;
+
+    var iconHtml = '';
+    if (iconType === 'success') {
+      iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+    } else if (iconType === 'error') {
+      iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>';
+    } else {
+      iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>';
+    }
+    toastIcon.innerHTML = iconHtml;
+
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() {
+      toast.classList.remove('show');
+    }, 1800);
+  }
+
+  // 佐证材料图片点击 → 大图预览
+  var previewModal = document.getElementById('photoPreviewModal');
+  var previewCaption = document.getElementById('previewCaption');
+
+  document.querySelectorAll('.evidence-photo').forEach(function(item) {
+    item.addEventListener('click', function() {
+      var idx = this.getAttribute('data-idx');
+      previewCaption.textContent = '佐证材料 ' + idx;
+      previewModal.classList.add('show');
+    });
+  });
+
+  // 关闭预览
+  document.getElementById('closePreview').addEventListener('click', function() {
+    previewModal.classList.remove('show');
+  });
+
+  // Status bar time
+  function updateStatusTime() {
+    var now = new Date();
+    var h = String(now.getHours()).padStart(2, '0');
+    var m = String(now.getMinutes()).padStart(2, '0');
+    var el = document.querySelector('.status-bar .time');
+    if (el) el.textContent = h + ':' + m;
+  }
+  updateStatusTime();
+  setInterval(updateStatusTime, 60000);
+
+})();
+</script>
+
+</body>
+</html>
