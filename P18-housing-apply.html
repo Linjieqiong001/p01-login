@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>P18 - 住房申请</title>
+<link rel="stylesheet" href="common.css">
+<style>
+/* ==================== Segmented Control ==================== */
+.segmented-wrap {
+  padding: 12px 16px 0;
+}
+
+.segmented {
+  display: flex;
+  background: var(--bg);
+  border-radius: var(--radius-md);
+  padding: 3px;
+  margin: 0;
+}
+
+.segmented-item {
+  flex: 1;
+  text-align: center;
+  padding: 9px 0;
+  font-size: 14px;
+  color: var(--text-2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.25s;
+  font-weight: 500;
+}
+
+.segmented-item.active {
+  background: var(--card-bg);
+  color: var(--primary);
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+/* ==================== Form Section ==================== */
+.form-section {
+  background: var(--card-bg);
+  margin: 12px 16px 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.form-section.hidden {
+  display: none;
+}
+
+.form-group {
+  padding: 0 16px;
+}
+
+.form-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 14px 0;
+  border-bottom: 0.5px solid var(--border);
+  gap: 10px;
+}
+
+.form-item:last-child {
+  border-bottom: none;
+}
+
+.form-label {
+  font-size: 14px;
+  color: var(--text-1);
+  font-weight: 500;
+  min-width: 78px;
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+
+.form-label .required {
+  color: var(--danger);
+  margin-right: 2px;
+}
+
+.form-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.form-textarea {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: var(--text-1);
+  background: transparent;
+  resize: none;
+  min-height: 80px;
+  font-family: inherit;
+  line-height: 1.5;
+  padding: 0;
+}
+
+.form-textarea::placeholder {
+  color: var(--text-4);
+}
+
+.form-select {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: var(--text-1);
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 2px 0;
+  line-height: 1.5;
+}
+
+.form-select option {
+  color: var(--text-1);
+}
+
+.form-select-placeholder {
+  color: var(--text-4);
+}
+
+/* Date picker field */
+.date-picker-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+.date-picker-field .date-text {
+  font-size: 14px;
+  color: var(--text-4);
+}
+
+.date-picker-field .date-text.filled {
+  color: var(--text-1);
+}
+
+.date-picker-field .date-arrow {
+  width: 16px;
+  height: 16px;
+  color: var(--text-4);
+  flex-shrink: 0;
+}
+
+/* ==================== Photo Upload ==================== */
+.photo-upload {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.photo-item {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(135deg, #E6F0FF, #B3D4FF);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-item svg {
+  width: 28px;
+  height: 28px;
+  color: rgba(255,255,255,0.7);
+}
+
+.photo-add {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-sm);
+  border: 1.5px dashed var(--divider);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  background: var(--bg);
+  transition: border-color 0.2s;
+}
+
+.photo-add:active {
+  border-color: var(--primary);
+}
+
+.photo-add svg {
+  width: 22px;
+  height: 22px;
+  color: var(--text-4);
+}
+
+.photo-add span {
+  font-size: 10px;
+  color: var(--text-4);
+}
+
+.photo-delete {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 18px;
+  height: 18px;
+  background: rgba(0,0,0,0.5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.photo-delete svg {
+  width: 10px;
+  height: 10px;
+  color: #FFFFFF;
+}
+
+/* ==================== Submit Button Area ==================== */
+.submit-area {
+  padding: 24px 16px 28px;
+}
+
+.submit-area .btn {
+  width: 100%;
+  height: 46px;
+  background: var(--primary-gradient);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  font-family: inherit;
+}
+
+.submit-area .btn:active {
+  transform: scale(0.98);
+  opacity: 0.85;
+}
+
+/* ==================== Hint Text ==================== */
+.upload-hint {
+  font-size: 11px;
+  color: var(--text-4);
+  padding-top: 4px;
+}
+
+/* ==================== Toast ==================== */
+.toast {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  background: rgba(0,0,0,0.75);
+  color: #FFFFFF;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  z-index: 200;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s;
+  white-space: nowrap;
+  max-width: 320px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.toast.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.toast .toast-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+
+.toast .toast-icon svg {
+  width: 32px;
+  height: 32px;
+}
+</style>
+</head>
+<body>
+
+<div class="miniprogram" id="app">
+
+  <!-- Status Bar -->
+  <div class="status-bar light">
+    <span class="time">09:38</span>
+    <div class="icons">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar white">
+    <div class="nav-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <span class="nav-title">住房申请</span>
+    <span class="nav-right-btn" id="historyBtn">历史记录</span>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <!-- Segmented Tab Switch -->
+    <div class="segmented-wrap">
+      <div class="segmented" id="segmentedTabs">
+        <div class="segmented-item active" data-tab="checkin">入住申请</div>
+        <div class="segmented-item" data-tab="checkout">退宿申请</div>
+      </div>
+    </div>
+
+    <!-- ==================== 入住申请表单 ==================== -->
+    <div class="form-section" id="formCheckin">
+      <div class="form-group">
+        <!-- 申请事由 -->
+        <div class="form-item">
+          <div class="form-label"><span class="required">*</span>申请事由</div>
+          <div class="form-body">
+            <textarea class="form-textarea" placeholder="请输入入住事由，例如：因工作需要申请海事局家属院公有住房"></textarea>
+          </div>
+        </div>
+
+        <!-- 期望房型 -->
+        <div class="form-item">
+          <div class="form-label"><span class="required">*</span>期望房型</div>
+          <div class="form-body">
+            <select class="form-select">
+              <option value="" disabled selected>请选择期望房型</option>
+              <option value="1">一室一厅</option>
+              <option value="2">两室一厅</option>
+              <option value="3">三室两厅</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 预计入住时间 -->
+        <div class="form-item">
+          <div class="form-label">预计入住</div>
+          <div class="form-body">
+            <div class="date-picker-field" id="checkinDate">
+              <span class="date-text" id="checkinDateText">请选择日期</span>
+              <svg class="date-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- 佐证材料上传 -->
+        <div class="form-item">
+          <div class="form-label"><span class="required">*</span>佐证材料</div>
+          <div class="form-body">
+            <div class="photo-upload" id="uploadCheckin">
+              <div class="photo-add">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <span>上传材料</span>
+              </div>
+            </div>
+            <div class="upload-hint">支持上传身份证、工作证明等材料，最多9张</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 退宿申请表单（默认隐藏） ==================== -->
+    <div class="form-section hidden" id="formCheckout">
+      <div class="form-group">
+        <!-- 退宿日期 -->
+        <div class="form-item">
+          <div class="form-label"><span class="required">*</span>退宿日期</div>
+          <div class="form-body">
+            <div class="date-picker-field" id="checkoutDate">
+              <span class="date-text" id="checkoutDateText">请选择日期</span>
+              <svg class="date-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- 退宿原因 -->
+        <div class="form-item">
+          <div class="form-label"><span class="required">*</span>退宿原因</div>
+          <div class="form-body">
+            <textarea class="form-textarea" placeholder="请输入退宿原因"></textarea>
+          </div>
+        </div>
+
+        <!-- 水电费单上传 -->
+        <div class="form-item">
+          <div class="form-label">水电费单</div>
+          <div class="form-body">
+            <div class="photo-upload" id="uploadUtility">
+              <div class="photo-add">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <span>上传单据</span>
+              </div>
+            </div>
+            <div class="upload-hint">上传最近三个月的水电费缴纳单据</div>
+          </div>
+        </div>
+
+        <!-- 物业费单上传 -->
+        <div class="form-item">
+          <div class="form-label">物业费单</div>
+          <div class="form-body">
+            <div class="photo-upload" id="uploadProperty">
+              <div class="photo-add">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <span>上传单据</span>
+              </div>
+            </div>
+            <div class="upload-hint">上传物业费缴纳证明</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="submit-area">
+      <button class="btn" id="submitBtn">提交申请</button>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <div class="toast-icon"></div>
+    <span id="toastText"></span>
+  </div>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // ==================== History Record ====================
+  document.getElementById('historyBtn').addEventListener('click', function() {
+    window.location.href = 'P34-housing-records.html';
+  });
+
+  // ==================== Tab Switch ====================
+  var segItems = document.querySelectorAll('#segmentedTabs .segmented-item');
+  var formCheckin = document.getElementById('formCheckin');
+  var formCheckout = document.getElementById('formCheckout');
+
+  segItems.forEach(function(item) {
+    item.addEventListener('click', function() {
+      var tab = this.getAttribute('data-tab');
+
+      // Update active state
+      segItems.forEach(function(s) { s.classList.remove('active'); });
+      this.classList.add('active');
+
+      // Toggle form visibility
+      if (tab === 'checkin') {
+        formCheckin.classList.remove('hidden');
+        formCheckout.classList.add('hidden');
+      } else {
+        formCheckin.classList.add('hidden');
+        formCheckout.classList.remove('hidden');
+      }
+    });
+  });
+
+  // ==================== Date Picker Simulation ====================
+  function initDatePicker(fieldId, textId) {
+    var field = document.getElementById(fieldId);
+    var textSpan = document.getElementById(textId);
+    if (!field || !textSpan) return;
+
+    field.addEventListener('click', function() {
+      // Simulate date selection
+      var now = new Date();
+      var year = now.getFullYear();
+      var month = String(now.getMonth() + 1).padStart(2, '0');
+      var day = String(now.getDate() + 3).padStart(2, '0');
+      var selectedDate = year + '-' + month + '-' + day;
+
+      textSpan.textContent = selectedDate;
+      textSpan.classList.add('filled');
+    });
+  }
+
+  initDatePicker('checkinDate', 'checkinDateText');
+  initDatePicker('checkoutDate', 'checkoutDateText');
+
+  // ==================== Photo Upload ====================
+  function initPhotoUploads() {
+    var uploadGroups = document.querySelectorAll('.photo-upload');
+
+    uploadGroups.forEach(function(group) {
+      var addBtn = group.querySelector('.photo-add');
+      if (!addBtn) return;
+
+      addBtn.addEventListener('click', function() {
+        var count = group.querySelectorAll('.photo-item').length;
+        if (count >= 9) {
+          MS.showToast('最多上传9张照片', 'info');
+          return;
+        }
+
+        var hues = ['200', '160', '120', '80', '220', '40', '280', '180', '140'];
+        var hue = hues[count % hues.length];
+
+        var item = document.createElement('div');
+        item.className = 'photo-item';
+        item.innerHTML = '<div style="width:100%;height:100%;background:linear-gradient(135deg, hsl(' + hue + ',40%,85%), hsl(' + hue + ',60%,65%));display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div><div class="photo-delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></div>';
+
+        // Delete handler
+        item.querySelector('.photo-delete').addEventListener('click', function(e) {
+          e.stopPropagation();
+          item.remove();
+        });
+
+        group.insertBefore(item, addBtn);
+      });
+    });
+  }
+
+  initPhotoUploads();
+
+  // ==================== Submit Button ====================
+  var submitBtn = document.getElementById('submitBtn');
+  submitBtn.addEventListener('click', function() {
+    var activeTab = document.querySelector('#segmentedTabs .segmented-item.active');
+    var tabLabel = activeTab ? activeTab.textContent.trim() : '申请';
+
+    // Simple validation simulation
+    if (tabLabel === '入住申请') {
+      MS.showToast('提交成功', 'success');
+    } else {
+      MS.showToast('提交成功', 'success');
+    }
+  });
+
+})();
+</script>
+
+</body>
+</html>
