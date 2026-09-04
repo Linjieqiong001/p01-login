@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="DhsYP6q3JxXgMUYLD0BzlR">
+<head data-page-node-id="Axi4HOr17oIxOJPzhLyuPk">
+<meta charset="UTF-8" data-page-node-id="rwquVDO6Kt3w6tiF7buHBA">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="Y933a3eSCeR0cLKCaXphsw">
+<title>P27 - 审批详情</title>
+<link rel="stylesheet" href="common.css" data-page-node-id="18ya3jToADofeZPTdXTRZz">
+<style>
+/* ==================== Detail Info Row ==================== */
+.detail-block {
+  padding: 4px 16px 14px;
+}
+.detail-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 8px 0;
+  gap: 12px;
+}
+.detail-row .d-label {
+  font-size: 13px;
+  color: var(--text-3);
+  width: 70px;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+.detail-row .d-value {
+  font-size: 14px;
+  color: var(--text-1);
+  flex: 1;
+  line-height: 1.5;
+}
+
+/* ==================== Approval Number ==================== */
+.approval-no-block {
+  padding: 16px;
+  text-align: center;
+}
+.approval-no {
+  font-size: 14px;
+  color: var(--text-2);
+  font-weight: 500;
+}
+.approval-no span {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+}
+
+/* ==================== Approval Flow Timeline ==================== */
+.flow-timeline { padding: 4px 16px 16px; }
+.flow-node {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  padding: 0 0 20px 0;
+}
+.flow-node:last-child { padding-bottom: 0; }
+.flow-node:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 44px;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+.flow-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--primary-gradient);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.flow-status {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--success);
+  border: 2px solid #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.flow-status svg { width: 10px; height: 10px; color: #FFFFFF; }
+.flow-status.pending { background: var(--warning); }
+.flow-body {
+  flex: 1;
+  margin-left: 12px;
+  min-width: 0;
+  padding-top: 2px;
+}
+.flow-meta {
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.4;
+}
+.flow-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-1);
+  line-height: 1.5;
+  margin-top: 2px;
+}
+.flow-time {
+  font-size: 12px;
+  color: var(--text-3);
+  flex-shrink: 0;
+  margin-left: 8px;
+  line-height: 1.4;
+  padding-top: 2px;
+}
+
+/* ==================== Confirm Text ==================== */
+.confirm-text {
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.6;
+  padding: 4px 0 8px;
+}
+
+/* ==================== Reject Textarea ==================== */
+.reject-textarea {
+  width: 100%;
+  min-height: 88px;
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  font-size: 14px;
+  color: var(--text-1);
+  background: var(--bg);
+  resize: none;
+  outline: none;
+  font-family: inherit;
+  line-height: 1.5;
+  transition: border-color 0.2s;
+}
+.reject-textarea::placeholder { color: var(--text-4); }
+.reject-textarea:focus { border-color: var(--primary); }
+
+/* Bottom button area */
+.btn-fixed-bottom.flex-row {
+  display: flex;
+  gap: 12px;
+}
+.btn-fixed-bottom.flex-row .btn {
+  flex: 1;
+}
+
+.spacer { height: 80px; }
+
+/* Dispatch modal */
+.dispatch-car-list {
+  padding: 4px 0;
+}
+.dispatch-car-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 0.5px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+  border-radius: var(--radius-sm);
+}
+.dispatch-car-item:active { background: var(--bg); }
+.dispatch-car-item.selected { background: var(--primary-light); }
+.dispatch-car-item:last-child { border-bottom: none; }
+.dispatch-car-left { display: flex; flex-direction: column; gap: 2px; }
+.dispatch-car-plate { font-size: 15px; font-weight: 600; color: var(--text-1); }
+.dispatch-car-model { font-size: 12px; color: var(--text-3); }
+.dispatch-radio {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid var(--divider);
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.dispatch-car-item.selected .dispatch-radio {
+  border-color: var(--primary); background: var(--primary);
+}
+.dispatch-car-item.selected .dispatch-radio::after {
+  content: ''; width: 8px; height: 8px; border-radius: 50%; background: #FFFFFF;
+}
+.dispatch-modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.dispatch-modal-title { font-size: 16px; font-weight: 600; color: var(--text-1); }
+.dispatch-modal-close { font-size: 24px; color: var(--text-3); cursor: pointer; line-height: 1; }
+.dispatch-modal-desc { font-size: 13px; color: var(--text-2); margin-bottom: 8px; }
+</style>
+</head>
+<body data-page-node-id="UL62Cu1eKCpUHf6LifxFj2">
+
+<div class="miniprogram" id="app" data-page-node-id="0OzVqGNX19g2bv45ehHzjm">
+
+  <!-- Status Bar -->
+  <div class="status-bar light" data-page-node-id="lv1GY158rcu7fPvfUkCYqk">
+    <span class="time" data-page-node-id="18pNwu446IZ5nkcVsnP3gN">09:38</span>
+    <div class="icons" data-page-node-id="sM1t9oqgtbK2h0gEG39yYW">
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="V28KjDOpZ6wEbZ9c5SrvWv"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" data-page-node-id="BlVp5vvGTssS6Al9e9ZUUp"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="CPXcQCkLWwl9mHQLgxoLIQ"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" data-page-node-id="w5OlYc2GY7x9FS6dXeYcnD"/></svg>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar white" data-page-node-id="lfAfXE9ZGmTAPvDzYF7M9B">
+    <div class="nav-back" data-page-node-id="oK91vhzySQfMRBUDfqv66U">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="5ACGiHdDBCDGfm9XYdGb1B">
+        <polyline points="15 18 9 12 15 6" data-page-node-id="ghepvyPVwLZCKCRLiuzcgD"/>
+      </svg>
+    </div>
+    <span class="nav-title" data-page-node-id="JFziYKA6PPHWMUBsynno8t">公车审批详情</span>
+    <span class="nav-placeholder" data-page-node-id="tvCr1LwBXjvHvrRLuMxSmI"></span>
+  </div>
+
+  <!-- Content -->
+  <div class="content fade-in" data-page-node-id="l4ez90mF5hB8TwISLT15b2">
+
+    <!-- 审批编号区 -->
+    <div class="section" style="margin-top:16px;" data-page-node-id="CkwOXEEOwOShdRf4unSifj">
+      <div class="approval-no-block" data-page-node-id="gnZMG4eVq2hW1COoIJ3dvC">
+        <span class="approval-no" data-page-node-id="BdWSohxW9FcQB2FOJB7tqI">审批编号：<span data-page-node-id="E42KfZ4HPZWk3rZpbx6o1f">GC-2026-000456</span></span>
+      </div>
+    </div>
+
+    <!-- 申请信息 -->
+    <div class="section">
+      <div class="section-title">
+        <div class="dot"></div>
+        申请信息
+      </div>
+      <div class="detail-block">
+        <div class="detail-row">
+          <span class="d-label">申请类型</span>
+          <span class="d-value" style="font-weight:600;color:var(--primary);">公车用车申请</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">用车事由</span>
+          <span class="d-value">前往洋浦海事局调研</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">用车时间</span>
+          <span class="d-value">2026-07-22 09:00 至 17:00</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">出发地</span>
+          <span class="d-value">海口海事局</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">目的地</span>
+          <span class="d-value">洋浦海事局</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">乘车人数</span>
+          <span class="d-value">3人</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">随行人员</span>
+          <span class="d-value">李四、王五</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">是否需要司机</span>
+          <span class="d-value">是</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">申请人</span>
+          <span class="d-value">张三</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">申请部门</span>
+          <span class="d-value">后勤管理科</span>
+        </div>
+        <div class="detail-row">
+          <span class="d-label">提交时间</span>
+          <span class="d-value">2026-07-21 14:30</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 审批流程 -->
+    <div class="section">
+      <div class="section-title">
+        <div class="dot"></div>
+        审批流程
+      </div>
+      <div class="flow-timeline">
+
+        <!-- 发起申请 -->
+        <div class="flow-node">
+          <div class="flow-avatar">
+            张三
+            <span class="flow-status done">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+          </div>
+          <div class="flow-body">
+            <div class="flow-meta">发起申请</div>
+            <div class="flow-name">我</div>
+          </div>
+          <div class="flow-time">07.21 14:30</div>
+        </div>
+
+        <!-- 主管审批（待审批） -->
+        <div class="flow-node">
+          <div class="flow-avatar">
+            赵
+            <span class="flow-status pending">
+              <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg>
+            </span>
+          </div>
+          <div class="flow-body">
+            <div class="flow-meta">主管审批</div>
+            <div class="flow-name">赵主任（审批中）</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="spacer" data-page-node-id="TgI8YluykRZxF98qUwhufm"></div>
+
+  </div>
+
+  <!-- Bottom Button Area -->
+  <div class="btn-fixed-bottom flex-row" style="position:absolute;bottom:0;left:0;right:0;display:flex;gap:12px;padding:12px 16px calc(12px + var(--safe-bottom));background:var(--card-bg);border-top:0.5px solid var(--divider);" data-page-node-id="stM4DATMlcyR0hOGOmBvyR">
+    <button class="btn btn-outline-gray" style="flex:1;" id="btnReject" data-page-node-id="7i2XXaJYcmg7ihv3OtrBkE">驳回</button>
+    <button class="btn btn-success" style="flex:1;" id="btnApprove" data-page-node-id="YYZhGhrHsD7GcfUYPRqgOB">通过</button>
+  </div>
+
+  <!-- 确认通过弹窗 -->
+  <div class="modal-mask" id="confirmModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">确认通过</div>
+      </div>
+      <div class="modal-body">
+        <p class="confirm-text">确认通过此用车申请？通过后将进入派车环节。</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-success btn-block" id="confirmApproveBtn">确认通过</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 驳回弹窗 -->
+  <div class="modal-mask" id="rejectModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">驳回申请</div>
+      </div>
+      <div class="modal-body">
+        <textarea class="reject-textarea" id="rejectReason" placeholder="请输入驳回原因"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger btn-block" id="confirmRejectBtn">确认驳回</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dispatch Modal -->
+  <div class="modal-mask" id="dispatchModal" data-page-node-id="U1A1PJRjS2COx7FyQWfou9">
+    <div class="modal-content" data-page-node-id="xyYMZweLOaiKg4k1bgaKd0">
+      <div class="modal-body" data-page-node-id="1Px8Z38XvwZWspRGRlHsHR">
+        <div class="dispatch-modal-header" data-page-node-id="AGrojrWKhH5zdxYVEBxWwj">
+          <span class="dispatch-modal-title" data-page-node-id="r9RfpkYcWg247lFSwDAmRL">派车操作</span>
+          <span class="dispatch-modal-close" id="dispatchClose" data-page-node-id="FEfD0J8DwGww5CUTGHxlY6">&times;</span>
+        </div>
+        <div class="dispatch-modal-desc" data-page-node-id="yNKruzjfL5GKqZlOJp61e0">审批通过，请选择派遣车辆：</div>
+        <div class="dispatch-car-list" id="dispatchCarList" data-page-node-id="ApCgvDHIQPse0VAnUblGnx">
+          <div class="dispatch-car-item selected" data-plate="琼A12345" data-page-node-id="5WyiO2L8xabNPIDK2Cuezg">
+            <div class="dispatch-car-left" data-page-node-id="W9rp4OnVBeLybhRlLUPrGD">
+              <span class="dispatch-car-plate" data-page-node-id="A2ipDXe6p7akGZry3kPUtf">琼A12345</span>
+              <span class="dispatch-car-model" data-page-node-id="asTaJTIdBRK00XaRpV3UGe">别克GL8 &middot; 商务车</span>
+            </div>
+            <div class="dispatch-radio" data-page-node-id="WnDKah6JiE3YvmkscVH7LL"></div>
+          </div>
+          <div class="dispatch-car-item" data-plate="琼A67890" data-page-node-id="ossCQ3xErBVr6kOGYfmx7m">
+            <div class="dispatch-car-left" data-page-node-id="WJVk0UwilhvMp5AUaFsWHn">
+              <span class="dispatch-car-plate" data-page-node-id="M5m16MSqoYKOy97VvNtFn9">琼A67890</span>
+              <span class="dispatch-car-model" data-page-node-id="3rOr5J35RkoduJJtCoLLco">丰田凯美瑞 &middot; 轿车</span>
+            </div>
+            <div class="dispatch-radio" data-page-node-id="nDFA97RQLUMd5ek14ia85e"></div>
+          </div>
+          <div class="dispatch-car-item" data-plate="琼B22222" data-page-node-id="AdTG5RhqvyGGHdynuYzafn">
+            <div class="dispatch-car-left" data-page-node-id="VwD5MFT24eNJam72dflpyI">
+              <span class="dispatch-car-plate" data-page-node-id="Jxix5nCTv3hcSOgZ3NJBZV">琼B22222</span>
+              <span class="dispatch-car-model" data-page-node-id="vq52t2EruVZIcRA0aBxxaq">大众帕萨特 &middot; 轿车</span>
+            </div>
+            <div class="dispatch-radio" data-page-node-id="gbhdBYipGvZIRRtXNT8wNa"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" data-page-node-id="I8O5UbHROAJ1oqbi8Av1W0">
+        <button class="btn btn-primary btn-block" id="dispatchConfirm" data-page-node-id="tx2r7zeAnFOguMHwrGJHdY">确认派车</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" data-page-node-id="M6Z0bJzyzCLhAv1VxmFHid">
+    <div class="toast-icon" data-page-node-id="5QeOMlX7Qt9PdDyY7XyjNv"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="l2A4UPkE5yBmDGEwVDNO2n"><circle cx="12" cy="12" r="10" data-page-node-id="KqZFU3RklSxUoODI9jQLdo"/><path d="M12 16v-4M12 8h.01" data-page-node-id="tH9NaxvAbGqBfGMEfLGqun"/></svg></div>
+    <span id="toastText" data-page-node-id="eKADRDrb5HxTUE9RhSaDKS"></span>
+  </div>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  var toastTimer = null;
+  function showToast(text, iconType) {
+    var toast = document.getElementById('toast');
+    var toastText = document.getElementById('toastText');
+    var toastIcon = toast.querySelector('.toast-icon');
+
+    toastText.textContent = text;
+
+    var iconHtml = '';
+    if (iconType === 'success') {
+      iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+    } else if (iconType === 'error') {
+      iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>';
+    } else {
+      iconHtml = '<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>';
+    }
+    toastIcon.innerHTML = iconHtml;
+
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() {
+      toast.classList.remove('show');
+    }, 1800);
+  }
+
+  // Approve button - show confirm modal
+  document.getElementById('btnApprove').addEventListener('click', function() {
+    document.getElementById('confirmModal').classList.add('show');
+  });
+
+  // Confirm approve → open dispatch modal
+  document.getElementById('confirmApproveBtn').addEventListener('click', function() {
+    document.getElementById('confirmModal').classList.remove('show');
+    document.getElementById('dispatchModal').classList.add('show');
+  });
+
+  // Dispatch car selection
+  var dispatchItems = document.querySelectorAll('.dispatch-car-item');
+  dispatchItems.forEach(function(item) {
+    item.addEventListener('click', function() {
+      dispatchItems.forEach(function(i) { i.classList.remove('selected'); });
+      this.classList.add('selected');
+    });
+  });
+
+  // Dispatch close
+  document.getElementById('dispatchClose').addEventListener('click', function() {
+    document.getElementById('dispatchModal').classList.remove('show');
+  });
+
+  // Dispatch confirm
+  document.getElementById('dispatchConfirm').addEventListener('click', function() {
+    var selected = document.querySelector('.dispatch-car-item.selected');
+    var plate = selected ? selected.getAttribute('data-plate') : '';
+    document.getElementById('dispatchModal').classList.remove('show');
+    showToast('审批通过，已派遣车辆 ' + plate, 'success');
+  });
+
+  // Reject button → show reject modal
+  document.getElementById('btnReject').addEventListener('click', function() {
+    document.getElementById('rejectReason').value = '';
+    document.getElementById('rejectModal').classList.add('show');
+  });
+
+  // Reject confirm
+  document.getElementById('confirmRejectBtn').addEventListener('click', function() {
+    var reason = document.getElementById('rejectReason').value.trim();
+    if (!reason) {
+      showToast('请填写驳回原因', 'error');
+      return;
+    }
+    document.getElementById('rejectModal').classList.remove('show');
+    showToast('已驳回该申请', 'info');
+  });
+
+  // Modal mask close (all modals)
+  document.querySelectorAll('.modal-mask').forEach(function(mask) {
+    mask.addEventListener('click', function(e) {
+      if (e.target === this) this.classList.remove('show');
+    });
+  });
+
+  // Status bar time
+  function updateStatusTime() {
+    var now = new Date();
+    var h = String(now.getHours()).padStart(2, '0');
+    var m = String(now.getMinutes()).padStart(2, '0');
+    var el = document.querySelector('.status-bar .time');
+    if (el) el.textContent = h + ':' + m;
+  }
+  updateStatusTime();
+  setInterval(updateStatusTime, 60000);
+
+})();
+</script>
+
+</body>
+</html>
