@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="JriCO3lHxLVKdGAaZtd954">
+<head data-page-node-id="1hkWB8EFgq7Ft7gONvV80p">
+<meta charset="UTF-8" data-page-node-id="6pjdvwd1IRTIeTdpZXOv84">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="Mz4B03NhqhSTT8sgsXOn2d">
+<title>P26 - 审批中心</title>
+<link rel="stylesheet" href="common.css" data-page-node-id="MpMcVgkWdbHSFgf7Xfu6rP">
+<style>
+/* Module icon gradients */
+.module-icon-1 { background: linear-gradient(135deg, #FF8A65, #FF5722); }
+.module-icon-2 { background: linear-gradient(135deg, #5DADE2, #3498DB); }
+.module-icon-3 { background: linear-gradient(135deg, #48C9B0, #1ABC9C); }
+.module-icon-4 { background: linear-gradient(135deg, #A569BD, #8E44AD); }
+.module-icon-5 { background: linear-gradient(135deg, #F4D03F, #F39C12); }
+.module-icon-6 { background: linear-gradient(135deg, #F06292, #E91E63); }
+
+.module-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 16px 0;
+}
+.module-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.module-icon svg { width: 22px; height: 22px; color: #FFFFFF; }
+.module-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+.module-name .count {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-3);
+  margin-left: 6px;
+}
+
+.stat-row-p26 {
+  display: flex;
+  gap: 10px;
+  padding: 12px 16px 16px;
+}
+.stat-card-p26 {
+  flex: 1;
+  text-align: center;
+  padding: 14px 6px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.stat-card-p26:active { transform: scale(0.97); }
+.stat-card-p26 .stat-num { font-size: 24px; font-weight: 700; }
+.stat-card-p26 .stat-label { font-size: 11px; margin-top: 4px; }
+.stat-card-p26.pending { background: var(--warning-light); }
+.stat-card-p26.pending .stat-num { color: var(--warning); }
+.stat-card-p26.pending .stat-label { color: var(--warning); }
+.stat-card-p26.pending:active { background: #FDE3D0; }
+.stat-card-p26.done { background: var(--success-light); }
+.stat-card-p26.done .stat-num { color: var(--success); }
+.stat-card-p26.done .stat-label { color: var(--success); }
+.stat-card-p26.done:active { background: #D5F0E6; }
+.stat-card-p26.all { background: var(--primary-light); }
+.stat-card-p26.all .stat-num { color: var(--primary); }
+.stat-card-p26.all .stat-label { color: var(--primary); }
+.stat-card-p26.all:active { background: #CDE3FF; }
+
+.spacer { height: 12px; }
+</style>
+</head>
+<body data-page-node-id="s1DDpncGzn5AjnBUKjMIHf">
+
+<div class="miniprogram" id="app" data-page-node-id="4iePpuaMCkY5Tvy7iw6zWI">
+
+  <!-- Status Bar -->
+  <div class="status-bar light" data-page-node-id="0boFFtCkfDUijcZQ1bX328">
+    <span class="time" data-page-node-id="C4Nv7Mo0lojV79s7YUwKcT">09:38</span>
+    <div class="icons" data-page-node-id="zAuO8GBU684u2Dboc3gnzW">
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="IZHBR3s6bcmHs1aVIPlwfI"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" data-page-node-id="ND5lfCOyTC93Gb7EjKv81A"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="vPmqOBjStlTj2KOUlCWfBA"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" data-page-node-id="WKqIqm2NsjzmEGRI4qiNky"/></svg>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar white" data-page-node-id="UzF5KYTLg4DXT8QTbDS4WZ">
+    <span class="nav-placeholder" data-page-node-id="dBuARSoID05GSQukLUEqjq"></span>
+    <span class="nav-title" data-page-node-id="TXzciN2QkQQLE3kNEFkzrO">审批中心</span>
+    <span class="nav-placeholder" data-page-node-id="bDJTj7bAZzjRRa8t5oBsvN"></span>
+  </div>
+
+  <!-- Content -->
+  <div class="content fade-in" data-page-node-id="3uM2z6H4kpWVRcXYniuPx4">
+
+    <!-- 1. 食堂审批 -->
+    <div class="section" style="margin-top:16px;" data-page-node-id="Ujq9Sl7HXiLOUQGksHE4j1">
+      <div class="module-header" data-page-node-id="OeiegBrVjS7cgSfHMYBqrh">
+        <div class="module-icon module-icon-1" data-page-node-id="GFDbd2JaRm7jmdAfzGjpHH">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="NLgT0NjUXCD1gPQkh29nwu">
+            <path d="M3 2v7c0 1.1.9 2 2 2h0a2 2 0 002-2V2M7 2v20M21 15V2a5 5 0 00-3 9v4c0 1.1.9 2 2 2h1a2 2 0 002-2z" data-page-node-id="emqQpteOW1Dxot4pIeWFnX"/>
+          </svg>
+        </div>
+        <div class="module-name" data-page-node-id="t6upGl9OfyZ6ZxzVrWyhGn">食堂审批<span class="count" data-page-node-id="oYzHfOdD0SV5lvmQrDyrKs">共10条</span></div>
+      </div>
+      <div class="stat-row-p26" data-module="食堂审批" data-page-node-id="PA9hCKGJYwVFwlt9SyNm7C">
+        <div class="stat-card-p26 pending" data-type="pending" title="食堂审批-待处理" data-page-node-id="cRyMTTNmUssYFDCVzCdudF">
+          <div class="stat-num" data-page-node-id="5lwYmvSSoLEEGfmoOEzKHT">2</div>
+          <div class="stat-label" data-page-node-id="WHr6SJaouQptK7UFSdJMYw">待审批</div>
+        </div>
+        <div class="stat-card-p26 done" data-type="done" title="食堂审批-已处理" data-page-node-id="laFaC7wARRk27G0p1eU2kS">
+          <div class="stat-num" data-page-node-id="2zR9oGYLPdJCG4YudxMHcZ">8</div>
+          <div class="stat-label" data-page-node-id="b8S2ze9V6zb4sTWZpW33mm">已完成</div>
+        </div>
+        <div class="stat-card-p26 all" data-type="all" title="食堂审批-全部" data-page-node-id="ALHG2vjEwIt3UGsiKIBXHQ">
+          <div class="stat-num" data-page-node-id="WHI0rW94p6lBxJ0FvhglCx">10</div>
+          <div class="stat-label" data-page-node-id="L6sPcPDsfTCgvSQZ1MjGd5">全部</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 公车审批 -->
+    <div class="section" data-page-node-id="yp3tSiMm6PP1THObcQtKs5">
+      <div class="module-header" data-page-node-id="yiJGxVamr71whuWGBSsyzA">
+        <div class="module-icon module-icon-2" data-page-node-id="DMVgK9MPN3hOuLpohxzKuX">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="lPWG5BaxTVp7dG0FlP5obe">
+            <path d="M5 17h14M3 17V11l3-5h12l3 5v6M7 17v2M17 17v2" data-page-node-id="HIoYDSBUIZBHmFmsFhd05O"/>
+            <circle cx="7.5" cy="14.5" r="1.5" fill="#FFFFFF" data-page-node-id="rb9r3YnDx2szQvmzMGrAMr"/>
+            <circle cx="16.5" cy="14.5" r="1.5" fill="#FFFFFF" data-page-node-id="MebzpeBBwECZKvtyqPq83J"/>
+          </svg>
+        </div>
+        <div class="module-name" data-page-node-id="Y0W63Bq2Qb9JHsY3ias0NN">公车审批<span class="count" data-page-node-id="Zy4907TslAtWsWDgsmvO3D">共6条</span></div>
+      </div>
+      <div class="stat-row-p26" data-module="公车审批" data-page-node-id="aIUHxQ3E0sapZ9GxB7OQeI">
+        <div class="stat-card-p26 pending" data-type="pending" title="公车审批-待处理" data-page-node-id="sG3FzmJgVNsXJsqL3XBwOp">
+          <div class="stat-num" data-page-node-id="7ukebDGzpA5xhZHsiyztqD">1</div>
+          <div class="stat-label" data-page-node-id="5MbKBVARj3Kb0RitstIGVU">待审批</div>
+        </div>
+        <div class="stat-card-p26 done" data-type="done" title="公车审批-已处理" data-page-node-id="UOIRoWeSVxCCqinMJoEDKG">
+          <div class="stat-num" data-page-node-id="ZasfmSRX8eqtPBfv5mgT1O">5</div>
+          <div class="stat-label" data-page-node-id="nbYV59KZhYNGnAC4nkHaoV">已完成</div>
+        </div>
+        <div class="stat-card-p26 all" data-type="all" title="公车审批-全部" data-page-node-id="gwn3XApAFgb6GbepDFWM9G">
+          <div class="stat-num" data-page-node-id="HYNKEaUXIgRBg1PyjKWevz">6</div>
+          <div class="stat-label" data-page-node-id="vtw8l4l9UsB4Mh7qprZpCe">全部</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 住房审批 -->
+    <div class="section" data-page-node-id="smHZbQRaTwjBkBPeXRVNzj">
+      <div class="module-header" data-page-node-id="ZFxChjv96bRLIuJUPGsY8V">
+        <div class="module-icon module-icon-3" data-page-node-id="1b52QHEqmbinCCwkF4H1tr">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="PdjEy0gbDoYxZEMJWPsplR">
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" data-page-node-id="0lylGstH4yXQUG0NwreZTU"/>
+            <path d="M9 22V12h6v10" data-page-node-id="8H0AVyfCE5ZLmj3H3FUHjT"/>
+          </svg>
+        </div>
+        <div class="module-name" data-page-node-id="1nF59sob9CR2IfVW4UF1xD">住房审批<span class="count" data-page-node-id="sEroZUZB6uDQWSgsJ26yWn">共3条</span></div>
+      </div>
+      <div class="stat-row-p26" data-module="住房审批" data-page-node-id="o5DFrlGS1Q9XaZHcFYtgJ4">
+        <div class="stat-card-p26 pending" data-type="pending" title="住房审批-待处理" data-page-node-id="pnnYOYbhAKl0wEIFHu23M0">
+          <div class="stat-num" data-page-node-id="G2qWkHwkZ0Zs9rkjgfkXxE">0</div>
+          <div class="stat-label" data-page-node-id="YuXVOtGgxM0oZyDirOttnC">待审批</div>
+        </div>
+        <div class="stat-card-p26 done" data-type="done" title="住房审批-已处理" data-page-node-id="l5zaJJi2QJcjGqwv51wq7r">
+          <div class="stat-num" data-page-node-id="ZCNMC1VtQUlBDwXszl4uI4">3</div>
+          <div class="stat-label" data-page-node-id="lAiI5QQf8QVY7kpC86fAhS">已完成</div>
+        </div>
+        <div class="stat-card-p26 all" data-type="all" title="住房审批-全部" data-page-node-id="WmJhAz9vdf6w1kuCcnQWkt">
+          <div class="stat-num" data-page-node-id="NlA3GXs2Z97F3uaecwhJfB">3</div>
+          <div class="stat-label" data-page-node-id="KbiSGmsdPhn6eZklkXxBZS">全部</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. 白沙门审批 -->
+    <div class="section" data-page-node-id="f7lsIsSjQDJZB2REaqEq85">
+      <div class="module-header" data-page-node-id="syz7htvrU1SvhyCskwFsTA">
+        <div class="module-icon module-icon-4" data-page-node-id="uZk6A4cTcfJPznHrNqvhKU">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="9Rk3ZFyE7bz4QREO6yCxS7">
+            <path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-5h6v5M9 11h.01M15 11h.01" data-page-node-id="Ve5Cv2Lj86DitrG0qcP2wQ"/>
+          </svg>
+        </div>
+        <div class="module-name" data-page-node-id="zD2rckbV06h7CnkuAicQbt">白沙门审批<span class="count" data-page-node-id="6BMVu53NEEutJXfe0spcSw">共3条</span></div>
+      </div>
+      <div class="stat-row-p26" data-module="白沙门审批" data-page-node-id="U7vJLhVmnKyiIEZOFIBDUd">
+        <div class="stat-card-p26 pending" data-type="pending" title="白沙门审批-待处理" data-page-node-id="f55B7X3iDhoQFzj8PFOrYu">
+          <div class="stat-num" data-page-node-id="LZ7JXsbTByhc2qFKGlnYTL">1</div>
+          <div class="stat-label" data-page-node-id="ScMzuOxQbMEtNIFbrEgTOs">待审批</div>
+        </div>
+        <div class="stat-card-p26 done" data-type="done" title="白沙门审批-已处理" data-page-node-id="plANADJL6bPJhvO2Ojh004">
+          <div class="stat-num" data-page-node-id="GKNp31EiI5TFqnIC6HRXKB">2</div>
+          <div class="stat-label" data-page-node-id="Uec2HXWpAwEAzBCDxN8Rcb">已完成</div>
+        </div>
+        <div class="stat-card-p26 all" data-type="all" title="白沙门审批-全部" data-page-node-id="o22VhkKaGjBvwymBZ2FTUG">
+          <div class="stat-num" data-page-node-id="lQbALoNHLaLqc5BZCToqFd">3</div>
+          <div class="stat-label" data-page-node-id="tdad7X8EyDtcKj3ZC7Vue3">全部</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. 拜访审批 -->
+    <div class="section" data-page-node-id="KDGjzUcWkUiIOZRDDfMhyd">
+      <div class="module-header" data-page-node-id="QgM92bnNoWqHfTrvJNYxxs">
+        <div class="module-icon module-icon-5" data-page-node-id="XKOOs8Dk5GoHSV0V50fwwr">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="oK7CCBLBe8TUCEFV3HIyfk">
+            <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" data-page-node-id="pEYIGCdex3MRQ35Xt7rKOV"/>
+            <circle cx="9" cy="7" r="4" data-page-node-id="KPCg8ec5y1CB5IJIK40pzc"/>
+            <path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" data-page-node-id="FOMNhue44DuEyplFFk39lU"/>
+          </svg>
+        </div>
+        <div class="module-name" data-page-node-id="xqaesJV9hOiC9QiJ5NTMj2">拜访审批<span class="count" data-page-node-id="Cej7HGCRxdONDRY9zUtnK6">共4条</span></div>
+      </div>
+      <div class="stat-row-p26" data-module="拜访审批" data-page-node-id="O3CZvhe43X2KDnfGnA0xfk">
+        <div class="stat-card-p26 pending" data-type="pending" title="拜访审批-待处理" data-page-node-id="g21JWlnMH7elA063xsORcq">
+          <div class="stat-num" data-page-node-id="iytEdmDWymDVAjilLZx4Vs">0</div>
+          <div class="stat-label" data-page-node-id="vtG4r37DY34vzz0iFyGBPC">待审批</div>
+        </div>
+        <div class="stat-card-p26 done" data-type="done" title="拜访审批-已处理" data-page-node-id="dRjDA4rQpVpIj037quBBaw">
+          <div class="stat-num" data-page-node-id="mNE4AWd7TRFG4prHh4DOW5">4</div>
+          <div class="stat-label" data-page-node-id="58I5VkFOmQ88C489VUjsTa">已完成</div>
+        </div>
+        <div class="stat-card-p26 all" data-type="all" title="拜访审批-全部" data-page-node-id="jn5jauPhzy4rP605vUYIJu">
+          <div class="stat-num" data-page-node-id="l7YRKOFXj4VgtELHsDOoAn">4</div>
+          <div class="stat-label" data-page-node-id="IBvNoqn8nynKEE0x2dJy0X">全部</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. 维护报修审批 -->
+    <div class="section" data-page-node-id="v7EFd7OYdBMWXUJS9nqt3K">
+      <div class="module-header" data-page-node-id="SY0RB4r95bEHrDyKCohTQ5">
+        <div class="module-icon module-icon-6" data-page-node-id="WqMuEgxWHRndJDBTjBmxeR">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="Ab30gb4bga7yVNPVZGeFro">
+            <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" data-page-node-id="Q9aFyl27C2huejBfuwH29f"/>
+          </svg>
+        </div>
+        <div class="module-name" data-page-node-id="qUf9RbePpwbECwOpZaY91I">维护报修审批<span class="count" data-page-node-id="CDR8nCkYJ4rXmKbDTQCki2">共5条</span></div>
+      </div>
+      <div class="stat-row-p26" data-module="维护报修审批" data-page-node-id="o9SICA9ungpp35kI3xDFcH">
+        <div class="stat-card-p26 pending" data-type="pending" title="维护报修审批-待处理" data-page-node-id="AkuZXjSA7jGiPSPL2C8OmE">
+          <div class="stat-num" data-page-node-id="tlcavNLLei2EkqKuPHPgsA">2</div>
+          <div class="stat-label" data-page-node-id="AtoAZhy084Cj3ZFDCp0ZcB">待审批</div>
+        </div>
+        <div class="stat-card-p26 done" data-type="done" title="维护报修审批-已处理" data-page-node-id="V4RT2NXyC9df2YBEtOipoE">
+          <div class="stat-num" data-page-node-id="XOTnuVlNoFzaI9hm9IMBM5">3</div>
+          <div class="stat-label" data-page-node-id="2XS81C5QnORdEH1M64TuUb">已完成</div>
+        </div>
+        <div class="stat-card-p26 all" data-type="all" title="维护报修审批-全部" data-page-node-id="ikvVQ7Ib8FxXzsQqbbg5KY">
+          <div class="stat-num" data-page-node-id="iso5ciUdryfh1gwCNm4lVt">5</div>
+          <div class="stat-label" data-page-node-id="jBZLo6rJfISI87a9IvwoBC">全部</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="spacer" data-page-node-id="ZFrKpsgA2gjkCwFBB97DZ6"></div>
+
+  </div>
+
+  <!-- Bottom Tab Bar -->
+  <div class="tabbar" data-page-node-id="9Cf2jHdoGozbHrsJN1x3kB">
+    <div class="tabbar-item" data-tab="首页" data-page-node-id="sD0lvwi4FGJbteYK2j55mM">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="sjfWaeNkAV3Q9bPUUwVvP6">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" data-page-node-id="oPmMlJYFog7144A2gjU5GY"/>
+        <path d="M9 22V12h6v10" data-page-node-id="SMKTcRgozR5oKI4AXxmqwR"/>
+      </svg>
+      <span class="tabbar-label" data-page-node-id="308JKQLsjNNCxqW07ryElz">首页</span>
+    </div>
+    <div class="tabbar-item active" data-tab="审批" data-page-node-id="X7IGqBtl7KM23IV7OUgUsD">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="btYjr4OEZhCbAwYfBpMcSO">
+        <path d="M9 11H5a2 2 0 00-2 2v7a2 2 0 002 2h14a2 2 0 002-2v-7a2 2 0 00-2-2h-4" data-page-node-id="k9O5lokZ0MHsQJCKHHeSxu"/>
+        <path d="M9 11V5a2 2 0 014 0v6" data-page-node-id="VMjT5QidH7jjHKUYXoL5Mz"/>
+        <path d="M8 17h2M14 17h2" data-page-node-id="nKVRMEspO0ECmXC7ZTmZ0N"/>
+      </svg>
+      <span class="tabbar-badge" data-page-node-id="Y5EsLz3pxlNS2hTLZWY8qR">1</span>
+      <span class="tabbar-label" data-page-node-id="qG9AVUZQMTpZ8Xk8zbfWcI">审批</span>
+    </div>
+    <div class="tabbar-item" data-tab="任务" data-page-node-id="nlaH14av2I13hQVAwpJGMB">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="e4AQqQ6ZHoFNlDzhQ1UDN9">
+        <path d="M9 11l3 3L22 4" data-page-node-id="Q1MBStN7tglgXsHfeH2Vli"/>
+        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" data-page-node-id="GxHnriK1KI6M8MF1uvyiUo"/>
+      </svg>
+      <span class="tabbar-badge" data-page-node-id="kma6c5w8wH786tdHgUFtQp">1</span>
+      <span class="tabbar-label" data-page-node-id="yvuHybA6Eh9pAdWvScNUXW">任务</span>
+    </div>
+    <div class="tabbar-item" data-tab="我的" data-page-node-id="aXKwYT2fZOVPq4aYQ133VL">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="Y3TYvyUlNBQ4ycqJdg3PYZ">
+        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" data-page-node-id="EXqca4shKlb69TQPk4dbpu"/>
+        <circle cx="12" cy="7" r="4" data-page-node-id="FEIWRIfGuszioWC9YM4zdK"/>
+      </svg>
+      <span class="tabbar-label" data-page-node-id="gGKzWfCHBAXBgXdRgxnCYo">我的</span>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" data-page-node-id="LZP1ClxZBVgHU8pG7kX98P">
+    <div class="toast-icon" data-page-node-id="wZ5oqsZm9xgEKiwhCSeRiC"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="T9ubpRTVuMJBjdxuJBllAr"><circle cx="12" cy="12" r="10" data-page-node-id="n5uhAD5xGJpO3lNIVC33Dt"/><path d="M12 16v-4M12 8h.01" data-page-node-id="LMYHBF4vM5YmB7ykUFZVNC"/></svg></div>
+    <span id="toastText" data-page-node-id="pHK4YFGWdatx4uZNhcZJPC"></span>
+  </div>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // Override toast to use inline toast elements
+  var toastTimer = null;
+  function showToast(text, iconType) {
+    var toast = document.getElementById('toast');
+    var toastText = document.getElementById('toastText');
+    toastText.textContent = text;
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() {
+      toast.classList.remove('show');
+    }, 1800);
+  }
+
+  // Init TabBar
+  MS.initTabBar('审批');
+
+  // Stat card click
+  document.querySelectorAll('.stat-card-p26').forEach(function(card) {
+    card.addEventListener('click', function() {
+      var moduleName = this.closest('.stat-row-p26').getAttribute('data-module');
+      var type = this.getAttribute('data-type');
+      var typeLabel = type === 'pending' ? '待处理' : (type === 'done' ? '已处理' : '全部');
+      var targetUrl = 'P29-approval-list.html';
+      if (moduleName === '公车审批') {
+        targetUrl = 'P36-car-approval-list.html';
+      } else if (moduleName === '住房审批') {
+        targetUrl = 'P38-housing-approval-list.html';
+      } else if (moduleName === '白沙门审批') {
+        targetUrl = 'P40-baishamen-approval-list.html';
+      } else if (moduleName === '拜访审批') {
+        targetUrl = 'P42-visit-approval-list.html';
+      } else if (moduleName === '维护报修审批') {
+        targetUrl = 'P50-maintenance-approval-list.html';
+      }
+      window.location.href = targetUrl;
+    });
+  });
+
+  // Status bar time
+  function updateStatusTime() {
+    var now = new Date();
+    var h = String(now.getHours()).padStart(2, '0');
+    var m = String(now.getMinutes()).padStart(2, '0');
+    var el = document.querySelector('.status-bar .time');
+    if (el) el.textContent = h + ':' + m;
+  }
+  updateStatusTime();
+  setInterval(updateStatusTime, 60000);
+
+})();
+</script>
+
+</body>
+</html>
