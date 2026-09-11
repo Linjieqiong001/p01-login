@@ -19,6 +19,21 @@
   overflow: hidden;
 }
 
+/* 科技感背景层：深色渐隐 + 柔光 + 细点阵（纯 CSS，不与主视觉抢画面） */
+.login-content::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px),
+    radial-gradient(circle at 14% 14%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 34%),
+    radial-gradient(circle at 88% 76%, rgba(0, 229, 255, 0.18) 0%, rgba(0, 229, 255, 0) 44%),
+    linear-gradient(180deg, rgba(3, 24, 66, 0.5) 0%, rgba(3, 24, 66, 0) 34%, rgba(3, 24, 66, 0) 60%, rgba(3, 24, 66, 0.45) 100%);
+  background-size: 24px 24px, auto, auto, auto;
+  background-repeat: repeat, no-repeat, no-repeat, no-repeat;
+  pointer-events: none;
+}
+
 /* 装饰圆 */
 .deco-circle {
   position: absolute;
@@ -35,7 +50,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 56px;
+  padding-top: 40px;
   position: relative;
   z-index: 2;
 }
@@ -66,23 +81,57 @@
   letter-spacing: 0.5px;
 }
 
-/* 欢迎语 */
-.welcome-area {
+/* 科技感主视觉 */
+.hero-area {
   flex: 1;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
+  padding: 0 24px 40px;
+}
+/* 主视觉背后的柔光，帮助与背景融为一体 */
+.hero-area::before {
+  content: '';
+  position: absolute;
+  width: 78%;
+  max-width: 320px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(22, 119, 255, 0.45) 0%, rgba(22, 119, 255, 0) 70%);
+  filter: blur(18px);
+  pointer-events: none;
+}
+.hero-visual {
+  width: 112%;
+  max-width: 380px;
+  display: block;
+  position: relative;
+  mix-blend-mode: screen;
+  -webkit-mask-image: radial-gradient(ellipse 68% 62% at 50% 54%, #000 42%, rgba(0, 0, 0, 0.55) 68%, rgba(0, 0, 0, 0) 92%);
+  mask-image: radial-gradient(ellipse 68% 62% at 50% 54%, #000 42%, rgba(0, 0, 0, 0.55) 68%, rgba(0, 0, 0, 0) 92%);
+  animation: heroFloat 6s ease-in-out infinite;
+}
+@keyframes heroFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* 欢迎语 */
+.welcome-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
   z-index: 2;
-  padding: 0 40px;
+  padding: 0 40px 10px;
 }
 .welcome-title {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
   color: #FFFFFF;
   letter-spacing: 2px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
 }
 .welcome-desc {
@@ -92,34 +141,9 @@
   line-height: 1.8;
 }
 
-/* 特性图标 */
-.feature-row {
-  display: flex;
-  gap: 32px;
-  margin-top: 36px;
-}
-.feature-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-.feature-icon {
-  width: 44px;
-  height: 44px;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-}
-.feature-icon svg { width: 22px; height: 22px; color: #FFFFFF; }
-.feature-label { font-size: 11px; color: rgba(255, 255, 255, 0.7); }
-
 /* 底部登录区 */
 .login-bottom {
-  padding: 0 32px calc(32px + var(--safe-bottom));
+  padding: 0 32px calc(104px + var(--safe-bottom));
   position: relative;
   z-index: 2;
 }
@@ -172,23 +196,6 @@
   text-decoration: underline;
   text-decoration-color: rgba(255, 255, 255, 0.5);
 }
-
-/* 其他登录方式 */
-.other-login {
-  text-align: center;
-  margin-top: 24px;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-/* 底部版权 */
-.copyright {
-  text-align: center;
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.35);
-  margin-top: 20px;
-  line-height: 1.6;
-}
 </style>
 </head>
 <body data-page-node-id="8giyoMS0g2dVccp7gUoCTw">
@@ -220,44 +227,19 @@
           <path d="M2 12l10 5 10-5" data-page-node-id="ZMuKw9wm0yiWt3wubrGbEm"/>
         </svg>
       </div>
-      <div class="brand-name" data-page-node-id="s8FEvPvc5T4lLAAdwPBqYw">海事局智慧后勤</div>
-      <div class="brand-sub" data-page-node-id="RdXYKE4Pn0rJ76hN4WoFAq">Haikou Maritime Safety Administration</div>
+      <div class="brand-name" data-page-node-id="s8FEvPvc5T4lLAAdwPBqYw">鑫海纳智慧服务</div>
+      <div class="brand-sub" data-page-node-id="RdXYKE4Pn0rJ76hN4WoFAq">hkxinhaina Smart Service</div>
+    </div>
+
+    <!-- 科技感主视觉 -->
+    <div class="hero-area">
+      <img class="hero-visual" src="https://Linjieqiong001.github.io/p01-login/assets/login-hero-city.png" alt="智慧园区线框城市示意图">
     </div>
 
     <!-- 欢迎语 -->
     <div class="welcome-area" data-page-node-id="qync0STHeoOqFLLmfrDKAM">
-      <div class="welcome-title" data-page-node-id="v4tEzNRS9J90YOFX96CZyB">智慧后勤，服务随行</div>
-      <div class="welcome-desc" data-page-node-id="ohMQKV2Oik6hSnM0CcHcMl">一站式后勤服务平台<br data-page-node-id="Q7fIMHWWLDQIayEXw3ggNj">为海事职工提供便捷高效的后勤服务</div>
-
-      <!-- 特性图标 -->
-      <div class="feature-row" data-page-node-id="L3HECdU9gT10xeVTGqy8a9">
-        <div class="feature-item" data-page-node-id="3M7jM61rc1vVPdVt4AwozO">
-          <div class="feature-icon" data-page-node-id="wovLmNyXLCI2G7jjNhhXOl">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="jXmvneYIc64CPYcMLEqilT">
-              <path d="M22 11.08V12a10 10 0 11-5.93-9.14" data-page-node-id="IdzbX6w8Y98phv7LMizP1F"/>
-              <polyline points="22 4 12 14.01 9 11.01" data-page-node-id="RZbsfF9bBbWRvXgRzLIP3q"/>
-            </svg>
-          </div>
-          <span class="feature-label" data-page-node-id="mUc5pzBskUMxoy7eY4JNBU">便捷高效</span>
-        </div>
-        <div class="feature-item" data-page-node-id="Ja8AruFrn5B4FNrR2Go0Mg">
-          <div class="feature-icon" data-page-node-id="2cflR7UbYCYdrHEWrLbHU5">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="9b7c2oqfFckKCAAN09Ol1I">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" data-page-node-id="m17hrsD7d8easyssQiLwvh"/>
-            </svg>
-          </div>
-          <span class="feature-label" data-page-node-id="7ZUBNPCZDnStYscKoR6egn">安全可靠</span>
-        </div>
-        <div class="feature-item" data-page-node-id="9og2FrY9GXLkUKzMBfxAZA">
-          <div class="feature-icon" data-page-node-id="1XcLUfCxa8PVJYpxdQ7Gos">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="4swHdk6qwGf7EERPqCU9wd">
-              <circle cx="12" cy="12" r="10" data-page-node-id="YBeTuX0Gg1UADzd46qjl4U"/>
-              <path d="M12 6v6l4 2" data-page-node-id="8tghM3HtwQOJG2n5yhQ68e"/>
-            </svg>
-          </div>
-          <span class="feature-label" data-page-node-id="ixBXosf5yHjQCRGQlBix84">实时响应</span>
-        </div>
-      </div>
+      <div class="welcome-title" data-page-node-id="v4tEzNRS9J90YOFX96CZyB">智慧服务，贴心随行</div>
+      <div class="welcome-desc" data-page-node-id="ohMQKV2Oik6hSnM0CcHcMl">一站式服务平台</div>
     </div>
 
     <!-- 底部登录区 -->
@@ -275,12 +257,6 @@
         <span class="link" id="userAgreement" data-page-node-id="CPVvrCRZtXfKFBTwshVErf">《用户协议》</span>
         <span data-page-node-id="Z8QNwuBdlvhmTjTpLSmFgP">和</span>
         <span class="link" id="privacyPolicy" data-page-node-id="JFpnBRsP2h7IwH6w9Btxaq">《隐私政策》</span>
-      </div>
-
-      <div class="other-login" data-page-node-id="WB6DCWQX3WMBpd16dNwPgH">其他登录方式</div>
-
-      <div class="copyright" data-page-node-id="NbImp26gUpKvYGx3AEcQDt">
-        © 海口海事局 · 智慧后勤服务平台<br data-page-node-id="R9n3MJa2fubTrDgvIA7J7m">技术支持：海事局信息化办公室
       </div>
     </div>
 
