@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="QM7rLkdtA93T6ANmXh8gOe">
+<head data-page-node-id="9qVNO0roQcbcyyJpGJOgCS">
+<meta charset="UTF-8" data-page-node-id="6udH43pAVHHptR9CgIuLbo">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="IH5THRPeSv50mhquHrCEj9">
+<title>P05 - 本周菜谱</title>
+<link rel="stylesheet" href="common.css" data-page-node-id="QUwEMjOJdFfgLKuBdhbBAt">
+<style>
+/* ==================== 周信息条 ==================== */
+.week-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 4px;
+}
+.week-bar .week-range {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+.week-bar .week-no {
+  font-size: 11px;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+/* ==================== 每日菜单图（16:9） ==================== */
+.menu-day-card {
+  margin: 12px 16px 0;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+  background: url('assets/menu-default-bg.png') center/cover;
+  box-shadow: var(--shadow-sm);
+}
+.menu-day-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(160deg, rgba(8,42,30,0.62) 0%, rgba(6,34,24,0.72) 55%, rgba(4,26,18,0.85) 100%);
+}
+.menu-day-card:last-of-type { margin-bottom: 0; }
+
+.mdc-inner {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  color: #FFFFFF;
+  z-index: 1;
+}
+.mdc-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mdc-header .day-name {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.mdc-header .day-date {
+  font-size: 11px;
+  color: rgba(255,255,255,0.92);
+  background: rgba(255,255,255,0.18);
+  border: 0.5px solid rgba(255,255,255,0.25);
+  padding: 2px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+.mdc-header .day-line {
+  flex: 1;
+  height: 0.5px;
+  background: rgba(255,255,255,0.25);
+}
+.mdc-meals {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  margin-top: 4px;
+}
+.meal-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.meal-tag {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #FFFFFF;
+  padding: 3px 9px;
+  border-radius: 4px;
+  margin-top: 1px;
+}
+.meal-tag.breakfast { background: linear-gradient(135deg, #FFA940, #FA8C16); }
+.meal-tag.lunch { background: linear-gradient(135deg, #36D399, #00A870); }
+.meal-dishes {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.96);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+}
+
+/* ==================== 底部说明 ==================== */
+.menu-footnote {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 14px 16px 20px;
+  font-size: 11px;
+  color: var(--text-4);
+}
+.menu-footnote svg { width: 12px; height: 12px; flex-shrink: 0; }
+</style>
+</head>
+<body data-page-node-id="A0BmN4JDfZJ9R3esSBcvzQ">
+<div class="miniprogram" data-page-node-id="ow3wbbSLmH7VkF8usjxKyD">
+
+  <!-- Status Bar -->
+  <div class="status-bar light" data-page-node-id="SWsFq1txObYA9F2oKfZyhx">
+    <span class="time" data-page-node-id="EKYcCDTR9Ip1g8H0iYT8m6">09:38</span>
+    <div class="icons" data-page-node-id="QR5DHNLAbif0bW4B3xWQKJ">
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="F3XvuuJiWMOytA63Ee1rdF"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" data-page-node-id="K5tKkzmvjlOD7B4UOFtZ8Y"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="YsBcUpmROjFFVlDdzus2KT"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" data-page-node-id="3gWq0mrplGojXLBvkBmhk3"/></svg>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar white" data-page-node-id="Qwj9XZM7Sw97KxqnWlB6K6">
+    <div class="nav-back" data-page-node-id="g5TsyTq258BYtgdRn625fH">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="DTt5AnK574CDZAQ3LSTYdh"><polyline points="15 18 9 12 15 6" data-page-node-id="ofQQsv32BlRIp5SSegQaVn"/></svg>
+    </div>
+    <span class="nav-title" data-page-node-id="lUaNx1owhxb4kCBkXN7aNq">本周菜谱</span>
+    <span class="nav-placeholder" data-page-node-id="3068qJfewULqcSJvAtXN2v"></span>
+  </div>
+
+  <!-- Content -->
+  <div class="content" data-page-node-id="SqGpxB2suaR4CQvULE9Gvr">
+
+    <!-- 周信息条 -->
+    <div class="week-bar" data-page-node-id="brqLGkh0VBFYlNVV3GE9wm">
+      <span class="week-range" id="weekRange" data-page-node-id="X3KAu1E1LOxRIqy8AmVCFu">2026年9月14日 - 9月18日</span>
+      <span class="week-no" id="weekNo" data-page-node-id="pFlbtQ0bVApUZLdnX8QMxg">第38周</span>
+    </div>
+
+    <!-- 每日菜单图 × 5（周一至周五） -->
+    <div id="dayCards" data-page-node-id="90AouqTTBBODK4cMaVHuHp"></div>
+
+    <!-- 底部说明 -->
+    <div class="menu-footnote" data-page-node-id="TXOhJscHfL0FjGqnaLjB8U">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="m8u1GCDIqLOWEEowBTGNe2"><circle cx="12" cy="12" r="10" data-page-node-id="rY3EHpqzjhOd8OeF4Xt2vZ"/><path d="M12 16v-4M12 8h.01" data-page-node-id="kLzt1IselDAndsBFeCJseb"/></svg>
+      菜品以当日实际供应为准，如需调整请提前联系后勤管理科
+    </div>
+
+  </div>
+
+</div>
+
+<script src="common.js"></script>
+<script>
+(function() {
+  // ==================== 三周菜单数据 ====================
+  var weekMenus = [
+    {
+      text: '2026年9月7日 - 9月11日', weekNum: 37,
+      days: [
+        { day: '周一', date: '2026-09-07', breakfast: '叉烧包 · 茶叶蛋 · 小米粥 · 拌小菜', lunch: '卤肉饭 · 炒青菜 · 冬瓜汤 · 米饭' },
+        { day: '周二', date: '2026-09-08', breakfast: '油条 · 现磨豆浆 · 煎蛋 · 咸菜', lunch: '回锅肉 · 拍黄瓜 · 紫菜汤 · 米饭' },
+        { day: '周三', date: '2026-09-09', breakfast: '肠粉 · 白粥 · 卤蛋 · 酸豆角', lunch: '口水鸡 · 蒸南瓜 · 蛋花汤 · 米饭' },
+        { day: '周四', date: '2026-09-10', breakfast: '花卷 · 皮蛋瘦肉粥 · 咸鸭蛋', lunch: '红烧牛肉 · 拌豆芽 · 排骨汤 · 米饭' },
+        { day: '周五', date: '2026-09-11', breakfast: '海南粉 · 豆浆 · 煮玉米', lunch: '酸菜鱼 · 炒苋菜 · 三鲜汤 · 米饭' }
+      ]
+    },
+    {
+      text: '2026年9月14日 - 9月18日', weekNum: 38,
+      days: [
+        { day: '周一', date: '2026-09-14', breakfast: '叉烧包 · 茶叶蛋 · 小米粥 · 拌小菜', lunch: '红烧排骨 · 清炒时蔬 · 紫菜蛋花汤 · 米饭' },
+        { day: '周二', date: '2026-09-15', breakfast: '油条 · 现磨豆浆 · 煎蛋 · 咸菜', lunch: '糖醋里脊 · 蒜蓉西兰花 · 冬瓜排骨汤 · 米饭' },
+        { day: '周三', date: '2026-09-16', breakfast: '肠粉 · 白粥 · 卤蛋 · 酸豆角', lunch: '清蒸鲈鱼 · 麻婆豆腐 · 番茄蛋汤 · 米饭' },
+        { day: '周四', date: '2026-09-17', breakfast: '花卷 · 皮蛋瘦肉粥 · 咸鸭蛋', lunch: '宫保鸡丁 · 凉拌黄瓜 · 莲藕排骨汤 · 米饭' },
+        { day: '周五', date: '2026-09-18', breakfast: '海南粉 · 豆浆 · 煮玉米', lunch: '梅菜扣肉 · 炒青菜 · 银耳莲子汤 · 米饭' }
+      ]
+    },
+    {
+      text: '2026年9月21日 - 9月25日', weekNum: 39,
+      days: [
+        { day: '周一', date: '2026-09-21', breakfast: '叉烧包 · 茶叶蛋 · 小米粥 · 拌小菜', lunch: '黄焖鸡 · 炒莲藕 · 海带汤 · 米饭' },
+        { day: '周二', date: '2026-09-22', breakfast: '油条 · 现磨豆浆 · 煎蛋 · 咸菜', lunch: '鱼香肉丝 · 凉拌木耳 · 豆腐汤 · 米饭' },
+        { day: '周三', date: '2026-09-23', breakfast: '肠粉 · 白粥 · 卤蛋 · 酸豆角', lunch: '可乐鸡翅 · 炒丝瓜 · 蘑菇汤 · 米饭' },
+        { day: '周四', date: '2026-09-24', breakfast: '花卷 · 皮蛋瘦肉粥 · 咸鸭蛋', lunch: '水煮牛肉 · 拌三丝 · 萝卜汤 · 米饭' },
+        { day: '周五', date: '2026-09-25', breakfast: '海南粉 · 豆浆 · 煮玉米', lunch: '红烧肉 · 炒空心菜 · 酸辣汤 · 米饭' }
+      ]
+    }
+  ];
+
+  // ==================== 解析周参数（默认当前周） ====================
+  var params = new URLSearchParams(window.location.search);
+  var weekIdx = parseInt(params.get('week'), 10);
+  if (isNaN(weekIdx) || weekIdx < 0 || weekIdx >= weekMenus.length) {
+    weekIdx = 1;
+  }
+  var week = weekMenus[weekIdx];
+
+  document.getElementById('weekRange').textContent = week.text;
+  document.getElementById('weekNo').textContent = '第' + week.weekNum + '周';
+
+  // ==================== 渲染每日菜单图 ====================
+  var html = '';
+  week.days.forEach(function(d) {
+    html +=
+      '<div class="menu-day-card">' +
+        '<div class="mdc-inner">' +
+          '<div class="mdc-header">' +
+            '<span class="day-name">' + d.day + '</span>' +
+            '<span class="day-date">' + d.date + '</span>' +
+            '<span class="day-line"></span>' +
+          '</div>' +
+          '<div class="mdc-meals">' +
+            '<div class="meal-row">' +
+              '<span class="meal-tag breakfast">早餐</span>' +
+              '<span class="meal-dishes">' + d.breakfast + '</span>' +
+            '</div>' +
+            '<div class="meal-row">' +
+              '<span class="meal-tag lunch">午餐</span>' +
+              '<span class="meal-dishes">' + d.lunch + '</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  });
+  document.getElementById('dayCards').innerHTML = html;
+})();
+</script>
+</body>
+</html>
