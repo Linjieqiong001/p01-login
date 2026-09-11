@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<html lang="zh-CN" data-page-node-id="AW4E3Uz7z8lvR4GIhIQHFn">
+<head data-page-node-id="3f0iWobDkLb9u2DgqPAcGj">
+<meta charset="UTF-8" data-page-node-id="C1oAf992zMw4WV347KzHd1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="RBPMxVruAp0CSeYT5nkSa7">
 <title>P02 - 手机号绑定</title>
-<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="common.css" data-page-node-id="vColQtQSwLQfE4EssFz7tx">
 <style>
 /* ==================== 手机号绑定页专属样式 ==================== */
 .bind-content {
@@ -17,10 +17,6 @@
   font-size: 14px;
   color: var(--text-2);
   line-height: 1.6;
-}
-.bind-desc .highlight {
-  color: var(--primary);
-  font-weight: 500;
 }
 
 /* 表单卡片 */
@@ -39,6 +35,11 @@
   gap: 12px;
 }
 .code-row .form-input { flex: 1; }
+
+/* 输入框高度统一（本页覆盖） */
+.form-item { align-items: center; }
+.form-card .form-input { height: 40px; }
+.code-row .form-input { height: 40px; }
 .get-code-btn {
   flex-shrink: 0;
   height: 34px;
@@ -140,97 +141,96 @@
 }
 </style>
 </head>
-<body>
-<div class="miniprogram">
+<body data-page-node-id="ZBixvFam7fhURzeWBwitRw">
+<div class="miniprogram" data-page-node-id="znuiaiUimPC0LOc6D2GT2k">
 
   <!-- ==================== Status Bar ==================== -->
-  <div class="status-bar light">
-    <span class="time">09:38</span>
-    <div class="icons">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+  <div class="status-bar light" data-page-node-id="VM2XL6rDkYzkGKkr3U9lzw">
+    <span class="time" data-page-node-id="jLhPF4EcbV2oBRR0eNTwdt">09:38</span>
+    <div class="icons" data-page-node-id="ZKkro2r2YlLRDVyTQPi0Pm">
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="Ol6D5NtG7Bx5JxF19WRRfE"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" data-page-node-id="Mp2uafdKbEvdPbQeDZR7fW"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" data-page-node-id="oOsDGaf52zOhrIzD1Ck1Lp"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33V20.67C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" data-page-node-id="CGGxyRqNgJbIfJZ34gDpTf"/></svg>
     </div>
   </div>
 
   <!-- ==================== Nav Bar ==================== -->
-  <div class="nav-bar white">
-    <div class="nav-back">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="15 18 9 12 15 6"/>
+  <div class="nav-bar white" data-page-node-id="1mtBJozWqBqBAmPlkdKYnO">
+    <div class="nav-back" data-page-node-id="T0en7BPY7sTgokxFDlIj8E">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="llcfgLMsbDlLENGiXR2wH0">
+        <polyline points="15 18 9 12 15 6" data-page-node-id="JnEBWQYs6X7rKFr5GwhgE6"/>
       </svg>
     </div>
-    <span class="nav-title">手机号绑定</span>
-    <span class="nav-placeholder"></span>
+    <span class="nav-title" data-page-node-id="iEEJ0889jJ08USY1jnXCqZ">手机号绑定</span>
+    <span class="nav-placeholder" data-page-node-id="EOUGYzGgm8QwZ4trlx5Ivl"></span>
   </div>
 
   <!-- ==================== Content ==================== -->
-  <div class="content">
-    <div class="bind-content">
+  <div class="content" data-page-node-id="wkeNTZHGSGZh4sDkbHtvQ0">
+    <div class="bind-content" data-page-node-id="QKjWj3RZrYpBQnbO1vfoT0">
 
       <!-- 步骤指示 -->
-      <div class="step-hint">
-        <div class="step-dot active">
-          <div class="dot-circle">1</div>
-          <span class="dot-label">微信授权</span>
+      <div class="step-hint" data-page-node-id="bYsnbHOK8vHUFOOLlzBVKw">
+        <div class="step-dot active" data-page-node-id="FueV9IxouO4HVsqV4OXpf1">
+          <div class="dot-circle" data-page-node-id="ACgbPCBZPGGT34J3Hd1aGc">1</div>
+          <span class="dot-label" data-page-node-id="5GKmNwepcrOCFQuZ4QAThC">微信授权</span>
         </div>
-        <div class="step-line"></div>
-        <div class="step-dot active">
-          <div class="dot-circle">2</div>
-          <span class="dot-label">绑定手机号</span>
+        <div class="step-line" data-page-node-id="rxHKxlyk6ngX1c46CWEAFS"></div>
+        <div class="step-dot active" data-page-node-id="iCqtD1dYfJzBQVe81GlQHF">
+          <div class="dot-circle" data-page-node-id="FEzAz4ZQXAxSrOCwyEDZ8i">2</div>
+          <span class="dot-label" data-page-node-id="nC9qbK7aP9Sci9k7fZZ10D">绑定手机号</span>
         </div>
-        <div class="step-line"></div>
-        <div class="step-dot inactive">
-          <div class="dot-circle">3</div>
-          <span class="dot-label">完成</span>
+        <div class="step-line" data-page-node-id="sL9CCysuEClxmoVFv2TvWf"></div>
+        <div class="step-dot inactive" data-page-node-id="6tb26TgYujKrIoTh3MulSG">
+          <div class="dot-circle" data-page-node-id="g7n8vDMbPjDngHGTF6M66j">3</div>
+          <span class="dot-label" data-page-node-id="nfhXGywPBi6v7OlBqFa9RI">完成</span>
         </div>
       </div>
 
       <!-- 说明文案 -->
-      <div class="bind-desc">
-        首次登录需绑定手机号已完成身份验证<br>
-        <span class="highlight">手机号将用于登录验证与消息通知</span>
+      <div class="bind-desc" data-page-node-id="Td86kxZCtal5ARPpUtb6fO">
+        首次登录需绑定手机号已完成身份验证
       </div>
 
       <!-- 表单卡片 -->
-      <div class="form-card">
+      <div class="form-card" data-page-node-id="ndD6b0alOFHKnubqI4G34w">
 
         <!-- 手机号 -->
-        <div class="form-item">
-          <div class="phone-prefix">
-            <span class="prefix-num">+86</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="6 9 12 15 18 9"/>
+        <div class="form-item" data-page-node-id="bNnJTnAuoRD9hPS6orgtAm">
+          <div class="phone-prefix" data-page-node-id="DOfm3CjqFOa7zP3NV0DKWh">
+            <span class="prefix-num" data-page-node-id="jDuwfrTfyiupP0elwHF5OM">+86</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="MgouGj2QR9axqAG6DhCaB1">
+              <polyline points="6 9 12 15 18 9" data-page-node-id="k7Sf7wAGUJNmxFNEiEAzWI"/>
             </svg>
           </div>
-          <input type="tel" class="form-input" id="phoneInput" placeholder="请输入手机号" maxlength="11" inputmode="numeric">
+          <input type="tel" class="form-input" id="phoneInput" placeholder="请输入手机号" maxlength="11" inputmode="numeric" data-page-node-id="7O4HIMt2qFEMJSAoUHniCW">
         </div>
 
         <!-- 验证码 -->
-        <div class="form-item">
-          <div class="form-label">
-            <span class="required">*</span>验证码
+        <div class="form-item" data-page-node-id="heBijdtwPdiGV6Ec7qA3B4">
+          <div class="form-label" data-page-node-id="spJZWkDu2QeM1GuAClxlla">
+            <span class="required" data-page-node-id="2o8iSowXPHZLpfcVBvJCAs">*</span>验证码
           </div>
-          <div class="code-row">
-            <input type="text" class="form-input" id="codeInput" placeholder="请输入验证码" maxlength="6" inputmode="numeric">
-            <button class="get-code-btn" id="getCodeBtn">获取验证码</button>
+          <div class="code-row" data-page-node-id="CqwRwQh32Y8TTP8ax2rasL">
+            <input type="text" class="form-input" id="codeInput" placeholder="请输入验证码" maxlength="6" inputmode="numeric" data-page-node-id="bG89vZUO8lvSZS0VkFNegg">
+            <button class="get-code-btn" id="getCodeBtn" data-page-node-id="Cv5zSHRuamGdFg2rebyCgK">获取验证码</button>
           </div>
         </div>
 
       </div>
 
       <!-- 隐私提示 -->
-      <div class="privacy-tip">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      <div class="privacy-tip" data-page-node-id="fOwGym8bifB5BlBwTRvp3F">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="X6yO0RAT1EiLIZoKvZ98NT">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" data-page-node-id="HwvZ8rdkQtVCXr0aoMaHAM"/>
         </svg>
-        <div class="tip-text">您的手机号信息将严格保密，仅用于身份验证，不会用于其他用途。</div>
+        <div class="tip-text" data-page-node-id="sJMdXFAKSY2upHptiIibmk">您的手机号信息将严格保密，仅用于身份验证，不会用于其他用途。</div>
       </div>
 
     </div>
 
     <!-- 底部确认按钮 -->
-    <div class="btn-fixed-bottom">
-      <button class="btn btn-primary btn-block" id="confirmBtn">确认绑定</button>
+    <div class="btn-fixed-bottom" data-page-node-id="BA6VDqpWm5hpCwrcocPbLb">
+      <button class="btn btn-primary btn-block" id="confirmBtn" data-page-node-id="nVTGA1su2z2eSLUVeLt8VI">确认绑定</button>
     </div>
 
   </div>
