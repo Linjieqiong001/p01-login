@@ -3,7 +3,7 @@
 <head data-page-node-id="P20PDEDMTI4vNh3xcIiAOP">
 <meta charset="UTF-8" data-page-node-id="ng9lHQF8pQz0WiVsD4K3Ea">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="wNmmHf75QCBkJRuwntzX5W">
-<title>海口海事局智慧后勤 - 首页</title>
+<title>鑫海纳智慧服务 - 首页</title>
 <style>
 /* ==================== Reset & Base ==================== */
 * {
@@ -233,9 +233,9 @@ html, body {
   cursor: pointer;
   position: relative;
 }
-.banner-slide:nth-child(1) { background: linear-gradient(135deg, #1677FF 0%, #0052D9 100%); }
-.banner-slide:nth-child(2) { background: linear-gradient(135deg, #00A870 0%, #00875A 100%); }
-.banner-slide:nth-child(3) { background: linear-gradient(135deg, #ED7B2F 0%, #D6651A 100%); }
+.banner-slide:nth-child(1) { background: linear-gradient(90deg, rgba(22,119,255,0.85) 0%, rgba(22,119,255,0.5) 48%, rgba(0,82,217,0.18) 100%), url('assets/banner-launch.png') center/cover; }
+.banner-slide:nth-child(2) { background: linear-gradient(90deg, rgba(0,140,90,0.85) 0%, rgba(0,140,90,0.5) 48%, rgba(0,105,70,0.18) 100%), url('assets/banner-canteen.png') center/cover; }
+.banner-slide:nth-child(3) { background: linear-gradient(90deg, rgba(214,101,26,0.85) 0%, rgba(214,101,26,0.5) 48%, rgba(180,80,15,0.18) 100%), url('assets/banner-repair.png') center/cover; }
 .banner-slide .banner-content { z-index: 2; }
 .banner-slide .banner-tag {
   display: inline-block;
@@ -333,9 +333,7 @@ html, body {
 /* Icon backgrounds */
 .ic-1 { background: linear-gradient(135deg, #FF7676, #FF5252); }
 .ic-2 { background: linear-gradient(135deg, #FFB443, #FF9800); }
-.ic-3 { background: linear-gradient(135deg, #FFD93D, #FFC107); }
 .ic-4 { background: linear-gradient(135deg, #5DADE2, #3498DB); }
-.ic-5 { background: linear-gradient(135deg, #A569BD, #8E44AD); }
 .ic-6 { background: linear-gradient(135deg, #48C9B0, #1ABC9C); }
 .ic-7 { background: linear-gradient(135deg, #5DADE2, #2980B9); }
 .ic-8 { background: linear-gradient(135deg, #58D68D, #27AE60); }
@@ -402,64 +400,57 @@ html, body {
   color: var(--primary);
 }
 
-.menu-image-area {
-  margin: 0 16px 12px;
-  height: 130px;
+/* 16:9 菜谱缩略图卡片（统一默认菜单背景图） */
+.menu-card {
+  margin: 0 16px 14px;
+  aspect-ratio: 16 / 9;
   border-radius: var(--radius-md);
   overflow: hidden;
   position: relative;
   cursor: pointer;
-  background: linear-gradient(135deg, #FFF8E1, #FFE0B2);
+  background: url('assets/menu-default-bg.png') center/cover;
   transition: transform 0.2s;
 }
-.menu-image-area:active { transform: scale(0.98); }
-.menu-illustration {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-.menu-illustration svg { width: 120px; height: 120px; }
-.menu-image-overlay {
+.menu-card:active { transform: scale(0.98); }
+.menu-card::before {
+  content: '';
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(transparent, rgba(0,0,0,0.05));
-  padding: 8px 12px;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(90deg, rgba(5,32,22,0.82) 0%, rgba(5,32,22,0.62) 55%, rgba(5,32,22,0.28) 100%);
+}
+.menu-card-today {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  padding: 16px 18px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+  z-index: 1;
 }
-.menu-image-overlay .tag {
-  font-size: 10px;
-  background: rgba(255,255,255,0.9);
-  padding: 2px 8px;
-  border-radius: 4px;
-  color: var(--text-2);
-}
-.menu-image-overlay .enlarge-hint {
+.today-row {
   display: flex;
-  align-items: center;
-  gap: 3px;
-  font-size: 10px;
-  color: var(--text-3);
+  align-items: flex-start;
+  gap: 10px;
 }
-.menu-image-overlay .enlarge-hint svg { width: 12px; height: 12px; }
-
-.menu-desc {
-  padding: 0 16px 14px;
-  font-size: 12px;
-  color: var(--text-2);
-  line-height: 1.6;
-}
-.menu-desc .day-label {
-  display: inline-block;
-  color: var(--primary);
+.today-tag {
+  flex-shrink: 0;
+  font-size: 11px;
   font-weight: 600;
-  margin-right: 4px;
+  letter-spacing: 1px;
+  color: #FFFFFF;
+  padding: 3px 10px;
+  border-radius: 4px;
+  margin-top: 1px;
+}
+.today-tag.breakfast { background: linear-gradient(135deg, #FFA940, #FA8C16); }
+.today-tag.dinner { background: linear-gradient(135deg, #4C9AFF, #1677FF); }
+.today-dishes {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #FFFFFF;
+  max-width: 76%;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
 /* ==================== Bottom Tab Bar ==================== */
@@ -567,39 +558,6 @@ html, body {
   padding: 16px 20px;
   max-height: 400px;
   overflow-y: auto;
-}
-.modal-body .menu-img-large {
-  width: 100%;
-  height: 200px;
-  border-radius: var(--radius-md);
-  background: linear-gradient(135deg, #FFF8E1, #FFE0B2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 12px;
-}
-.modal-body .menu-img-large svg { width: 100px; height: 100px; }
-.modal-body .menu-detail-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.modal-body .menu-detail-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 12px;
-  background: var(--bg);
-  border-radius: var(--radius-sm);
-}
-.modal-body .menu-detail-item .day {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-1);
-}
-.modal-body .menu-detail-item .dishes {
-  font-size: 12px;
-  color: var(--text-2);
 }
 .modal-close {
   padding: 12px 20px 16px;
@@ -722,7 +680,7 @@ html, body {
           <path d="M2 12l10 5 10-5" data-page-node-id="hx0rROdvaspwa6GvenTUxK"/>
         </svg>
       </div>
-      <span class="title" data-page-node-id="xkCadkuvwffuTHgXITr4yg">海事局智慧后勤</span>
+      <span class="title" data-page-node-id="xkCadkuvwffuTHgXITr4yg">鑫海纳智慧服务</span>
     </div>
     <div class="nav-right" data-page-node-id="3eNKh1KFSzTcgZ9moCpFJN">
       <div class="bell-wrap" id="bellBtn" data-page-node-id="MZwnf2DAhXUm8tjMJD4kAK">
@@ -748,8 +706,8 @@ html, body {
           <div class="banner-slide" data-idx="0" data-page-node-id="wFcwq0xiEoDGh7aADBkWVh">
             <div class="banner-content" data-page-node-id="X6X6ziH5MJtHKznyCQcFaN">
               <div class="banner-tag" data-page-node-id="wTKVe4DU0k95EpFCcxhI8L">系统公告</div>
-              <div class="banner-title" data-page-node-id="4tAySo9UyDpETCznLaaerr">智慧后勤平台正式上线</div>
-              <div class="banner-desc" data-page-node-id="aomyHpYHYxHWEOSyInkF7d">一站式后勤服务，便捷高效</div>
+              <div class="banner-title" data-page-node-id="4tAySo9UyDpETCznLaaerr">智慧服务平台正式上线</div>
+              <div class="banner-desc" data-page-node-id="aomyHpYHYxHWEOSyInkF7d">一站式服务，便捷高效</div>
             </div>
             <div class="banner-icon" data-page-node-id="3rUY4sCl7uyWATWAAxNkJk">
               <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.5" data-page-node-id="IYy9GDdONabndjss6iKKj2">
@@ -815,38 +773,6 @@ html, body {
           </div>
           <span class="grid-label" data-page-node-id="IXr40daZheTeZiOgAmhTDf">食堂预订</span>
         </div>
-        <!-- 理发预约 -->
-        <div class="grid-item" data-module="理发预约" data-page="理发预约页" data-page-node-id="GlXi3OtmHxU3ZDkk0WGOG8">
-          <div class="grid-icon ic-3" data-page-node-id="KUHHdISS5ukZxlntvwpwlD">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="a90UR0DAwBYp5keTJIJEft">
-              <circle cx="6" cy="6" r="3" data-page-node-id="Uo2fWESo5tpKFksZupk4eD"/>
-              <path d="M8.12 8.12L20 20M14 4l6 6M6 9v12M3 12h6" data-page-node-id="iLOO0FRor0l8mfsg8g7XBc"/>
-            </svg>
-          </div>
-          <span class="grid-label" data-page-node-id="qci33k9iZ2ESqrNKHVOYtJ">理发预约</span>
-        </div>
-        <!-- 意见反馈 -->
-        <div class="grid-item" data-module="意见反馈" data-page="意见反馈页" data-page-node-id="wxP7oQeBwPBZNuQNYSjvJt">
-          <div class="grid-icon ic-4" data-page-node-id="v9uhuCw6q0cryojXESw1u6">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="TQ1shh7aXVuEADmGGGmi8i">
-              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" data-page-node-id="Q81bMSzkcrQoBauDTinhhH"/>
-              <path d="M8 9h8M8 13h5" data-page-node-id="ZctnwANheZznnynceSavuP"/>
-            </svg>
-          </div>
-          <span class="grid-label" data-page-node-id="yfyFbR0pya7LPCP2s0h8ql">意见反馈</span>
-        </div>
-        <!-- 管理入口 -->
-        <div class="grid-item" data-module="管理入口" data-page="管理入口页" data-page-node-id="LL7oMO3Pn891l7bAyT0poh">
-          <div class="grid-icon ic-5" data-page-node-id="nBRZg3LoHoSFUEFwjAREVq">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="GqlbaFRb0O4GEJ2gWeNGkY">
-              <circle cx="12" cy="12" r="3" data-page-node-id="6pUCOg34zqZlzehAXxNtSe"/>
-              <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 008 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 8a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 008 4.6a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 8c.36.16.64.46.79.82" data-page-node-id="Ydm756rNMmA8BxbG0b9fhr"/>
-            </svg>
-          </div>
-          <span class="grid-label" data-page-node-id="mQmufNQf75b5hziTgfgXmv">管理入口</span>
-        </div>
-      </div>
-      <div class="grid-row" style="margin-top:4px;" data-page-node-id="v67kpvQk4WiXmzRLL4cwyJ">
         <!-- 公车预约 -->
         <div class="grid-item" data-module="公车预约" data-page="P7用车申请页" data-page-node-id="obkJg8S8QO531hUtu3Xljk">
           <div class="grid-icon ic-6" data-page-node-id="2ZPONz3Mu3mcqxLabDFUcf">
@@ -858,6 +784,18 @@ html, body {
           </div>
           <span class="grid-label" data-page-node-id="YcbzP0tVkgufomI3gR0NzA">公车预约</span>
         </div>
+        <!-- 意见反馈 -->
+        <div class="grid-item" data-module="意见反馈" data-page="意见反馈页" data-page-node-id="wxP7oQeBwPBZNuQNYSjvJt">
+          <div class="grid-icon ic-4" data-page-node-id="v9uhuCw6q0cryojXESw1u6">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="TQ1shh7aXVuEADmGGGmi8i">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" data-page-node-id="Q81bMSzkcrQoBauDTinhhH"/>
+              <path d="M8 9h8M8 13h5" data-page-node-id="ZctnwANheZznnynceSavuP"/>
+            </svg>
+          </div>
+          <span class="grid-label" data-page-node-id="yfyFbR0pya7LPCP2s0h8ql">意见反馈</span>
+        </div>
+      </div>
+      <div class="grid-row" style="margin-top:4px;" data-page-node-id="v67kpvQk4WiXmzRLL4cwyJ">
         <!-- 住房预约 -->
         <div class="grid-item" data-module="住房预约" data-page="P17住房首页" data-page-node-id="FRpiqaljJoogMgFzj3FSW6">
           <div class="grid-icon ic-7" data-page-node-id="PzdUdiuKc8RxnRbJRACOX4">
@@ -915,7 +853,7 @@ html, body {
               <polyline points="15 18 9 12 15 6" data-page-node-id="4SlkQkYEVGy35hhyUEk8Sk"/>
             </svg>
           </button>
-          <span class="menu-week-text" id="weekText" data-page-node-id="TE3wBp5jVbFUbleHjsByfJ">2026.07.20 - 07.26</span>
+          <span class="menu-week-text" id="weekText" data-page-node-id="TE3wBp5jVbFUbleHjsByfJ">2026.09.14 - 09.18</span>
           <button class="nav-btn" id="nextWeek" data-page-node-id="m451qO8QnRErv0xEBtvaUx">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="JckgNefk9aUqbZJh6uiQiR">
               <polyline points="9 18 15 12 9 6" data-page-node-id="1DLRgNAx3iRVFdBPnSRLzX"/>
@@ -924,43 +862,17 @@ html, body {
         </div>
       </div>
 
-      <div class="menu-image-area" id="menuImage" data-page-node-id="E5tuDwqPERFh5Ctfi1iWAZ">
-        <div class="menu-illustration" data-page-node-id="BaNTH9xfkXvhbQFJpVXPaR">
-          <svg viewBox="0 0 120 120" fill="none" data-page-node-id="tHcCS5K8pQl9aV4GbGTR93">
-            <!-- Plate -->
-            <ellipse cx="60" cy="65" rx="42" ry="40" fill="#FFFFFF" stroke="#FFE0B2" stroke-width="2" data-page-node-id="CSluaraHwUbskuVwaVY8if"/>
-            <ellipse cx="60" cy="63" rx="36" ry="34" fill="#FAFAFA" data-page-node-id="Ds418mpKMAQ6btmZC6YPMi"/>
-            <!-- Food items -->
-            <!-- Rice -->
-            <ellipse cx="60" cy="55" rx="20" ry="14" fill="#FFF8E1" data-page-node-id="2S2rQN3FCQ9KUkhejukk2U"/>
-            <ellipse cx="60" cy="52" rx="16" ry="10" fill="#FFEB3B" opacity="0.6" data-page-node-id="lZzBdc5No2JRBtKWAuJt0U"/>
-            <!-- Meat -->
-            <ellipse cx="45" cy="68" rx="10" ry="7" fill="#FF8A65" data-page-node-id="FHDPQxIuuBjQYO4FEDpjPC"/>
-            <path d="M40 68 Q45 64 50 68" stroke="#FF5722" stroke-width="1.5" fill="none" data-page-node-id="3HGuF4nEsphI1KgbAd28A7"/>
-            <!-- Veggie -->
-            <ellipse cx="72" cy="68" rx="8" ry="6" fill="#81C784" data-page-node-id="uEF19RtLZFteaaKpMLt3J5"/>
-            <circle cx="72" cy="67" r="3" fill="#66BB6A" data-page-node-id="3KvLG5Yn4Q4zvQVpnj9iM2"/>
-            <!-- Soup bowl -->
-            <path d="M50 78 Q60 82 70 78" stroke="#FFB74D" stroke-width="2" fill="none" data-page-node-id="lgPo31BEBJEzfhO0IcqEPk"/>
-            <!-- Steam -->
-            <path d="M52 35 Q54 30 52 25 Q50 20 52 15" stroke="#E0E0E0" stroke-width="1.5" fill="none" opacity="0.6" data-page-node-id="EHYr4DLHCrSstfz8fiNMA3"/>
-            <path d="M60 35 Q62 30 60 25 Q58 20 60 15" stroke="#E0E0E0" stroke-width="1.5" fill="none" opacity="0.6" data-page-node-id="dDWI9Fcbk9esWxTI63DFoY"/>
-            <path d="M68 35 Q70 30 68 25 Q66 20 68 15" stroke="#E0E0E0" stroke-width="1.5" fill="none" opacity="0.6" data-page-node-id="jK7gJfiR5WbJb3NkLmJNrO"/>
-          </svg>
+      <div class="menu-card" id="menuImage" data-page-node-id="E5tuDwqPERFh5Ctfi1iWAZ">
+        <div class="menu-card-today" id="menuCardToday" data-page-node-id="chc5xuhJ10optzhxHiRWMe">
+          <div class="today-row" data-page-node-id="BaNTH9xfkXvhbQFJpVXPaR">
+            <span class="today-tag breakfast" data-page-node-id="urmYBCjIzqkW8Quu6Bl8Eb">早餐</span>
+            <span class="today-dishes" data-page-node-id="wfDDmPfBmTRHFqbZZgi4TZ">海南粉 · 豆浆 · 煮玉米</span>
+          </div>
+          <div class="today-row" data-page-node-id="iiYGCTqkH6GC1APQ68JqX7">
+            <span class="today-tag dinner" data-page-node-id="i2U80FgVNVkzH5IC1k9d2Q">晚餐</span>
+            <span class="today-dishes" data-page-node-id="j2Q2LLidvFtXvGWKcFWTbr">干煸四季豆 · 香煎马鲛鱼 · 冬瓜薏米汤 · 米饭</span>
+          </div>
         </div>
-        <div class="menu-image-overlay" data-page-node-id="chc5xuhJ10optzhxHiRWMe">
-          <span class="tag" data-page-node-id="urmYBCjIzqkW8Quu6Bl8Eb">第30周 · 菜谱预览</span>
-          <span class="enlarge-hint" data-page-node-id="i2U80FgVNVkzH5IC1k9d2Q">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="5pqB6H2LvPr2XI4Tgf6GwC"><circle cx="11" cy="11" r="8" data-page-node-id="nKeMScMlEzBkhUq6CYf2C8"/><path d="M21 21l-4.35-4.35M11 8v6M8 11h6" data-page-node-id="ACpaCHTiGFJpG5AjA9fmiK"/></svg>
-            点击查看大图
-          </span>
-        </div>
-      </div>
-
-      <div class="menu-desc" id="menuDesc" data-page-node-id="wfDDmPfBmTRHFqbZZgi4TZ">
-        <span class="day-label" data-page-node-id="iiYGCTqkH6GC1APQ68JqX7">周一</span>红烧排骨 · 清炒时蔬 · 紫菜蛋花汤<br data-page-node-id="5tQorhHG2u7XO5CttnyoSN">
-        <span class="day-label" data-page-node-id="j2Q2LLidvFtXvGWKcFWTbr">周二</span>糖醋里脊 · 蒜蓉西兰花 · 冬瓜排骨汤<br data-page-node-id="QhBneSg2PFowSVWo7CySUb">
-        <span class="day-label" data-page-node-id="a5KxbITtXOBu9uRcgmSVC5">周三</span>清蒸鲈鱼 · 麻婆豆腐 · 番茄蛋汤
       </div>
     </div>
 
@@ -1004,58 +916,6 @@ html, body {
     </div>
   </div>
 
-  <!-- ==================== Menu Modal ==================== -->
-  <div class="modal-mask" id="menuModal" data-page-node-id="1bRhG2iQolUDSwLED8tbGk">
-    <div class="modal-content" data-page-node-id="IClnuFatrc6ZhyUGVnNfNi">
-      <div class="modal-header" data-page-node-id="Hf8h8p1Hl984dwiSuxPPMO">
-        <div class="modal-title" data-page-node-id="OsX2Igcvje6oA6gHtm5W27">本周菜谱详情</div>
-        <div class="modal-date" id="modalDate" data-page-node-id="dOtT39oHP6WYox9xMfNUve">2026-07-20 至 2026-07-26</div>
-      </div>
-      <div class="modal-body" data-page-node-id="QKWDXDlCZ77SnoKwTv6Qj3">
-        <div class="menu-img-large" data-page-node-id="7OXmsf2lXFDkiJQGPu2YO5">
-          <svg viewBox="0 0 120 120" fill="none" data-page-node-id="dhJoFew5Zu71mhjdix2a33">
-            <ellipse cx="60" cy="65" rx="42" ry="40" fill="#FFFFFF" stroke="#FFE0B2" stroke-width="2" data-page-node-id="eMKRyBtyGDwQZHq1TVW0eY"/>
-            <ellipse cx="60" cy="63" rx="36" ry="34" fill="#FAFAFA" data-page-node-id="BkI7ep71nhfSw24WREurZc"/>
-            <ellipse cx="60" cy="55" rx="20" ry="14" fill="#FFF8E1" data-page-node-id="2J2n3URZuqnXCKYUKbN57I"/>
-            <ellipse cx="60" cy="52" rx="16" ry="10" fill="#FFEB3B" opacity="0.6" data-page-node-id="JrbdxiGkjbC7AUvlM3KH4e"/>
-            <ellipse cx="45" cy="68" rx="10" ry="7" fill="#FF8A65" data-page-node-id="jBt4Uxy3bipBJL0v9SX1Ny"/>
-            <ellipse cx="72" cy="68" rx="8" ry="6" fill="#81C784" data-page-node-id="otNtN37bK1Yd7UJBaFWS0y"/>
-            <circle cx="72" cy="67" r="3" fill="#66BB6A" data-page-node-id="FXTfUlHuRWOroWsy4h5iv2"/>
-            <path d="M50 78 Q60 82 70 78" stroke="#FFB74D" stroke-width="2" fill="none" data-page-node-id="T8Y8F39c9IajmvT1oQwBjW"/>
-            <path d="M52 35 Q54 30 52 25 Q50 20 52 15" stroke="#E0E0E0" stroke-width="1.5" fill="none" opacity="0.6" data-page-node-id="RKpNFKJJE8Lm6x2qtcXCgy"/>
-            <path d="M60 35 Q62 30 60 25 Q58 20 60 15" stroke="#E0E0E0" stroke-width="1.5" fill="none" opacity="0.6" data-page-node-id="481Phinjg0KyRlLDHP1FS6"/>
-            <path d="M68 35 Q70 30 68 25 Q66 20 68 15" stroke="#E0E0E0" stroke-width="1.5" fill="none" opacity="0.6" data-page-node-id="9MaqTuG2JhpKJ38C92vLeU"/>
-          </svg>
-        </div>
-        <div class="menu-detail-list" id="modalMenuList" data-page-node-id="1fKgxyXipjG3Q23JiBILqB">
-          <div class="menu-detail-item" data-page-node-id="HYWZN0H1cDNj1APLZ2NlYP">
-            <span class="day" data-page-node-id="LjQOZQpmEKzPWz16oUD3jW">周一</span>
-            <span class="dishes" data-page-node-id="HndtT9M0ua8oGU9se4XDHQ">红烧排骨 · 清炒时蔬 · 紫菜蛋花汤</span>
-          </div>
-          <div class="menu-detail-item" data-page-node-id="tMAWx7PnIiHpnyKuFoJhrP">
-            <span class="day" data-page-node-id="nOdI11AgH5zVJVumpYH2zR">周二</span>
-            <span class="dishes" data-page-node-id="Gq9dvcADgKPtpBRVpBujo7">糖醋里脊 · 蒜蓉西兰花 · 冬瓜排骨汤</span>
-          </div>
-          <div class="menu-detail-item" data-page-node-id="nNKN7b6Vn184Y613KXKK49">
-            <span class="day" data-page-node-id="BAd50yHNrxPUuNZ8ZlnyET">周三</span>
-            <span class="dishes" data-page-node-id="1GqD3XdUE2AP5idCrvjzZN">清蒸鲈鱼 · 麻婆豆腐 · 番茄蛋汤</span>
-          </div>
-          <div class="menu-detail-item" data-page-node-id="DpEmQAV66yNZtPoWwE5nkr">
-            <span class="day" data-page-node-id="qQRd5pGzv0padJOVunlKK2">周四</span>
-            <span class="dishes" data-page-node-id="kmoeSrvD0fsVImXFZCp33X">宫保鸡丁 · 凉拌黄瓜 · 莲藕排骨汤</span>
-          </div>
-          <div class="menu-detail-item" data-page-node-id="Kd9KjdBQ6sEEkpubqLHH2E">
-            <span class="day" data-page-node-id="g4x2OiYEVMlEU5jvPl1bpm">周五</span>
-            <span class="dishes" data-page-node-id="9KqwhAPLc39BlaIuLbWIvP">梅菜扣肉 · 炒青菜 · 银耳莲子汤</span>
-          </div>
-        </div>
-      </div>
-      <div class="modal-close" data-page-node-id="pLFYqGfRIEjWoru9g4qrnJ">
-        <button class="modal-close-btn" id="closeMenuModal" data-page-node-id="Igx0vTetCbJF5YtHFnomjV">知道了</button>
-      </div>
-    </div>
-  </div>
-
   <!-- ==================== Announcement Modal ==================== -->
   <div class="modal-mask" id="announceModal" data-page-node-id="4ntTUk6RiKTEO9aRyyCJ7E">
     <div class="announce-modal" data-page-node-id="ikrmkdbMMLs271QE93L1RS">
@@ -1066,8 +926,8 @@ html, body {
         <span class="am-type" id="amType" data-page-node-id="s3HnhPqIdAbxOnKtaWj1lj">系统公告</span>
       </div>
       <div class="am-body" data-page-node-id="PZ3HnsqRhg46d0XM1a9tla">
-        <div class="am-title" id="amTitle" data-page-node-id="bnbt5d0o2Gu25NSXomBHhx">智慧后勤平台正式上线</div>
-        <div class="am-text" id="amText" data-page-node-id="YJkTHy89Vx6y3mjeIiCTF5">海口海事局智慧后勤服务平台现已正式上线运营！平台涵盖食堂预约、公车管理、维护报修、公有住房、白沙门预约、拜访预约等七大核心后勤业务场景，为全局职工提供便捷高效的一站式后勤服务。欢迎广大职工使用并反馈宝贵意见。</div>
+        <div class="am-title" id="amTitle" data-page-node-id="bnbt5d0o2Gu25NSXomBHhx">智慧服务平台正式上线</div>
+        <div class="am-text" id="amText" data-page-node-id="YJkTHy89Vx6y3mjeIiCTF5">鑫海纳智慧服务平台现已正式上线运营！平台涵盖食堂预约、公车管理、维护报修、公有住房、白沙门预约、拜访预约等七大核心服务场景，为全体职工提供便捷高效的一站式服务。欢迎广大职工使用并反馈宝贵意见。</div>
       </div>
       <div class="am-footer" data-page-node-id="22QcVMNJSxp5mYGlt7YQRp">
         <button class="modal-close-btn" id="closeAnnounceModal" data-page-node-id="8xy4szkwFbbGLOFU09cKOA">关闭</button>
@@ -1130,9 +990,9 @@ html, body {
   var currentSlide = 0;
   var bannerTimer = null;
   var bannerData = [
-    { type: '系统公告', color: 'linear-gradient(135deg, #1677FF 0%, #0052D9 100%)', title: '智慧后勤平台正式上线', text: '海口海事局智慧后勤服务平台现已正式上线运营！平台涵盖食堂预约、公车管理、维护报修、公有住房、白沙门预约、拜访预约等七大核心后勤业务场景，为全局职工提供便捷高效的一站式后勤服务。欢迎广大职工使用并反馈宝贵意见。' },
-    { type: '食堂通知', color: 'linear-gradient(135deg, #00A870 0%, #00875A 100%)', title: '本周食堂菜单已更新', text: '本周（2026年7月20日-7月26日）食堂菜单已更新，新增多道夏季特色菜品。请各位职工通过首页菜谱区域查看本周详细菜单，并按时进行餐次预订。订餐截止时间为每日16:30。' },
-    { type: '维护通知', color: 'linear-gradient(135deg, #ED7B2F 0%, #D6651A 100%)', title: '后勤报修在线受理', text: '智慧后勤平台现已开通在线报修功能！职工可通过首页「维护报修」入口，在线提交故障报修申请（包括故障标题、描述、地点、照片），维修人员将在第一时间受理并处理，全程工单跟踪。' }
+    { type: '系统公告', color: 'linear-gradient(135deg, #1677FF 0%, #0052D9 100%)', title: '智慧服务平台正式上线', text: '鑫海纳智慧服务平台现已正式上线运营！平台涵盖食堂预约、公车管理、维护报修、公有住房、白沙门预约、拜访预约等七大核心服务场景，为全体职工提供便捷高效的一站式服务。欢迎广大职工使用并反馈宝贵意见。' },
+    { type: '食堂通知', color: 'linear-gradient(135deg, #00A870 0%, #00875A 100%)', title: '本周食堂菜单已更新', text: '本周（2026年9月14日-9月18日）食堂菜单已更新，新增多道秋季特色菜品。请各位职工通过首页菜谱区域查看本周详细菜单，并按时进行餐次预订。订餐截止时间为每日16:30。' },
+    { type: '维护通知', color: 'linear-gradient(135deg, #ED7B2F 0%, #D6651A 100%)', title: '后勤报修在线受理', text: '智慧服务平台现已开通在线报修功能！职工可通过首页「维护报修」入口，在线提交故障报修申请（包括故障标题、描述、地点、照片），维修人员将在第一时间受理并处理，全程工单跟踪。' }
   ];
 
   function goToSlide(idx) {
@@ -1237,11 +1097,52 @@ html, body {
 
   // ==================== Menu Week Navigation ====================
   var weekOffsets = [
-    { text: '2026.07.13 - 07.19', dateRange: '2026-07-13 至 2026-07-19', weekNum: 29, desc: '<span class="day-label">周一</span>卤肉饭 · 炒青菜 · 冬瓜汤<br><span class="day-label">周二</span>回锅肉 · 拍黄瓜 · 紫菜汤<br><span class="day-label">周三</span>口水鸡 · 蒸南瓜 · 蛋花汤' },
-    { text: '2026.07.20 - 07.26', dateRange: '2026-07-20 至 2026-07-26', weekNum: 30, desc: '<span class="day-label">周一</span>红烧排骨 · 清炒时蔬 · 紫菜蛋花汤<br><span class="day-label">周二</span>糖醋里脊 · 蒜蓉西兰花 · 冬瓜排骨汤<br><span class="day-label">周三</span>清蒸鲈鱼 · 麻婆豆腐 · 番茄蛋汤' },
-    { text: '2026.07.27 - 08.02', dateRange: '2026-07-27 至 2026-08-02', weekNum: 31, desc: '<span class="day-label">周一</span>黄焖鸡 · 炒莲藕 · 海带汤<br><span class="day-label">周二</span>鱼香肉丝 · 凉拌木耳 · 豆腐汤<br><span class="day-label">周三</span>可乐鸡翅 · 炒丝瓜 · 蘑菇汤' }
+    { text: '2026.09.07 - 09.11', weekNum: 37, days: [
+      { breakfast: '叉烧包 · 茶叶蛋 · 小米粥 · 拌小菜', dinner: '白切鸡 · 蚝油生菜 · 罗宋汤 · 米饭' },
+      { breakfast: '油条 · 现磨豆浆 · 煎蛋 · 咸菜', dinner: '香煎鲳鱼 · 清炒芥蓝 · 紫菜汤 · 米饭' },
+      { breakfast: '肠粉 · 白粥 · 卤蛋 · 酸豆角', dinner: '咖喱牛腩 · 上汤娃娃菜 · 番茄蛋汤 · 米饭' },
+      { breakfast: '花卷 · 皮蛋瘦肉粥 · 咸鸭蛋', dinner: '豉汁蒸排骨 · 蒜蓉菜心 · 玉米胡萝卜汤 · 米饭' },
+      { breakfast: '海南粉 · 豆浆 · 煮玉米', dinner: '干煸四季豆 · 香煎马鲛鱼 · 冬瓜薏米汤 · 米饭' }
+    ]},
+    { text: '2026.09.14 - 09.18', weekNum: 38, days: [
+      { breakfast: '叉烧包 · 茶叶蛋 · 小米粥 · 拌小菜', dinner: '蜜汁叉烧 · 蚝油芥蓝 · 冬瓜海白汤 · 米饭' },
+      { breakfast: '油条 · 现磨豆浆 · 煎蛋 · 咸菜', dinner: '香煎带鱼 · 蒜蓉空心菜 · 紫菜蛋花汤 · 米饭' },
+      { breakfast: '肠粉 · 白粥 · 卤蛋 · 酸豆角', dinner: '白灼虾 · 清炒油麦菜 · 番茄牛腩汤 · 米饭' },
+      { breakfast: '花卷 · 皮蛋瘦肉粥 · 咸鸭蛋', dinner: '黑椒牛柳 · 上汤菠菜 · 山药排骨汤 · 米饭' },
+      { breakfast: '海南粉 · 豆浆 · 煮玉米', dinner: '白切文昌鸡 · 蒜蓉丝瓜 · 莲藕花生汤 · 米饭' }
+    ]},
+    { text: '2026.09.21 - 09.25', weekNum: 39, days: [
+      { breakfast: '叉烧包 · 茶叶蛋 · 小米粥 · 拌小菜', dinner: '可乐鸡翅 · 清炒莴笋 · 紫菜汤 · 米饭' },
+      { breakfast: '油条 · 现磨豆浆 · 煎蛋 · 咸菜', dinner: '红烧狮子头 · 蒜蓉菠菜 · 冬瓜汤 · 米饭' },
+      { breakfast: '肠粉 · 白粥 · 卤蛋 · 酸豆角', dinner: '香煎黄花鱼 · 清炒菜心 · 番茄蛋汤 · 米饭' },
+      { breakfast: '花卷 · 皮蛋瘦肉粥 · 咸鸭蛋', dinner: '孜然羊肉 · 凉拌木耳 · 玉米排骨汤 · 米饭' },
+      { breakfast: '海南粉 · 豆浆 · 煮玉米', dinner: '豉油鸡 · 清炒豆苗 · 银耳汤 · 米饭' }
+    ]}
   ];
-  var currentWeekIdx = 1;
+  var currentWeekIdx = 0;
+
+  // 当前天（周一=0 ... 周日归入周一）
+  var _d = new Date().getDay();
+  var todayIdx = (_d === 0 || _d === 6) ? 0 : _d - 1;
+
+  function renderTodayCard(animate) {
+    var week = weekOffsets[currentWeekIdx];
+    var day = week.days[Math.min(todayIdx, week.days.length - 1)];
+
+    document.getElementById('weekText').textContent = week.text;
+    document.getElementById('menuCardToday').innerHTML =
+      '<div class="today-row"><span class="today-tag breakfast">早餐</span><span class="today-dishes">' + day.breakfast + '</span></div>' +
+      '<div class="today-row"><span class="today-tag dinner">晚餐</span><span class="today-dishes">' + day.dinner + '</span></div>';
+
+    if (animate) {
+      var menuCard = document.getElementById('menuImage');
+      menuCard.style.opacity = '0';
+      setTimeout(function() {
+        menuCard.style.transition = 'opacity 0.3s';
+        menuCard.style.opacity = '1';
+      }, 50);
+    }
+  }
 
   function updateWeek(direction) {
     if (direction === 'prev' && currentWeekIdx > 0) {
@@ -1256,56 +1157,12 @@ html, body {
       return;
     }
 
-    var data = weekOffsets[currentWeekIdx];
-    document.getElementById('weekText').textContent = data.text;
-    document.getElementById('menuDesc').innerHTML = data.desc;
-    document.getElementById('modalDate').textContent = data.dateRange;
-
-    // Update modal list
-    var allMenus = [
-      [
-        { day: '周一', dishes: '卤肉饭 · 炒青菜 · 冬瓜汤' },
-        { day: '周二', dishes: '回锅肉 · 拍黄瓜 · 紫菜汤' },
-        { day: '周三', dishes: '口水鸡 · 蒸南瓜 · 蛋花汤' },
-        { day: '周四', dishes: '红烧牛肉 · 拌豆芽 · 排骨汤' },
-        { day: '周五', dishes: '酸菜鱼 · 炒苋菜 · 三鲜汤' }
-      ],
-      [
-        { day: '周一', dishes: '红烧排骨 · 清炒时蔬 · 紫菜蛋花汤' },
-        { day: '周二', dishes: '糖醋里脊 · 蒜蓉西兰花 · 冬瓜排骨汤' },
-        { day: '周三', dishes: '清蒸鲈鱼 · 麻婆豆腐 · 番茄蛋汤' },
-        { day: '周四', dishes: '宫保鸡丁 · 凉拌黄瓜 · 莲藕排骨汤' },
-        { day: '周五', dishes: '梅菜扣肉 · 炒青菜 · 银耳莲子汤' }
-      ],
-      [
-        { day: '周一', dishes: '黄焖鸡 · 炒莲藕 · 海带汤' },
-        { day: '周二', dishes: '鱼香肉丝 · 凉拌木耳 · 豆腐汤' },
-        { day: '周三', dishes: '可乐鸡翅 · 炒丝瓜 · 蘑菇汤' },
-        { day: '周四', dishes: '水煮牛肉 · 拌三丝 · 萝卜汤' },
-        { day: '周五', dishes: '红烧肉 · 炒空心菜 · 酸辣汤' }
-      ]
-    ];
-
-    var listHtml = '';
-    allMenus[currentWeekIdx].forEach(function(item) {
-      listHtml += '<div class="menu-detail-item"><span class="day">' + item.day + '</span><span class="dishes">' + item.dishes + '</span></div>';
-    });
-    document.getElementById('modalMenuList').innerHTML = listHtml;
-
-    // Update tag
-    var tagEl = document.querySelector('.menu-image-overlay .tag');
-    if (tagEl) {
-      tagEl.textContent = '第' + data.weekNum + '周 · 菜谱预览';
-    }
-
-    // Animation feedback
-    var menuImage = document.getElementById('menuImage');
-    menuImage.style.opacity = '0';
-    setTimeout(function() {
-      menuImage.style.transition = 'opacity 0.3s';
-      menuImage.style.opacity = '1';
-    }, 50);
+    document.getElementById('weekText').textContent = weekOffsets[currentWeekIdx].text;
+    renderTodayCard(true);
   }
+
+  // 初始渲染当前天菜单
+  renderTodayCard(false);
 
   document.getElementById('prevWeek').addEventListener('click', function() {
     updateWeek('prev');
@@ -1315,19 +1172,9 @@ html, body {
     updateWeek('next');
   });
 
-  // ==================== Menu Image Click → Modal ====================
+  // ==================== Menu Card Click → 菜谱详情页 ====================
   document.getElementById('menuImage').addEventListener('click', function() {
-    document.getElementById('menuModal').classList.add('show');
-  });
-
-  document.getElementById('closeMenuModal').addEventListener('click', function() {
-    document.getElementById('menuModal').classList.remove('show');
-  });
-
-  document.getElementById('menuModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-      this.classList.remove('show');
-    }
+    window.location.href = 'P05-weekly-menu.html?week=' + currentWeekIdx;
   });
 
   // ==================== Tab Bar ====================
